@@ -1,0 +1,3 @@
+{
+  "buildCommand": "rm -f .babelrc && next build"
+}

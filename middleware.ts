@@ -1,3 +1,11 @@
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+
+export function middleware(request: NextRequest) {
+  // Your middleware logic here (if any)
+  return NextResponse.next()
+}
+
 export const config = {
   matcher: [
     /*
@@ -9,10 +17,4 @@ export const config = {
      */
     "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
-}
-
-// Next.js 15.2.4 requires this format instead of the edge runtime export
-export default function middleware() {
-  // Your middleware logic here
-  // This can be empty if you're not doing anything specific in middleware
 }

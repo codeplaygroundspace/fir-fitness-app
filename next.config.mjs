@@ -2,8 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
@@ -18,12 +16,10 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // Explicitly enable SWC
+  // Force SWC
   swcMinify: true,
+  // Disable Babel completely
   experimental: {
-    // Only keep necessary experimental features
-    serverComponentsExternalPackages: [],
-    // Force SWC even with Babel config
     forceSwcTransforms: true,
   },
 }

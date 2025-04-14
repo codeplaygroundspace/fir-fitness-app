@@ -375,3 +375,4 @@ export async function getExercisesByGroup(groupId: number): Promise<ExerciseWith
     return []
   }
 }
+

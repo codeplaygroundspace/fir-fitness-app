@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import { getExerciseById, getStretchExercises } from "@/app/actions"
+// Update imports for moved components
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
-import type { PageProps } from "@/lib/types"
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -13,7 +13,7 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-export default async function StretchDetailPage({ params }: PageProps) {
+export default async function StretchDetailPage({ params }: { params: { id: string } }) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getStretchExercises()
 
@@ -42,6 +42,8 @@ export default async function StretchDetailPage({ params }: PageProps) {
       <div className="px-4 py-4">
         <h1>{capitalizeWords(exercise.name)}</h1>
 
+        {/* Remove the timer component */}
+
         {/* Instructions box at the bottom */}
         <InstructionsBox
           description={exercise.description}
@@ -51,3 +53,4 @@ export default async function StretchDetailPage({ params }: PageProps) {
     </div>
   )
 }
+

@@ -128,3 +128,4 @@ export function ExerciseTimer({ duration, onComplete }: ExerciseTimerProps) {
     </Card>
   )
 }
+

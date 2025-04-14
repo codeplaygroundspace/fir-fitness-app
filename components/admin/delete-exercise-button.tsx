@@ -91,3 +91,4 @@ export function DeleteExerciseButton({ exerciseId, onDelete }: DeleteExerciseBut
     </AlertDialog>
   )
 }
+

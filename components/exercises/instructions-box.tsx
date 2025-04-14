@@ -41,3 +41,4 @@ export function InstructionsBox({ description, fallback }: InstructionsBoxProps)
     </div>
   )
 }
+

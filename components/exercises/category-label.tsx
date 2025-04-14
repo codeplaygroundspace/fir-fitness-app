@@ -24,3 +24,4 @@ export function CategoryLabel({ category, className = "" }: CategoryLabelProps) 
     </span>
   )
 }
+

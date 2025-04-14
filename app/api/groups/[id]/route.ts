@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-interface RouteParams {
-  params: {
-    id: string
-  }
-}
-
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const id = params.id
 
@@ -28,3 +22,4 @@ export async function GET(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 })
   }
 }
+

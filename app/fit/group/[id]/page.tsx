@@ -13,14 +13,7 @@ import type { ExerciseWithLabels } from "@/lib/types"
 export default function ExerciseGroupPage() {
   const params = useParams()
   const router = useRouter()
-
-  // Safely extract and parse the ID
-  const groupId = (() => {
-    if (!params || !params.id) return 0
-    const id = typeof params.id === "string" ? params.id : Array.isArray(params.id) ? params.id[0] : "0"
-    const parsedId = Number.parseInt(id, 10)
-    return isNaN(parsedId) ? 0 : parsedId
-  })()
+  const groupId = Number(params.id)
 
   const [exercises, setExercises] = useState<ExerciseWithLabels[]>([])
   const [groupName, setGroupName] = useState<string>("")
@@ -34,7 +27,7 @@ export default function ExerciseGroupPage() {
       try {
         setLoading(true)
 
-        if (groupId === 0) {
+        if (isNaN(groupId)) {
           setError("Invalid group ID")
           return
         }
@@ -185,3 +178,4 @@ export default function ExerciseGroupPage() {
     </div>
   )
 }
+

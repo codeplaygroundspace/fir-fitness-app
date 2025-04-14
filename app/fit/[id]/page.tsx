@@ -4,7 +4,6 @@ import { CategoryLabel } from "@/components/exercises/category-label"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { getExerciseById, getFitExercises } from "@/app/actions"
-import type { PageProps } from "@/lib/types"
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -14,7 +13,7 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-export default async function FitExercisePage({ params }: PageProps) {
+export default async function FitExercisePage({ params }: { params: { id: string } }) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getFitExercises()
 
@@ -47,12 +46,17 @@ export default async function FitExercisePage({ params }: PageProps) {
             exercise.categories.map((category, index) => <CategoryLabel key={index} category={category} />)}
         </div>
 
+        {/* Remove the timer component */}
+
         {/* Instructions box at the bottom */}
         <InstructionsBox
           description={exercise.description}
           fallback="Focus on proper form and controlled movements. Adjust your effort level based on your Functional Imbalance Risk (FIR) indicators."
         />
+
+        {/* Exercise navigation */}
       </div>
     </div>
   )
 }
+

@@ -85,3 +85,4 @@ export function ShareWorkout({ exerciseId, exerciseName, exerciseType }: ShareWo
     </Dialog>
   )
 }
+

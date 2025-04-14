@@ -34,4 +34,3 @@ export default function ExerciseImage({ src, alt, width = 300, height = 200, cla
     </div>
   )
 }
-

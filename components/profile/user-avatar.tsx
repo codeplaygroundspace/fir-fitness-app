@@ -29,4 +29,3 @@ export function UserAvatar({ email, className, size = "md" }: UserAvatarProps) {
     </div>
   )
 }
-

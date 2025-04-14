@@ -148,4 +148,3 @@ export function MonthlyCalendar({ className }: MonthlyCalendarProps) {
     </div>
   )
 }
-

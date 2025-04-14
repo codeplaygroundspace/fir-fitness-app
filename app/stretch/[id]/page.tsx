@@ -53,4 +53,3 @@ export default async function StretchDetailPage({ params }: { params: { id: stri
     </div>
   )
 }
-

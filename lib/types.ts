@@ -297,4 +297,3 @@ export type ExerciseGroup = {
   body_sec: number
   category_id?: string // Add this field as optional
 }
-

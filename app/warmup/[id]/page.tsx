@@ -134,4 +134,3 @@ export default async function WarmupPage({ params }: { params: { id: string } })
     </div>
   )
 }
-

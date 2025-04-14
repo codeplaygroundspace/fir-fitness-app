@@ -80,4 +80,3 @@ export function DeleteExerciseButton({ id, name }: DeleteExerciseButtonProps) {
     </>
   )
 }
-

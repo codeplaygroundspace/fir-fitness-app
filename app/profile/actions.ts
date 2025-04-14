@@ -89,4 +89,3 @@ export async function toggleWorkoutDay(
     return { success: false }
   }
 }
-

@@ -59,4 +59,3 @@ export default async function FitExercisePage({ params }: { params: { id: string
     </div>
   )
 }
-

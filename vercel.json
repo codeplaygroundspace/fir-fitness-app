@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node remove-babel-config.js && next build",
+  "buildCommand": "npm install --save-dev eslint && node remove-babel-config.js && next build",
   "installCommand": "npm install",
   "framework": "nextjs"
 }

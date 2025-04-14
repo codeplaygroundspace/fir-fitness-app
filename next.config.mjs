@@ -16,9 +16,14 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    unoptimized: true, // Set back to true for compatibility
+    unoptimized: true,
   },
-  // Remove any experimental edge runtime configurations
+  // Ensure SWC is enabled for font optimization
+  swcMinify: true,
+  compiler: {
+    // Recommended SWC configuration
+    styledComponents: false,
+  },
   experimental: {
     // Only keep necessary experimental features
     serverComponentsExternalPackages: [],

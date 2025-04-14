@@ -127,9 +127,9 @@ export type Database = {
   }
 }
 
-// Define proper page params types
-export interface PageParams {
-  params: { id: string }
+// Define proper page params types for Next.js 15.2.4
+export interface PageProps {
+  params: { [key: string]: string }
   searchParams?: { [key: string]: string | string[] | undefined }
 }
 

@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server"
 import { getExerciseById } from "@/lib/api/exercises"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+interface RouteParams {
+  params: {
+    id: string
+  }
+}
+
+export async function GET(request: Request, { params }: RouteParams) {
   try {
     const exercise = await getExerciseById(params.id)
 

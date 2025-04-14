@@ -3,7 +3,7 @@ import Image from "next/image"
 import { getExerciseById, getStretchExercises } from "@/app/actions"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
-import type { PageParams } from "@/lib/types"
+import type { PageProps } from "@/lib/types"
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -13,7 +13,7 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-export default async function StretchDetailPage({ params }: PageParams) {
+export default async function StretchDetailPage({ params }: PageProps) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getStretchExercises()
 

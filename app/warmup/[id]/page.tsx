@@ -8,7 +8,7 @@ import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { ExerciseTimer } from "@/components/exercises/exercise-timer"
 import { getExerciseById, getRelatedExercises } from "@/lib/api/exercises"
-import type { PageParams } from "@/lib/types"
+import type { PageProps } from "@/lib/types"
 
 // Add a helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -32,7 +32,7 @@ function getYouTubeEmbedUrl(url: string | null): string | null {
   return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
 }
 
-export default async function WarmupPage({ params }: PageParams) {
+export default async function WarmupPage({ params }: PageProps) {
   // Use our optimized query to fetch only the needed exercise
   const exercise = await getExerciseById(params.id)
 

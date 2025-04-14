@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+interface RouteParams {
+  params: {
+    id: string
+  }
+}
+
+export async function GET(request: Request, { params }: RouteParams) {
   try {
     const id = params.id
 

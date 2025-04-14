@@ -2,8 +2,8 @@ import { notFound } from "next/navigation"
 import { getCategories, getExerciseForEdit } from "../../actions"
 import { ExerciseForm } from "../../components/exercise-form"
 
-// Define the props type inline to avoid any potential mismatches
-type PageProps = {
+// Define the props type inline to match exactly what Next.js expects
+interface PageProps {
   params: {
     id: string
   }

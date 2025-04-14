@@ -15,11 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
-interface DeleteExerciseButtonProps {
-  id: number
-  name: string
-}
+import type { DeleteExerciseButtonProps } from "@/lib/types"
 
 export function DeleteExerciseButton({ id, name }: DeleteExerciseButtonProps) {
   const [isOpen, setIsOpen] = useState(false)

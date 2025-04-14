@@ -7,103 +7,151 @@
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;
 
-    --card: 0 0% 100%;
+    --card: 0 0% 96%; /* Light grey for cards in light mode */
     --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 100%;
+    --popover: 0 0% 96%; /* Match card background */
     --popover-foreground: 0 0% 10%;
 
-    --primary: 30 100% 50%; /* Keep orange for light mode */
+    /* More vibrant primary color */
+    --primary: 25 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 96%;
+    --secondary: 0 0% 92%; /* Slightly darker than card */
     --secondary-foreground: 0 0% 20%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 92%;
+    /* Darkened muted text for better contrast */
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 30 100% 96%; /* Match orange primary */
-    --accent-foreground: 30 100% 30%;
+    /* Adjusted accent colors for better contrast */
+    --accent: 25 95% 94%;
+    --accent-foreground: 25 100% 25%;
 
-    --destructive: 0 100% 50%;
+    --destructive: 0 100% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 0% / 0; /* Transparent border */
-    --input: 0 0% 90%;
-    --ring: 30 100% 50%; /* Match orange primary */
+    --border: 0 0% 85%; /* Slightly darker border for better visibility */
+    --input: 0 0% 85%;
+    --ring: 25 100% 50%; /* Match primary */
 
     --radius: 0.5rem;
-
-    --font-sans: var(--font-body);
-    --font-heading: var(--font-heading);
   }
 
   .dark {
-    --background: 210 3% 9%;
+    --background: 0 0% 10%; /* Dark grey instead of pure black for less eye strain */
     --foreground: 0 0% 95%;
 
-    --card: 210 3% 13%; /* #1E2021 */
+    --card: 210 3% 15%; /* Slightly lighter card for better contrast */
     --card-foreground: 0 0% 95%;
 
-    --popover: 210 3% 13%;
+    --popover: 210 3% 15%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 73 100% 50%; /* #C6FF00 for dark mode */
-    --primary-foreground: 0 0% 0%; /* Black for better contrast with lime */
+    /* Brighter orange for better visibility in dark mode */
+    --primary: 25 100% 60%;
+    --primary-foreground: 0 0% 10%; /* Darker text on orange buttons */
 
-    --secondary: 0 0% 15%;
+    --secondary: 0 0% 20%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 0 0% 20%;
+    /* Lighter muted text for better contrast */
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 73 100% 15%; /* Match lime primary */
-    --accent-foreground: 73 100% 65%;
+    /* Adjusted accent colors for better contrast */
+    --accent: 25 100% 20%;
+    --accent-foreground: 25 100% 75%;
 
-    --destructive: 0 100% 30%;
+    --destructive: 0 100% 40%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 0 0% 0% / 0; /* Transparent border */
-    --input: 0 0% 20%;
-    --ring: 73 100% 50%; /* Match lime primary */
+    --border: 0 0% 25%; /* Slightly lighter border for better visibility */
+    --input: 0 0% 25%;
+    --ring: 25 100% 60%; /* Match primary */
   }
 
+  /* Typography styles */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: var(--font-heading);
-    letter-spacing: 0.02em;
+    font-family: var(--font-montserrat);
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
 
   h1 {
-    font-size: 2.5rem; /* Larger than default */
+    font-size: 2.4rem; /* text-4xl */
+    margin-bottom: 1.1rem; /* mb-6 */
+    letter-spacing: -0.05em;
   }
 
   h2 {
     font-size: 2rem; /* Larger than default */
+    margin-bottom: 1rem;
   }
 
   h3 {
     font-size: 1.75rem; /* Larger than default */
+    margin-bottom: 0.75rem;
   }
 
   h4 {
     font-size: 1.5rem; /* Larger than default */
+    margin-bottom: 0.5rem;
   }
 
   h5 {
     font-size: 1.25rem; /* Larger than default */
+    margin-bottom: 0.5rem;
   }
 
   h6 {
     font-size: 1.1rem; /* Larger than default */
+    margin-bottom: 0.5rem;
   }
 
   body {
     font-family: var(--font-sans);
+  }
+
+  /* Improved focus styles for better accessibility */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Custom focus styles for interactive elements */
+  .focus-ring {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Skip link styles */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .sr-only:focus-within {
+    position: fixed;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    z-index: 9999;
   }
 }
 

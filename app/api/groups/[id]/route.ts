@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-// Define the route params type inline
-type RouteParams = {
+interface RouteParams {
   params: {
     id: string
   }

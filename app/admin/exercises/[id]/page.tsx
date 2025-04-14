@@ -1,16 +1,7 @@
 import { notFound } from "next/navigation"
 import { getCategories, getExerciseForEdit } from "../../actions"
 import { ExerciseForm } from "../../components/exercise-form"
-
-// Define the props type inline to match exactly what Next.js expects
-interface PageProps {
-  params: {
-    id: string
-  }
-  searchParams?: {
-    [key: string]: string | string[] | undefined
-  }
-}
+import type { PageProps } from "@/lib/types"
 
 export default async function EditExercisePage({ params }: PageProps) {
   const id = Number.parseInt(params.id)

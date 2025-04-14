@@ -4,16 +4,7 @@ import { CategoryLabel } from "@/components/exercises/category-label"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { getExerciseById, getFitExercises } from "@/app/actions"
-
-// Define the props type inline
-type PageProps = {
-  params: {
-    id: string
-  }
-  searchParams?: {
-    [key: string]: string | string[] | undefined
-  }
-}
+import type { PageProps } from "@/lib/types"
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {

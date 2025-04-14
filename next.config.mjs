@@ -16,12 +16,12 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    unoptimized: false, // Changed to false to use Next.js 15's improved image optimization
+    unoptimized: true, // Set back to true for compatibility
   },
-  // Next.js 15 specific configurations
+  // Remove any experimental edge runtime configurations
   experimental: {
-    // Enable React 19 features
-    serverComponentsExternalPackages: [], // Now stable in Next.js 15
+    // Only keep necessary experimental features
+    serverComponentsExternalPackages: [],
   },
 }
 

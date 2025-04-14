@@ -13,7 +13,11 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-export default async function StretchDetailPage({ params }: { params: { id: string } }) {
+interface PageParams {
+  id: string
+}
+
+export default async function StretchDetailPage({ params }: { params: PageParams }) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getStretchExercises()
 

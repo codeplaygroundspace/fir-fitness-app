@@ -1,7 +1,6 @@
 "use server"
 
 import { supabaseServer } from "@/lib/supabase"
-import type { ExerciseWithLabels } from "@/lib/types"
 
 // Update the ExerciseGroup type to include category_id
 export type ExerciseGroup = {
@@ -13,7 +12,7 @@ export type ExerciseGroup = {
   category_id?: string // Add this field as optional
 }
 
-export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
+export async function getWarmupExercises() {
   try {
     // First, get the warmup category ID - using .eq without .single()
     const { data: categoryData, error: categoryError } = await supabaseServer
@@ -48,24 +47,22 @@ export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
     }
 
     // Map exercises to the format we need
-    return exercises.map((exercise) => {
-      return {
-        id: exercise.id,
-        name: exercise.name,
-        image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-        description: exercise.ex_description,
-        duration: exercise.duration || "30",
-        reps: exercise.reps || "4",
-        labels: [],
-      }
-    })
+    return exercises.map((exercise) => ({
+      id: exercise.id,
+      name: exercise.name,
+      image: exercise.image_url || "/placeholder.svg?height=200&width=300",
+      description: exercise.ex_description,
+      duration: exercise.duration || "30",
+      reps: exercise.reps || "4",
+      labels: [],
+    }))
   } catch (error) {
     console.error("Error in getWarmupExercises:", error)
     return []
   }
 }
 
-export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
+export async function getStretchExercises() {
   try {
     // First, get the stretch category ID
     const { data: categoryData, error: categoryError } = await supabaseServer
@@ -138,7 +135,7 @@ export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
 
 // Update the getFitExercises function to handle the missing exercise_id column
 
-export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
+export async function getFitExercises() {
   try {
     // First, try to get the FIT category ID
     const { data: categoryData, error: categoryError } = await supabaseServer
@@ -191,18 +188,16 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
 
     // Skip fetching exercise labels since the column doesn't exist
     // Just use default categories for all exercises
-    return exercises.map((exercise) => {
-      return {
-        id: exercise.id,
-        name: exercise.name,
-        image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-        description: exercise.ex_description,
-        duration: exercise.duration || null,
-        reps: exercise.reps || null,
-        labels: [],
-        categories: getDefaultCategories(exercise.name),
-      }
-    })
+    return exercises.map((exercise) => ({
+      id: exercise.id,
+      name: exercise.name,
+      image: exercise.image_url || "/placeholder.svg?height=200&width=300",
+      description: exercise.ex_description,
+      duration: exercise.duration || null,
+      reps: exercise.reps || null,
+      labels: [],
+      categories: getDefaultCategories(exercise.name),
+    }))
   } catch (error) {
     console.error("Error in getFitExercises:", error)
     return []
@@ -211,7 +206,7 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
 
 // Update the getExerciseById function to handle the missing exercise_id column
 
-export async function getExerciseById(id: number): Promise<ExerciseWithLabels | undefined> {
+export async function getExerciseById(id: number) {
   try {
     const { data: exercise, error } = await supabaseServer.from("exercises").select("*").eq("id", id).single()
 
@@ -239,7 +234,7 @@ export async function getExerciseById(id: number): Promise<ExerciseWithLabels | 
 }
 
 // Helper function to assign default categories based on exercise name
-function getDefaultCategories(exerciseName: string): string[] {
+function getDefaultCategories(exerciseName: string) {
   const name = exerciseName.toLowerCase()
   const categories: string[] = []
 
@@ -259,7 +254,7 @@ function getDefaultCategories(exerciseName: string): string[] {
 }
 
 // Add a function to get exercises by type (to replace getExercisesByType)
-export async function getExercisesByType(type: "warmup" | "stretch" | "fit"): Promise<ExerciseWithLabels[]> {
+export async function getExercisesByType(type: "warmup" | "stretch" | "fit") {
   try {
     // Map the type to the appropriate category name pattern
     let categoryPattern: string
@@ -310,7 +305,7 @@ export async function getExercisesByType(type: "warmup" | "stretch" | "fit"): Pr
 }
 
 // Add this new function to fetch exercise groups
-export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
+export async function getExerciseGroups() {
   try {
     const { data: groups, error } = await supabaseServer.from("exercise_groups").select("*").order("name")
 
@@ -327,7 +322,7 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
 }
 
 // Update the getExercisesByGroup function to use the exercise_group column
-export async function getExercisesByGroup(groupId: number): Promise<ExerciseWithLabels[]> {
+export async function getExercisesByGroup(groupId: number) {
   try {
     console.log(`Fetching exercises for group ID: ${groupId}`)
 

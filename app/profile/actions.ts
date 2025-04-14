@@ -1,10 +1,9 @@
 "use server"
 
 import { createClient } from "@supabase/supabase-js"
-import type { WorkoutDay } from "@/lib/types"
 
 // Create a server-side Supabase client with hardcoded URL
-const createServerClient = () => {
+function createServerClient() {
   const supabaseUrl = "https://nadfduujsmcwckcdsmlb.supabase.co"
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 
@@ -15,7 +14,7 @@ const createServerClient = () => {
   })
 }
 
-export async function getUserWorkouts(userId: string): Promise<WorkoutDay[]> {
+export async function getUserWorkouts(userId: string) {
   try {
     const supabase = createServerClient()
 
@@ -37,11 +36,7 @@ export async function getUserWorkouts(userId: string): Promise<WorkoutDay[]> {
   }
 }
 
-export async function toggleWorkoutDay(
-  userId: string,
-  date: string,
-  completed: boolean,
-): Promise<{ success: boolean }> {
+export async function toggleWorkoutDay(userId: string, date: string, completed: boolean) {
   try {
     const supabase = createServerClient()
 

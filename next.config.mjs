@@ -13,6 +13,8 @@ const nextConfig = {
   },
   // Disable other checks that might cause build failures
   experimental: {
+    // Disable server actions completely
+    serverActions: false,
     forceSwcTransforms: true,
   },
   // Skip type checking

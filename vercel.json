@@ -1,3 +1,5 @@
 {
-  "buildCommand": "rm -f .babelrc && next build"
+  "buildCommand": "node remove-babel-config.js && next build",
+  "installCommand": "npm install",
+  "framework": "nextjs"
 }

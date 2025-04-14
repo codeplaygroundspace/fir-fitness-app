@@ -18,10 +18,6 @@ const nextConfig = {
   },
   // Force SWC
   swcMinify: true,
-  // Disable Babel completely
-  experimental: {
-    forceSwcTransforms: true,
-  },
 }
 
 export default nextConfig

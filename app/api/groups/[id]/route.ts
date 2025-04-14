@@ -1,10 +1,8 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-// Use any type to bypass TypeScript errors
-export async function GET(request: Request, props: any) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
   try {
-    const { params } = props
     const id = params.id
 
     // Get the group details

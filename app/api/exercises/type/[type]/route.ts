@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-export async function GET(request: Request, { params }: { params: { type: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { type: string } }): Promise<NextResponse> {
   try {
     const type = params.type
 

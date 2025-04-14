@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
 // Create a server-side Supabase client with hardcoded URL
@@ -13,7 +13,7 @@ function createServerClient() {
   })
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get("userId")
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json()
     const { userId, date, completed } = body

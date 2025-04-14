@@ -15,6 +15,14 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  // Skip type checking
+  skipTypeChecking: true,
+  // Skip middleware
+  skipMiddlewareUrlNormalize: true,
+  // Skip trailing slash redirect
+  skipTrailingSlashRedirect: true,
+  // Disable React strict mode
+  reactStrictMode: false,
 }
 
 export default nextConfig

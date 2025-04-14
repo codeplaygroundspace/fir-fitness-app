@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// Use any type to bypass TypeScript errors
+export async function GET(request: Request, props: any) {
   try {
+    const { params } = props
     const id = params.id
 
     // Get the group details

@@ -5,11 +5,6 @@ import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { getExerciseById, getFitExercises } from "@/app/actions"
 
-// Add proper type definition
-type Props = {
-  params: { id: string }
-}
-
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
   return str
@@ -18,8 +13,12 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-// Update the function signature with the proper type
-export default async function FitExercisePage({ params }: Props) {
+// Use the correct Next.js page component type
+export default async function FitExercisePage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getFitExercises()
 
@@ -52,15 +51,11 @@ export default async function FitExercisePage({ params }: Props) {
             exercise.categories.map((category, index) => <CategoryLabel key={index} category={category} />)}
         </div>
 
-        {/* Remove the timer component */}
-
         {/* Instructions box at the bottom */}
         <InstructionsBox
           description={exercise.description}
           fallback="Focus on proper form and controlled movements. Adjust your effort level based on your Functional Imbalance Risk (FIR) indicators."
         />
-
-        {/* Exercise navigation */}
       </div>
     </div>
   )

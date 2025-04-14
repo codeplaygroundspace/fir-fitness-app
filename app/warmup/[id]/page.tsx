@@ -8,13 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { ExerciseTimer } from "@/components/exercises/exercise-timer"
-// Make sure we're importing getWarmupExercises from actions.ts
 import { getWarmupExercises } from "@/app/actions"
-
-// Add proper type definition
-type Props = {
-  params: { id: string }
-}
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -24,7 +18,20 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-// Add this function after the capitalizeWords function
+// Helper function to convert YouTube URL to embed URL
+function getYouTubeEmbedUrl(url: string | null): string | null {
+  if (!url) return null
+
+  // Check if it's already an embed URL
+  if (url.includes("youtube.com/embed/")) return url
+
+  // Extract video ID from various YouTube URL formats
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+  const match = url.match(regExp)
+
+  return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
+}
+
 async function getExerciseData(id: string) {
   const { data: exercise, error } = await supabaseServer
     .from("exercises")
@@ -54,22 +61,12 @@ async function getExerciseData(id: string) {
   }
 }
 
-// Helper function to convert YouTube URL to embed URL
-function getYouTubeEmbedUrl(url: string | null): string | null {
-  if (!url) return null
-
-  // Check if it's already an embed URL
-  if (url.includes("youtube.com/embed/")) return url
-
-  // Extract video ID from various YouTube URL formats
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-  const match = url.match(regExp)
-
-  return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
-}
-
-// Update the function signature with the proper type
-export default async function WarmupPage({ params }: Props) {
+// Use the correct Next.js page component type
+export default async function WarmupPage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const exercise = await getExerciseData(params.id)
   const allExercises = await getWarmupExercises()
 

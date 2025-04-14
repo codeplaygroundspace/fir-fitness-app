@@ -1,80 +1,204 @@
-// Client-side functions that call API routes instead of server actions
+"use server"
+
+import { revalidatePath } from "next/cache"
+import { supabaseServer } from "@/lib/supabase"
+
+export type ExerciseFormData = {
+  name: string
+  description: string | null
+  image_url: string | null
+  video_url: string | null
+  category_id: string
+  labels: string[]
+}
 
 export async function getCategories() {
-  try {
-    const response = await fetch("/api/admin/categories")
-    if (!response.ok) {
-      throw new Error("Failed to fetch categories")
-    }
-    return await response.json()
-  } catch (error) {
+  const { data, error } = await supabaseServer.from("categories").select("*").order("name")
+
+  if (error) {
     console.error("Error fetching categories:", error)
     return []
   }
+
+  return data
 }
 
 export async function createExercise(formData: FormData) {
   try {
-    const response = await fetch("/api/admin/exercises", {
-      method: "POST",
-      body: formData,
-    })
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+    const image_url = formData.get("image_url") as string
+    const video_url = formData.get("video_url") as string
+    const category_id = formData.get("category_id") as string
+    const labels = formData.getAll("labels") as string[]
 
-    if (!response.ok) {
-      throw new Error("Failed to create exercise")
+    if (!name || !category_id) {
+      return { error: "Name and category are required" }
     }
 
-    return await response.json()
+    // Insert the exercise
+    const { data: exercise, error: exerciseError } = await supabaseServer
+      .from("exercises")
+      .insert({
+        name,
+        ex_description: description || null,
+        image_url: image_url || null,
+        video_url: video_url || null,
+        category_id,
+      })
+      .select()
+      .single()
+
+    if (exerciseError) {
+      console.error("Error creating exercise:", exerciseError)
+      return { error: "Failed to create exercise" }
+    }
+
+    // Insert labels if any
+    if (labels.length > 0) {
+      const labelInserts = labels.map((label) => ({
+        exercise_id: exercise.id,
+        label_name: label,
+        label_type: label.includes("FIR:") ? "risk_level" : "body_region",
+      }))
+
+      const { error: labelsError } = await supabaseServer.from("exercise_labels").insert(labelInserts)
+
+      if (labelsError) {
+        console.error("Error adding labels:", labelsError)
+      }
+    }
+
+    revalidatePath("/admin")
+    return { success: true, id: exercise.id }
   } catch (error) {
-    console.error("Error creating exercise:", error)
+    console.error("Error in createExercise:", error)
     return { error: "An unexpected error occurred" }
   }
 }
 
 export async function updateExercise(id: number, formData: FormData) {
   try {
-    const response = await fetch(`/api/admin/exercises/${id}`, {
-      method: "PUT",
-      body: formData,
-    })
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+    const image_url = formData.get("image_url") as string
+    const video_url = formData.get("video_url") as string
+    const category_id = formData.get("category_id") as string
+    const labels = formData.getAll("labels") as string[]
 
-    if (!response.ok) {
-      throw new Error("Failed to update exercise")
+    if (!name || !category_id) {
+      return { error: "Name and category are required" }
     }
 
-    return await response.json()
+    // Update the exercise
+    const { error: exerciseError } = await supabaseServer
+      .from("exercises")
+      .update({
+        name,
+        ex_description: description || null,
+        image_url: image_url || null,
+        video_url: video_url || null,
+        category_id,
+      })
+      .eq("id", id)
+
+    if (exerciseError) {
+      console.error("Error updating exercise:", exerciseError)
+      return { error: "Failed to update exercise" }
+    }
+
+    // Delete existing labels
+    const { error: deleteLabelsError } = await supabaseServer.from("exercise_labels").delete().eq("exercise_id", id)
+
+    if (deleteLabelsError) {
+      console.error("Error deleting labels:", deleteLabelsError)
+    }
+
+    // Insert new labels if any
+    if (labels.length > 0) {
+      const labelInserts = labels.map((label) => ({
+        exercise_id: id,
+        label_name: label,
+        label_type: label.includes("FIR:") ? "risk_level" : "body_region",
+      }))
+
+      const { error: labelsError } = await supabaseServer.from("exercise_labels").insert(labelInserts)
+
+      if (labelsError) {
+        console.error("Error adding labels:", labelsError)
+      }
+    }
+
+    revalidatePath("/admin")
+    revalidatePath(`/admin/exercises/${id}`)
+    return { success: true, id }
   } catch (error) {
-    console.error("Error updating exercise:", error)
+    console.error("Error in updateExercise:", error)
     return { error: "An unexpected error occurred" }
   }
 }
 
 export async function deleteExercise(id: number) {
   try {
-    const response = await fetch(`/api/admin/exercises/${id}`, {
-      method: "DELETE",
-    })
+    // Delete labels first (foreign key constraint)
+    const { error: deleteLabelsError } = await supabaseServer.from("exercise_labels").delete().eq("exercise_id", id)
 
-    if (!response.ok) {
-      throw new Error("Failed to delete exercise")
+    if (deleteLabelsError) {
+      console.error("Error deleting labels:", deleteLabelsError)
     }
 
-    return await response.json()
+    // Delete the exercise
+    const { error: deleteExerciseError } = await supabaseServer.from("exercises").delete().eq("id", id)
+
+    if (deleteExerciseError) {
+      console.error("Error deleting exercise:", deleteExerciseError)
+      return { error: "Failed to delete exercise" }
+    }
+
+    revalidatePath("/admin")
+    return { success: true }
   } catch (error) {
-    console.error("Error deleting exercise:", error)
+    console.error("Error in deleteExercise:", error)
     return { error: "An unexpected error occurred" }
   }
 }
 
 export async function getExerciseForEdit(id: number) {
   try {
-    const response = await fetch(`/api/admin/exercises/${id}/edit`)
-    if (!response.ok) {
-      throw new Error("Failed to fetch exercise for edit")
+    // Get the exercise
+    const { data: exercise, error: exerciseError } = await supabaseServer
+      .from("exercises")
+      .select("*, categories(name)")
+      .eq("id", id)
+      .single()
+
+    if (exerciseError) {
+      console.error("Error fetching exercise:", exerciseError)
+      return null
     }
-    return await response.json()
+
+    // Get the labels
+    const { data: labels, error: labelsError } = await supabaseServer
+      .from("exercise_labels")
+      .select("*")
+      .eq("exercise_id", id)
+
+    if (labelsError) {
+      console.error("Error fetching labels:", labelsError)
+    }
+
+    return {
+      ...exercise,
+      labels: labels?.map((label) => label.label_name) || [],
+    }
   } catch (error) {
-    console.error("Error fetching exercise for edit:", error)
+    console.error("Error in getExerciseForEdit:", error)
     return null
   }
 }
+
+// Next.js 15 has improved server actions
+// Make sure revalidatePath and revalidateTag are not called during render
+
+// If you find any instances of revalidatePath or revalidateTag being called directly in a component render,
+// move them to event handlers or server actions

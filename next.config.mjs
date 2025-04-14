@@ -1,30 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   eslint: {
-    // Completely disable ESLint during builds
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Completely disable TypeScript checking during builds
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+    unoptimized: false, // Changed to false to use Next.js 15's improved image optimization
   },
-  // Disable other checks that might cause build failures
+  // Next.js 15 specific configurations
   experimental: {
-    // Disable server actions completely
-    serverActions: false,
-    forceSwcTransforms: true,
+    // Enable React 19 features
+    serverComponentsExternalPackages: [], // Now stable in Next.js 15
   },
-  // Skip type checking
-  skipTypeChecking: true,
-  // Skip middleware
-  skipMiddlewareUrlNormalize: true,
-  // Skip trailing slash redirect
-  skipTrailingSlashRedirect: true,
-  // Disable React strict mode
-  reactStrictMode: false,
 }
 
 export default nextConfig

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import { getExerciseById, getStretchExercises } from "@/app/actions"
+// Update imports for moved components
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 
@@ -12,9 +13,7 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-// Use any type to bypass TypeScript errors
-export default async function StretchDetailPage(props: any) {
-  const { params } = props
+export default async function StretchDetailPage({ params }: { params: { id: string } }) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getStretchExercises()
 
@@ -42,6 +41,8 @@ export default async function StretchDetailPage(props: any) {
       {/* Title and metadata below the image */}
       <div className="px-4 py-4">
         <h1>{capitalizeWords(exercise.name)}</h1>
+
+        {/* Remove the timer component */}
 
         {/* Instructions box at the bottom */}
         <InstructionsBox

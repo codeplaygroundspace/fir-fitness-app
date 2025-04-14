@@ -29,7 +29,7 @@ export default function ExerciseImage({ src, alt, width = 300, height = 200, cla
         height={height}
         className="w-full h-full object-cover dark:brightness-90"
         onError={handleError}
-        unoptimized={!imageSrc.startsWith("/")} // Skip optimization for external URLs
+        unoptimized={!imageSrc.startsWith("/")} // Keep this if needed for external URLs
       />
     </div>
   )

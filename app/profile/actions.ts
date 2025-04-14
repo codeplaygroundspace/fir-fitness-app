@@ -1,35 +1,91 @@
-// Client-side functions that call API routes instead of server actions
+"use server"
 
-export async function getUserWorkouts(userId: string) {
+import { createClient } from "@supabase/supabase-js"
+import type { WorkoutDay } from "@/lib/types"
+
+// Create a server-side Supabase client with hardcoded URL
+const createServerClient = () => {
+  const supabaseUrl = "https://nadfduujsmcwckcdsmlb.supabase.co"
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      persistSession: true,
+    },
+  })
+}
+
+export async function getUserWorkouts(userId: string): Promise<WorkoutDay[]> {
   try {
-    const response = await fetch(`/api/workout-days?userId=${userId}`)
-    if (!response.ok) {
-      throw new Error("Failed to fetch user workouts")
+    const supabase = createServerClient()
+
+    const { data, error } = await supabase
+      .from("workout_days")
+      .select("*")
+      .eq("user_id", userId)
+      .order("date", { ascending: false })
+
+    if (error) {
+      console.error("Error fetching user workouts:", error)
+      return []
     }
-    return await response.json()
+
+    return data || []
   } catch (error) {
-    console.error("Error fetching user workouts:", error)
+    console.error("Error in getUserWorkouts:", error)
     return []
   }
 }
 
-export async function toggleWorkoutDay(userId: string, date: string, completed: boolean) {
+export async function toggleWorkoutDay(
+  userId: string,
+  date: string,
+  completed: boolean,
+): Promise<{ success: boolean }> {
   try {
-    const response = await fetch("/api/workout-days", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, date, completed }),
-    })
+    const supabase = createServerClient()
 
-    if (!response.ok) {
-      throw new Error("Failed to toggle workout day")
+    // Check if the workout day already exists
+    const { data: existingWorkout, error: fetchError } = await supabase
+      .from("workout_days")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("date", date)
+      .maybeSingle()
+
+    if (fetchError) {
+      console.error("Error checking existing workout:", fetchError)
+      return { success: false }
     }
 
-    return await response.json()
+    if (existingWorkout) {
+      // Update existing workout
+      const { error: updateError } = await supabase
+        .from("workout_days")
+        .update({ completed })
+        .eq("id", existingWorkout.id)
+
+      if (updateError) {
+        console.error("Error updating workout day:", updateError)
+        return { success: false }
+      }
+    } else {
+      // Insert new workout
+      const { error: insertError } = await supabase.from("workout_days").insert({
+        user_id: userId,
+        date,
+        completed,
+      })
+
+      if (insertError) {
+        console.error("Error inserting workout day:", insertError)
+        return { success: false }
+      }
+    }
+
+    return { success: true }
   } catch (error) {
-    console.error("Error toggling workout day:", error)
+    console.error("Error in toggleWorkoutDay:", error)
     return { success: false }
   }
 }

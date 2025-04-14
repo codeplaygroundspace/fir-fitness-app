@@ -8,9 +8,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { ExerciseTimer } from "@/components/exercises/exercise-timer"
+// Make sure we're importing getWarmupExercises from actions.ts
 import { getWarmupExercises } from "@/app/actions"
 
-// Helper function to capitalize the first letter of each word
+// Add a helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
   return str
     .split(" ")
@@ -61,9 +62,7 @@ async function getExerciseData(id: string) {
   }
 }
 
-// Use any type to bypass TypeScript errors
-export default async function WarmupPage(props: any) {
-  const { params } = props
+export default async function WarmupPage({ params }: { params: { id: string } }) {
   const exercise = await getExerciseData(params.id)
   const allExercises = await getWarmupExercises()
 

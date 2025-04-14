@@ -13,9 +13,7 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-// Use any type to bypass TypeScript errors
-export default async function FitExercisePage(props: any) {
-  const { params } = props
+export default async function FitExercisePage({ params }: { params: { id: string } }) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getFitExercises()
 
@@ -48,11 +46,15 @@ export default async function FitExercisePage(props: any) {
             exercise.categories.map((category, index) => <CategoryLabel key={index} category={category} />)}
         </div>
 
+        {/* Remove the timer component */}
+
         {/* Instructions box at the bottom */}
         <InstructionsBox
           description={exercise.description}
           fallback="Focus on proper form and controlled movements. Adjust your effort level based on your Functional Imbalance Risk (FIR) indicators."
         />
+
+        {/* Exercise navigation */}
       </div>
     </div>
   )

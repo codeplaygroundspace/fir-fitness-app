@@ -22,4 +22,3 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 })
   }
 }
-

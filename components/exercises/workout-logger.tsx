@@ -71,4 +71,3 @@ export function WorkoutLogger({ exerciseId, exerciseName, exerciseType }: Workou
     </Card>
   )
 }
-

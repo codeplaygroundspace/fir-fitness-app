@@ -9,4 +9,3 @@ export function DurationLabel({ duration, className = "", icon }: DurationLabelP
     </span>
   )
 }
-

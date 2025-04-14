@@ -3,13 +3,12 @@ import Image from "next/image"
 import { AlertCircle } from "lucide-react"
 import { DurationLabel } from "@/components/exercises/duration-label"
 import { RepsLabel } from "@/components/exercises/reps-label"
-import { supabaseServer } from "@/lib/supabase"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { ExerciseTimer } from "@/components/exercises/exercise-timer"
-// Make sure we're importing getWarmupExercises from actions.ts
-import { getWarmupExercises } from "@/app/actions"
+import { getExerciseById, getRelatedExercises } from "@/lib/api/exercises"
+import type { PageParams } from "@/lib/types"
 
 // Add a helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -33,42 +32,19 @@ function getYouTubeEmbedUrl(url: string | null): string | null {
   return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
 }
 
-async function getExerciseData(id: string) {
-  const { data: exercise, error } = await supabaseServer
-    .from("exercises")
-    .select("*, categories(name)")
-    .eq("id", id)
-    .single()
-
-  if (error || !exercise) {
-    console.error("Error fetching exercise:", error)
-    return null
-  }
-
-  // Use the reps and duration directly from the exercises table
-  const duration = exercise.duration ? exercise.duration + " sec" : "30 sec"
-  const reps = exercise.reps || "4"
-
-  return {
-    id: exercise.id,
-    name: exercise.name,
-    image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-    description: exercise.ex_description,
-    videoUrl: exercise.video_url,
-    embedUrl: getYouTubeEmbedUrl(exercise.video_url),
-    duration,
-    reps,
-    category: exercise.categories?.name,
-  }
-}
-
-export default async function WarmupPage({ params }: { params: { id: string } }) {
-  const exercise = await getExerciseData(params.id)
-  const allExercises = await getWarmupExercises()
+export default async function WarmupPage({ params }: PageParams) {
+  // Use our optimized query to fetch only the needed exercise
+  const exercise = await getExerciseById(params.id)
 
   if (!exercise) {
     return notFound()
   }
+
+  // Fetch a small number of related exercises if needed
+  const relatedExercises = await getRelatedExercises(exercise.id, exercise.categoryId, 3)
+
+  // Get YouTube embed URL if available
+  const embedUrl = getYouTubeEmbedUrl(exercise.videoUrl)
 
   return (
     <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
@@ -91,22 +67,22 @@ export default async function WarmupPage({ params }: { params: { id: string } })
       <div className="px-4 py-4">
         <h1>{capitalizeWords(exercise.name)}</h1>
         <div className="flex flex-wrap gap-4 mb-6">
-          <DurationLabel duration={exercise.duration} />
-          <RepsLabel reps={exercise.reps || "4"} />
+          {exercise.duration && <DurationLabel duration={exercise.duration} />}
+          {exercise.reps && <RepsLabel reps={exercise.reps} />}
         </div>
 
         {/* Timer component */}
-        <ExerciseTimer duration={exercise.duration} />
+        {exercise.duration && <ExerciseTimer duration={exercise.duration} />}
 
         {/* Video section */}
         {exercise.videoUrl && (
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Video Tutorial</h2>
 
-            {exercise.embedUrl ? (
+            {embedUrl ? (
               <div className="aspect-video rounded-lg overflow-hidden">
                 <iframe
-                  src={exercise.embedUrl}
+                  src={embedUrl}
                   title={`${exercise.name} tutorial`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -128,10 +104,30 @@ export default async function WarmupPage({ params }: { params: { id: string } })
         {/* Instructions box at the bottom */}
         <InstructionsBox
           description={exercise.description}
-          fallback={`Perform this exercise for ${exercise.duration}. Focus on proper form and controlled movements.`}
+          fallback={`Perform this exercise for ${exercise.duration || "30 sec"}. Focus on proper form and controlled movements.`}
         />
+
+        {/* Related exercises section (only if we have related exercises) */}
+        {relatedExercises.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold mb-4">Related Exercises</h2>
+            <div className="grid grid-cols-3 gap-4">
+              {relatedExercises.map((relatedExercise) => (
+                <div key={relatedExercise.id} className="text-center">
+                  <Image
+                    src={relatedExercise.image || "/placeholder.svg"}
+                    alt={relatedExercise.name}
+                    width={100}
+                    height={100}
+                    className="rounded-md mx-auto mb-2"
+                  />
+                  <p className="text-sm truncate">{relatedExercise.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
-

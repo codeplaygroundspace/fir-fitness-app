@@ -9,4 +9,3 @@ export function RepsLabel({ reps, className = "", icon }: RepsLabelProps) {
     </span>
   )
 }
-

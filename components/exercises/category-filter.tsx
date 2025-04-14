@@ -64,4 +64,3 @@ export function CategoryFilter({ categories, onFilterChange }: CategoryFilterPro
     </div>
   )
 }
-

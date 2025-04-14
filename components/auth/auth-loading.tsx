@@ -10,4 +10,3 @@ export function AuthLoading() {
     </div>
   )
 }
-

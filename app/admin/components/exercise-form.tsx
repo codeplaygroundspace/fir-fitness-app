@@ -175,4 +175,3 @@ export function ExerciseForm({ categories, exercise, isEdit = false }: ExerciseF
     </form>
   )
 }
-

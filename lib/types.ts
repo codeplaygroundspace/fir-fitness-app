@@ -17,7 +17,7 @@ export type Database = {
           duration: string | null
           reps: string | null
           kit: string | null
-          exercise_group: string | null // Add this field
+          exercise_group: string | null
         }
         Insert: {
           id?: number
@@ -30,7 +30,7 @@ export type Database = {
           duration?: string | null
           reps?: string | null
           kit?: string | null
-          exercise_group?: string | null // Add this field
+          exercise_group?: string | null
         }
         Update: {
           id?: number
@@ -43,7 +43,7 @@ export type Database = {
           duration?: string | null
           reps?: string | null
           kit?: string | null
-          exercise_group?: string | null // Add this field
+          exercise_group?: string | null
         }
       }
       categories: {
@@ -63,22 +63,16 @@ export type Database = {
       exercise_labels: {
         Row: {
           id: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id: number | null
           label_name: string
           label_type: string
         }
         Insert: {
           id?: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id?: number | null
           label_name: string
           label_type: string
         }
         Update: {
           id?: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id?: number | null
           label_name?: string
           label_type?: string
         }
@@ -133,14 +127,44 @@ export type Database = {
   }
 }
 
-// Basic exercise type
+// Define proper page params types
+export interface PageParams {
+  params: { id: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+// Basic exercise type (for lists and cards)
 export type Exercise = {
   id: number
   name: string
   image: string
-  duration?: string
+  duration?: string | null
   type: "warmup" | "stretch" | "fit"
   instructions?: string
+}
+
+// Detailed exercise type (for single exercise pages)
+export type ExerciseDetails = {
+  id: number
+  name: string
+  description: string | null
+  image: string
+  videoUrl: string | null
+  duration: string | null
+  reps: string | null
+  categoryId: string
+  categoryName: string
+  labels: {
+    name: string
+    type: string
+  }[]
+  createdAt: string
+}
+
+// Exercise label type
+export type ExerciseLabel = {
+  name: string
+  type: string
 }
 
 // Extended exercise type with labels
@@ -286,15 +310,12 @@ export interface ConfigErrorProps {
   message: string
 }
 
-// Function to get exercises by group
-export async function getExercisesByGroup(groupId: number): Promise<ExerciseWithLabels[]>
-
+// Exercise group type
 export type ExerciseGroup = {
   id: number
   name: string
   description: string | null
   image_url: string | null
   body_sec: number
-  category_id?: string // Add this field as optional
+  category_id?: string
 }
-

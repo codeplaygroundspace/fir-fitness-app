@@ -1,14 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
-    unoptimized: true,
+    domains: ['nadfduujsmcwckcdsmlb.supabase.co', 'live.staticflickr.com'],
+    unoptimized: process.env.NODE_ENV !== 'production'
   },
+  // We're not disabling ESLint or TypeScript checks anymore
 }
 
 export default nextConfig

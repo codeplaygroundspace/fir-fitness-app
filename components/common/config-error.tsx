@@ -22,4 +22,3 @@ export function ConfigError({ message }: ConfigErrorProps) {
     </div>
   )
 }
-

@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add font variable definitions */
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-montserrat: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

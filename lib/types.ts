@@ -128,9 +128,14 @@ export type Database = {
 }
 
 // Define proper page params types for Next.js 15.2.4
-export interface PageProps {
-  params: { [key: string]: string }
-  searchParams?: { [key: string]: string | string[] | undefined }
+export type PageProps = {
+  params: {
+    id: string
+    [key: string]: string
+  }
+  searchParams?: {
+    [key: string]: string | string[] | undefined
+  }
 }
 
 // Basic exercise type (for lists and cards)

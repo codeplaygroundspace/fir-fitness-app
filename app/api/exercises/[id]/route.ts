@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { getExerciseById } from "@/lib/api/exercises"
 
-interface RouteParams {
+// Define the route params type inline
+type RouteParams = {
   params: {
     id: string
   }

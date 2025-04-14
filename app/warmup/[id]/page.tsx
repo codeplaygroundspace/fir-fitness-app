@@ -8,7 +8,16 @@ import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { ExerciseTimer } from "@/components/exercises/exercise-timer"
 import { getExerciseById, getRelatedExercises } from "@/lib/api/exercises"
-import type { PageProps } from "@/lib/types"
+
+// Define the props type inline
+type PageProps = {
+  params: {
+    id: string
+  }
+  searchParams?: {
+    [key: string]: string | string[] | undefined
+  }
+}
 
 // Add a helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {

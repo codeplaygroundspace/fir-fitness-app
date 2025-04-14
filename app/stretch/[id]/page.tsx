@@ -3,7 +3,16 @@ import Image from "next/image"
 import { getExerciseById, getStretchExercises } from "@/app/actions"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
-import type { PageProps } from "@/lib/types"
+
+// Define the props type inline
+type PageProps = {
+  params: {
+    id: string
+  }
+  searchParams?: {
+    [key: string]: string | string[] | undefined
+  }
+}
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {

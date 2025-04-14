@@ -1,7 +1,16 @@
 import { notFound } from "next/navigation"
 import { getCategories, getExerciseForEdit } from "../../actions"
 import { ExerciseForm } from "../../components/exercise-form"
-import type { PageProps } from "@/lib/types"
+
+// Define the props type inline to avoid any potential mismatches
+type PageProps = {
+  params: {
+    id: string
+  }
+  searchParams?: {
+    [key: string]: string | string[] | undefined
+  }
+}
 
 export default async function EditExercisePage({ params }: PageProps) {
   const id = Number.parseInt(params.id)

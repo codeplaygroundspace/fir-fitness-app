@@ -18,15 +18,13 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // Ensure SWC is enabled for font optimization
+  // Explicitly enable SWC
   swcMinify: true,
-  compiler: {
-    // Recommended SWC configuration
-    styledComponents: false,
-  },
   experimental: {
     // Only keep necessary experimental features
     serverComponentsExternalPackages: [],
+    // Force SWC even with Babel config
+    forceSwcTransforms: true,
   },
 }
 

@@ -2,7 +2,13 @@ import { notFound } from "next/navigation"
 import { getCategories, getExerciseForEdit } from "../../actions"
 import { ExerciseForm } from "../../components/exercise-form"
 
-export default async function EditExercisePage({ params }: { params: { id: string } }) {
+// Add proper type definition
+type Props = {
+  params: { id: string }
+}
+
+// Update the function signature with the proper type
+export default async function EditExercisePage({ params }: Props) {
   const id = Number.parseInt(params.id)
   const [exercise, categories] = await Promise.all([getExerciseForEdit(id), getCategories()])
 

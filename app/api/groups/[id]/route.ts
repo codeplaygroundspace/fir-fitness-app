@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// Add proper type definition
+type Props = {
+  params: { id: string }
+}
+
+export async function GET(request: Request, { params }: Props) {
   try {
     const id = params.id
 

@@ -5,6 +5,11 @@ import { getExerciseById, getStretchExercises } from "@/app/actions"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 
+// Add proper type definition
+type Props = {
+  params: { id: string }
+}
+
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
   return str
@@ -13,7 +18,8 @@ function capitalizeWords(str: string): string {
     .join(" ")
 }
 
-export default async function StretchDetailPage({ params }: { params: { id: string } }) {
+// Update the function signature with the proper type
+export default async function StretchDetailPage({ params }: Props) {
   const exercise = await getExerciseById(Number.parseInt(params.id))
   const allExercises = await getStretchExercises()
 

@@ -196,9 +196,3 @@ export async function getExerciseForEdit(id: number) {
     return null
   }
 }
-
-// Next.js 15 has improved server actions
-// Make sure revalidatePath and revalidateTag are not called during render
-
-// If you find any instances of revalidatePath or revalidateTag being called directly in a component render,
-// move them to event handlers or server actions

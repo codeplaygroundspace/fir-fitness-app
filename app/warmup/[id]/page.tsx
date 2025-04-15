@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { BackButton } from "@/components/layout/back-button"
 import { InstructionsBox } from "@/components/exercises/instructions-box"
 import { ExerciseTimer } from "@/components/exercises/exercise-timer"
+// Make sure we're importing getWarmupExercises from actions.ts
 import { getWarmupExercises } from "@/app/actions"
 
 // Add a helper function to capitalize the first letter of each word
@@ -61,11 +62,7 @@ async function getExerciseData(id: string) {
   }
 }
 
-interface PageParams {
-  id: string
-}
-
-export default async function WarmupPage({ params }: { params: PageParams }) {
+export default async function WarmupPage({ params }: { params: { id: string } }) {
   const exercise = await getExerciseData(params.id)
   const allExercises = await getWarmupExercises()
 

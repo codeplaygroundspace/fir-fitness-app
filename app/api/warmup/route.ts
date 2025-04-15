@@ -1,47 +1,43 @@
-import { NextResponse } from "next/server"
-import { supabaseServer } from "@/lib/supabase"
+import { NextResponse } from 'next/server'
+import { supabaseServer } from '@/lib/supabase'
+import type { ExerciseWithLabels } from '@/lib/types'
 
 export async function GET() {
   try {
-    // First, get the warmup category ID
-    const { data: categoryData, error: categoryError } = await supabaseServer
-      .from("categories")
-      .select("id")
-      .ilike("name", "%warmup%")
+    // Directly access the database
+    const { data: exercises, error } = await supabaseServer
+      .from('exercises')
+      .select('*')
+      .eq('category_id', '268c3c11-5c85-44a5-82f2-88801189ea0b')
 
-    if (categoryError || !categoryData || categoryData.length === 0) {
-      console.error("Error or no warmup category found:", categoryError)
+    if (error) {
+      console.error('Warmup API error:', error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    if (!exercises || exercises.length === 0) {
       return NextResponse.json([])
     }
 
-    // Use the first category that matches
-    const warmupCategoryId = categoryData[0].id
-
-    // Now get all exercises in the warmup category
-    const { data: exercises, error: exercisesError } = await supabaseServer
-      .from("exercises")
-      .select("*")
-      .eq("category_id", warmupCategoryId)
-
-    if (exercisesError || !exercises) {
-      console.error("Error fetching warmup exercises:", exercisesError)
-      return NextResponse.json([])
-    }
-
-    // Map exercises to the format we need
-    const formattedExercises = exercises.map((exercise) => ({
-      id: exercise.id,
-      name: exercise.name,
-      image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-      description: exercise.ex_description,
-      duration: exercise.duration || "30",
-      reps: exercise.reps || "4",
-      labels: [],
-    }))
+    // Transform to the expected format
+    const formattedExercises: ExerciseWithLabels[] = exercises.map(
+      (exercise) => ({
+        id: exercise.id,
+        name: exercise.name,
+        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
+        description: exercise.ex_description || 'No description available',
+        duration: exercise.duration || '30',
+        reps: exercise.reps || '4',
+        labels: [],
+      })
+    )
 
     return NextResponse.json(formattedExercises)
   } catch (error) {
-    console.error("Error in getWarmupExercises:", error)
-    return NextResponse.json([])
+    console.error('Warmup API error:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch warmup exercises' },
+      { status: 500 }
+    )
   }
 }

@@ -1,7 +1,7 @@
-"use server"
+'use server'
 
-import { supabaseServer } from "@/lib/supabase"
-import type { ExerciseWithLabels } from "@/lib/types"
+import { supabaseServer } from '@/lib/supabase'
+import type { ExerciseWithLabels } from '@/lib/types'
 
 // Update the ExerciseGroup type to include category_id
 export type ExerciseGroup = {
@@ -15,107 +15,191 @@ export type ExerciseGroup = {
 
 export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
   try {
-    // First, get the warmup category ID - using .eq without .single()
+    // Log the start of the function for debugging
+    console.log('Starting getWarmupExercises function')
+
+    // First, get the warmup category ID - using ilike for case-insensitive matching
     const { data: categoryData, error: categoryError } = await supabaseServer
-      .from("categories")
-      .select("id")
-      .ilike("name", "%warmup%") // Using ilike for case-insensitive partial matching
+      .from('categories')
+      .select('id, name')
+      .ilike('name', '%warmup%')
 
-    if (categoryError || !categoryData || categoryData.length === 0) {
-      console.error("Error or no warmup category found:", categoryError)
+    // Log what we found
+    console.log('Warmup category query results:', {
+      categoryData,
+      categoryError,
+    })
 
-      // Let's try to get all categories to see what's available
-      const { data: allCategories } = await supabaseServer.from("categories").select("id, name")
+    if (categoryError) {
+      console.error('Error fetching warmup category:', categoryError)
+      return []
+    }
 
-      console.log("Available categories:", allCategories)
+    if (!categoryData || categoryData.length === 0) {
+      console.log('No warmup category found in database.')
 
-      // If we can't find a warmup category, return empty array
+      // Log all available categories for debugging
+      const { data: allCategories } = await supabaseServer
+        .from('categories')
+        .select('id, name')
+      console.log('Available categories:', allCategories)
+
       return []
     }
 
     // Use the first category that matches
     const warmupCategoryId = categoryData[0].id
+    console.log(
+      `Found warmup category: ${categoryData[0].name} (ID: ${warmupCategoryId})`
+    )
 
     // Now get all exercises in the warmup category
     const { data: exercises, error: exercisesError } = await supabaseServer
-      .from("exercises")
-      .select("*")
-      .eq("category_id", warmupCategoryId)
+      .from('exercises')
+      .select('*')
+      .eq('category_id', warmupCategoryId)
 
-    if (exercisesError || !exercises) {
-      console.error("Error fetching warmup exercises:", exercisesError)
+    // Log what we found
+    console.log(`Warmup exercises query results:`, {
+      count: exercises?.length || 0,
+      error: exercisesError,
+    })
+
+    if (exercisesError) {
+      console.error('Error fetching warmup exercises:', exercisesError)
       return []
     }
+
+    if (!exercises || exercises.length === 0) {
+      console.log(
+        `No exercises found in the warmup category (ID: ${warmupCategoryId})`
+      )
+
+      // Return placeholder data if no exercises found
+      return [
+        {
+          id: 0,
+          name: 'Sample Warmup Exercise',
+          image: '/placeholder.svg?height=200&width=300',
+          description:
+            'This is a placeholder. No actual warmup exercises found in the database.',
+          duration: '30',
+          reps: '4',
+          labels: [],
+        },
+      ]
+    }
+
+    console.log(`Successfully found ${exercises.length} warmup exercises`)
 
     // Map exercises to the format we need
     return exercises.map((exercise) => {
       return {
         id: exercise.id,
         name: exercise.name,
-        image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-        description: exercise.ex_description,
-        duration: exercise.duration || "30",
-        reps: exercise.reps || "4",
+        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
+        description: exercise.ex_description || 'No description available',
+        duration: exercise.duration || '30',
+        reps: exercise.reps || '4',
         labels: [],
       }
     })
   } catch (error) {
-    console.error("Error in getWarmupExercises:", error)
+    console.error('Unexpected error in getWarmupExercises:', error)
     return []
   }
 }
 
 export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
   try {
+    // Log the start of the function for debugging
+    console.log('Starting getStretchExercises function')
+
     // First, get the stretch category ID
     const { data: categoryData, error: categoryError } = await supabaseServer
-      .from("categories")
-      .select("id")
-      .ilike("name", "%stretch%") // Using ilike for case-insensitive partial matching
+      .from('categories')
+      .select('id, name')
+      .ilike('name', '%stretch%')
 
-    if (categoryError || !categoryData || categoryData.length === 0) {
-      console.error("Error or no stretch category found:", categoryError)
+    // Log what we found
+    console.log('Stretch category query results:', {
+      categoryData,
+      categoryError,
+    })
 
-      // Let's try to get all categories to see what's available
-      const { data: allCategories } = await supabaseServer.from("categories").select("id, name")
+    if (categoryError) {
+      console.error('Error fetching stretch category:', categoryError)
+      return []
+    }
 
-      console.log("Available categories:", allCategories)
+    if (!categoryData || categoryData.length === 0) {
+      console.log('No stretch category found in database.')
 
-      // If we can't find a stretch category, return empty array
+      // Log all available categories for debugging
+      const { data: allCategories } = await supabaseServer
+        .from('categories')
+        .select('id, name')
+      console.log('Available categories:', allCategories)
+
       return []
     }
 
     // Use the first category that matches
     const stretchCategoryId = categoryData[0].id
+    console.log(
+      `Found stretch category: ${categoryData[0].name} (ID: ${stretchCategoryId})`
+    )
 
     // Now get all exercises in the stretch category
     const { data: exercises, error: exercisesError } = await supabaseServer
-      .from("exercises")
-      .select("*")
-      .eq("category_id", stretchCategoryId)
+      .from('exercises')
+      .select('*')
+      .eq('category_id', stretchCategoryId)
 
-    if (exercisesError || !exercises) {
-      console.error("Error fetching stretch exercises:", exercisesError)
+    // Log what we found
+    console.log(`Stretch exercises query results:`, {
+      count: exercises?.length || 0,
+      error: exercisesError,
+    })
+
+    if (exercisesError) {
+      console.error('Error fetching stretch exercises:', exercisesError)
       return []
     }
 
-    console.log(
-      "Raw stretch exercises from DB:",
-      exercises.map((ex) => ({
-        id: ex.id,
-        name: ex.name,
-        image_url: ex.image_url,
-      })),
-    )
+    if (!exercises || exercises.length === 0) {
+      console.log(
+        `No exercises found in the stretch category (ID: ${stretchCategoryId})`
+      )
+
+      // Return placeholder data if no exercises found
+      return [
+        {
+          id: 0,
+          name: 'Sample Stretch Exercise',
+          image: '/placeholder.svg?height=200&width=300',
+          description:
+            'This is a placeholder. No actual stretch exercises found in the database.',
+          duration: '15-30',
+          reps: null,
+          labels: [],
+        },
+      ]
+    }
+
+    console.log(`Successfully found ${exercises.length} stretch exercises`)
 
     // Map exercises to the format we need
     return exercises.map((exercise) => {
       // Ensure image_url is properly handled
-      let imageUrl = "/placeholder.svg?height=200&width=300"
+      let imageUrl = '/placeholder.svg?height=200&width=300'
 
       if (exercise.image_url) {
         // If it's a valid URL or path, use it
-        if (exercise.image_url.startsWith("http") || exercise.image_url.startsWith("/")) {
+        if (
+          exercise.image_url.startsWith('http') ||
+          exercise.image_url.startsWith('/')
+        ) {
           imageUrl = exercise.image_url
         }
       }
@@ -124,14 +208,14 @@ export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
         id: exercise.id,
         name: exercise.name,
         image: imageUrl,
-        description: exercise.ex_description,
-        duration: exercise.duration || "15-30", // Default duration for stretches
+        description: exercise.ex_description || 'No description available',
+        duration: exercise.duration || '15-30', // Default duration for stretches
         reps: exercise.reps || null,
         labels: [],
       }
     })
   } catch (error) {
-    console.error("Error in getStretchExercises:", error)
+    console.error('Unexpected error in getStretchExercises:', error)
     return []
   }
 }
@@ -140,34 +224,110 @@ export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
 
 export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
   try {
+    // Log the start of the function for debugging
+    console.log('Starting getFitExercises function')
+
     // First, try to get the FIT category ID
     const { data: categoryData, error: categoryError } = await supabaseServer
-      .from("categories")
-      .select("id")
-      .ilike("name", "%fit%") // Only search for "fit" pattern
+      .from('categories')
+      .select('id, name')
+      .ilike('name', '%fit%') // Only search for "fit" pattern
+
+    // Log what we found
+    console.log('FIT category query results:', { categoryData, categoryError })
 
     if (categoryError) {
-      console.error("Error fetching FIT category:", categoryError)
+      console.error('Error fetching FIT category:', categoryError)
+      return []
     }
 
-    // If no category found, try to get all exercises as a fallback
     if (!categoryData || categoryData.length === 0) {
-      console.log("No FIT category found, fetching all exercises as fallback")
+      console.log('No FIT category found in database.')
 
-      // Get all exercises as a fallback
-      const { data: allExercises, error: exercisesError } = await supabaseServer.from("exercises").select("*").limit(20) // Limit to a reasonable number
+      // Log all available categories for debugging
+      const { data: allCategories } = await supabaseServer
+        .from('categories')
+        .select('id, name')
+      console.log('Available categories:', allCategories)
 
-      if (exercisesError || !allExercises) {
-        console.error("Error fetching fallback exercises:", exercisesError)
-        return []
+      // Return placeholder data
+      return [
+        {
+          id: 0,
+          name: 'Sample FIT Exercise',
+          image: '/placeholder.svg?height=200&width=300',
+          description:
+            'This is a placeholder. No FIT exercises found in the database.',
+          duration: '60',
+          reps: null,
+          labels: [],
+          categories: ['Sample'],
+        },
+      ]
+    }
+
+    // Use the first category that matches
+    const fitCategoryId = categoryData[0].id
+    console.log(
+      `Found FIT category: ${categoryData[0].name} (ID: ${fitCategoryId})`
+    )
+
+    // Now get all exercises in the FIT category
+    const { data: exercises, error: exercisesError } = await supabaseServer
+      .from('exercises')
+      .select('*')
+      .eq('category_id', fitCategoryId)
+
+    // Log what we found
+    console.log(`FIT exercises query results:`, {
+      count: exercises?.length || 0,
+      error: exercisesError,
+    })
+
+    if (exercisesError) {
+      console.error('Error fetching FIT exercises:', exercisesError)
+      return []
+    }
+
+    if (!exercises || exercises.length === 0) {
+      console.log(
+        `No exercises found in the FIT category (ID: ${fitCategoryId})`
+      )
+
+      // Try to get some exercises as fallback
+      console.log('Fetching a few exercises as fallback')
+      const { data: fallbackExercises, error: fallbackError } =
+        await supabaseServer.from('exercises').select('*').limit(10)
+
+      if (
+        fallbackError ||
+        !fallbackExercises ||
+        fallbackExercises.length === 0
+      ) {
+        console.log('No fallback exercises found either')
+        return [
+          {
+            id: 0,
+            name: 'Sample FIT Exercise',
+            image: '/placeholder.svg?height=200&width=300',
+            description:
+              'This is a placeholder. No FIT exercises found in the database.',
+            duration: '60',
+            reps: null,
+            labels: [],
+            categories: ['Sample'],
+          },
+        ]
       }
 
+      console.log(`Found ${fallbackExercises.length} fallback exercises`)
+
       // Map exercises to the format we need
-      return allExercises.map((exercise) => ({
+      return fallbackExercises.map((exercise) => ({
         id: exercise.id,
         name: exercise.name,
-        image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-        description: exercise.ex_description,
+        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
+        description: exercise.ex_description || 'No description available',
         duration: exercise.duration || null,
         reps: exercise.reps || null,
         labels: [],
@@ -175,28 +335,15 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
       }))
     }
 
-    // Use the first category that matches
-    const fitCategoryId = categoryData[0].id
+    console.log(`Successfully found ${exercises.length} FIT exercises`)
 
-    // Now get all exercises in the FIT category
-    const { data: exercises, error: exercisesError } = await supabaseServer
-      .from("exercises")
-      .select("*")
-      .eq("category_id", fitCategoryId)
-
-    if (exercisesError || !exercises) {
-      console.error("Error fetching FIT exercises:", exercisesError)
-      return []
-    }
-
-    // Skip fetching exercise labels since the column doesn't exist
-    // Just use default categories for all exercises
+    // Map exercises to the format we need
     return exercises.map((exercise) => {
       return {
         id: exercise.id,
         name: exercise.name,
-        image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-        description: exercise.ex_description,
+        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
+        description: exercise.ex_description || 'No description available',
         duration: exercise.duration || null,
         reps: exercise.reps || null,
         labels: [],
@@ -204,19 +351,25 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
       }
     })
   } catch (error) {
-    console.error("Error in getFitExercises:", error)
+    console.error('Unexpected error in getFitExercises:', error)
     return []
   }
 }
 
 // Update the getExerciseById function to handle the missing exercise_id column
 
-export async function getExerciseById(id: number): Promise<ExerciseWithLabels | undefined> {
+export async function getExerciseById(
+  id: number
+): Promise<ExerciseWithLabels | undefined> {
   try {
-    const { data: exercise, error } = await supabaseServer.from("exercises").select("*").eq("id", id).single()
+    const { data: exercise, error } = await supabaseServer
+      .from('exercises')
+      .select('*')
+      .eq('id', id)
+      .single()
 
     if (error || !exercise) {
-      console.error("Error fetching exercise:", error)
+      console.error('Error fetching exercise:', error)
       return undefined
     }
 
@@ -225,7 +378,7 @@ export async function getExerciseById(id: number): Promise<ExerciseWithLabels | 
     return {
       id: exercise.id,
       name: exercise.name,
-      image: exercise.image_url || "/placeholder.svg?height=200&width=300",
+      image: exercise.image_url || '/placeholder.svg?height=200&width=300',
       description: exercise.ex_description,
       duration: exercise.duration || null,
       reps: exercise.reps || null,
@@ -233,7 +386,7 @@ export async function getExerciseById(id: number): Promise<ExerciseWithLabels | 
       categories: getDefaultCategories(exercise.name),
     }
   } catch (error) {
-    console.error("Error in getExerciseById:", error)
+    console.error('Error in getExerciseById:', error)
     return undefined
   }
 }
@@ -244,39 +397,56 @@ function getDefaultCategories(exerciseName: string): string[] {
   const categories: string[] = []
 
   // Assign body region
-  if (name.includes("press") || name.includes("pull") || name.includes("overhead")) {
-    categories.push("Upper")
-  } else if (name.includes("thrust") || name.includes("brace") || name.includes("lateral")) {
-    categories.push("Middle")
-  } else if (name.includes("squat") || name.includes("deadlift") || name.includes("raise")) {
-    categories.push("Lower")
+  if (
+    name.includes('press') ||
+    name.includes('pull') ||
+    name.includes('overhead')
+  ) {
+    categories.push('Upper')
+  } else if (
+    name.includes('thrust') ||
+    name.includes('brace') ||
+    name.includes('lateral')
+  ) {
+    categories.push('Middle')
+  } else if (
+    name.includes('squat') ||
+    name.includes('deadlift') ||
+    name.includes('raise')
+  ) {
+    categories.push('Lower')
   }
 
   // Assign FIR level (just a default)
-  categories.push("FIR: Low")
+  categories.push('FIR: Low')
 
   return categories
 }
 
 // Add a function to get exercises by type (to replace getExercisesByType)
-export async function getExercisesByType(type: "warmup" | "stretch" | "fit"): Promise<ExerciseWithLabels[]> {
+export async function getExercisesByType(
+  type: 'warmup' | 'stretch' | 'fit'
+): Promise<ExerciseWithLabels[]> {
   try {
     // Map the type to the appropriate category name pattern
     let categoryPattern: string
     switch (type) {
-      case "warmup":
-        categoryPattern = "%warmup%"
+      case 'warmup':
+        categoryPattern = '%warmup%'
         break
-      case "stretch":
-        categoryPattern = "%stretch%"
+      case 'stretch':
+        categoryPattern = '%stretch%'
         break
-      case "fit":
-        categoryPattern = "%fit%"
+      case 'fit':
+        categoryPattern = '%fit%'
         break
     }
 
     // Get the category ID
-    const { data: categoryData } = await supabaseServer.from("categories").select("id").ilike("name", categoryPattern)
+    const { data: categoryData } = await supabaseServer
+      .from('categories')
+      .select('id')
+      .ilike('name', categoryPattern)
 
     if (!categoryData || categoryData.length === 0) {
       return []
@@ -285,7 +455,10 @@ export async function getExercisesByType(type: "warmup" | "stretch" | "fit"): Pr
     const categoryId = categoryData[0].id
 
     // Get exercises in this category
-    const { data: exercises, error } = await supabaseServer.from("exercises").select("*").eq("category_id", categoryId)
+    const { data: exercises, error } = await supabaseServer
+      .from('exercises')
+      .select('*')
+      .eq('category_id', categoryId)
 
     if (error || !exercises) {
       console.error(`Error fetching ${type} exercises:`, error)
@@ -296,7 +469,7 @@ export async function getExercisesByType(type: "warmup" | "stretch" | "fit"): Pr
     return exercises.map((exercise) => ({
       id: exercise.id,
       name: exercise.name,
-      image: exercise.image_url || "/placeholder.svg?height=200&width=300",
+      image: exercise.image_url || '/placeholder.svg?height=200&width=300',
       description: exercise.ex_description,
       duration: exercise.duration || null,
       reps: exercise.reps || null,
@@ -312,30 +485,35 @@ export async function getExercisesByType(type: "warmup" | "stretch" | "fit"): Pr
 // Add this new function to fetch exercise groups
 export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
   try {
-    const { data: groups, error } = await supabaseServer.from("exercise_groups").select("*").order("name")
+    const { data: groups, error } = await supabaseServer
+      .from('exercise_groups')
+      .select('*')
+      .order('name')
 
     if (error || !groups) {
-      console.error("Error fetching exercise groups:", error)
+      console.error('Error fetching exercise groups:', error)
       return []
     }
 
     return groups
   } catch (error) {
-    console.error("Error in getExerciseGroups:", error)
+    console.error('Error in getExerciseGroups:', error)
     return []
   }
 }
 
 // Update the getExercisesByGroup function to use the exercise_group column
-export async function getExercisesByGroup(groupId: number): Promise<ExerciseWithLabels[]> {
+export async function getExercisesByGroup(
+  groupId: number
+): Promise<ExerciseWithLabels[]> {
   try {
     console.log(`Fetching exercises for group ID: ${groupId}`)
 
     // First, get the group details to know what we're looking for
     const { data: group, error: groupError } = await supabaseServer
-      .from("exercise_groups")
-      .select("*")
-      .eq("id", groupId)
+      .from('exercise_groups')
+      .select('*')
+      .eq('id', groupId)
       .single()
 
     if (groupError || !group) {
@@ -346,18 +524,20 @@ export async function getExercisesByGroup(groupId: number): Promise<ExerciseWith
     // Primary approach: Use the exercise_group column (this is the correct column name)
     // We need to convert groupId to string since that's how it's stored in the database
     const { data: exercisesByGroup, error: groupError2 } = await supabaseServer
-      .from("exercises")
-      .select("*")
-      .eq("exercise_group", groupId.toString())
+      .from('exercises')
+      .select('*')
+      .eq('exercise_group', groupId.toString())
 
     if (!groupError2 && exercisesByGroup && exercisesByGroup.length > 0) {
-      console.log(`Found ${exercisesByGroup.length} exercises with exercise_group=${groupId}`)
+      console.log(
+        `Found ${exercisesByGroup.length} exercises with exercise_group=${groupId}`
+      )
 
       // Map to the expected format
       return exercisesByGroup.map((exercise) => ({
         id: exercise.id,
         name: exercise.name,
-        image: exercise.image_url || "/placeholder.svg?height=200&width=300",
+        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
         description: exercise.ex_description,
         duration: exercise.duration || null,
         reps: exercise.reps || null,

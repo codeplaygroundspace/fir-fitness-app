@@ -1,5 +1,5 @@
-import type React from "react"
-import type { User, Session } from "@supabase/supabase-js"
+import type React from 'react'
+import type { User, Session } from '@supabase/supabase-js'
 
 // Database types
 export type Database = {
@@ -139,7 +139,7 @@ export type Exercise = {
   name: string
   image: string
   duration?: string
-  type: "warmup" | "stretch" | "fit"
+  type: 'warmup' | 'stretch' | 'fit'
   instructions?: string
 }
 
@@ -151,6 +151,7 @@ export type ExerciseWithLabels = {
   description: string | null
   duration: string | null
   reps: string | null
+  video_url?: string | null
   labels: {
     label_name: string
     label_type: string
@@ -259,7 +260,7 @@ export interface InstructionsBoxProps {
 export interface WorkoutLoggerProps {
   exerciseId: number
   exerciseName: string
-  exerciseType: "warmup" | "stretch" | "fit"
+  exerciseType: 'warmup' | 'stretch' | 'fit'
 }
 
 export interface ShareWorkoutProps {
@@ -287,7 +288,9 @@ export interface ConfigErrorProps {
 }
 
 // Function to get exercises by group
-export async function getExercisesByGroup(groupId: number): Promise<ExerciseWithLabels[]>
+export type GetExercisesByGroupFn = (
+  groupId: number
+) => Promise<ExerciseWithLabels[]>
 
 export type ExerciseGroup = {
   id: number

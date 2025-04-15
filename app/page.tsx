@@ -47,7 +47,8 @@ export default function HomePage() {
         }
 
         // If no cache or expired, fetch from API
-        const response = await fetch('/api/warmup')
+        console.log('Fetching from warmup API...')
+        const response = await fetch('/api/exercises?type=warmup')
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))

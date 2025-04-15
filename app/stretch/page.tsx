@@ -42,7 +42,8 @@ export default function StretchPage() {
         }
 
         // If no cache or expired, fetch from API
-        const response = await fetch('/api/stretch')
+        console.log('Fetching from stretch API...')
+        const response = await fetch('/api/exercises?type=stretch')
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))

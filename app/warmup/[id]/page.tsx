@@ -1,22 +1,20 @@
-import { notFound } from "next/navigation"
-import Image from "next/image"
-import { AlertCircle } from "lucide-react"
-import { DurationLabel } from "@/components/exercises/duration-label"
-import { RepsLabel } from "@/components/exercises/reps-label"
-import { supabaseServer } from "@/lib/supabase"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { BackButton } from "@/components/layout/back-button"
-import { InstructionsBox } from "@/components/exercises/instructions-box"
-import { ExerciseTimer } from "@/components/exercises/exercise-timer"
-// Make sure we're importing getWarmupExercises from actions.ts
-import { getWarmupExercises } from "@/app/actions"
+import { notFound } from 'next/navigation'
+import Image from 'next/image'
+import { AlertCircle } from 'lucide-react'
+import { DurationLabel } from '@/components/exercises/duration-label'
+import { RepsLabel } from '@/components/exercises/reps-label'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { BackButton } from '@/components/layout/back-button'
+import { InstructionsBox } from '@/components/exercises/instructions-box'
+import { ExerciseTimer } from '@/components/exercises/exercise-timer'
+import type { ExerciseWithLabels } from '@/lib/types'
 
-// Add a helper function to capitalize the first letter of each word
+// Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
   return str
-    .split(" ")
+    .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ")
+    .join(' ')
 }
 
 // Helper function to convert YouTube URL to embed URL
@@ -24,51 +22,69 @@ function getYouTubeEmbedUrl(url: string | null): string | null {
   if (!url) return null
 
   // Check if it's already an embed URL
-  if (url.includes("youtube.com/embed/")) return url
+  if (url.includes('youtube.com/embed/')) return url
 
   // Extract video ID from various YouTube URL formats
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-  const match = url.match(regExp)
+  const match = url?.match(regExp)
 
-  return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
+  return match && match[2].length === 11
+    ? `https://www.youtube.com/embed/${match[2]}`
+    : null
 }
 
-async function getExerciseData(id: string) {
-  const { data: exercise, error } = await supabaseServer
-    .from("exercises")
-    .select("*, categories(name)")
-    .eq("id", id)
-    .single()
+export default async function WarmupPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  // Get the exercise ID from the URL parameters
+  const { id } = await params
+  const exerciseId = Number.parseInt(id)
 
-  if (error || !exercise) {
-    console.error("Error fetching exercise:", error)
-    return null
+  // Fetch the exercise data from the API
+  const apiUrl = new URL(
+    '/api/exercises',
+    process.env.NEXT_PUBLIC_BASE_URL ||
+      (typeof window !== 'undefined'
+        ? window.location.origin
+        : 'http://localhost:3000')
+  )
+  apiUrl.searchParams.append('id', exerciseId.toString())
+
+  const exerciseResponse = await fetch(apiUrl.toString())
+
+  if (!exerciseResponse.ok) {
+    return notFound()
   }
 
-  // Use the reps and duration directly from the exercises table
-  const duration = exercise.duration ? exercise.duration + " sec" : "30 sec"
-  const reps = exercise.reps || "4"
+  const exercise: ExerciseWithLabels = await exerciseResponse.json()
 
-  return {
-    id: exercise.id,
-    name: exercise.name,
-    image: exercise.image_url || "/placeholder.svg?height=200&width=300",
-    description: exercise.ex_description,
-    videoUrl: exercise.video_url,
-    embedUrl: getYouTubeEmbedUrl(exercise.video_url),
-    duration,
-    reps,
-    category: exercise.categories?.name,
-  }
-}
+  // Fetch all warmup exercises
+  const allExercisesUrl = new URL(
+    '/api/exercises',
+    process.env.NEXT_PUBLIC_BASE_URL ||
+      (typeof window !== 'undefined'
+        ? window.location.origin
+        : 'http://localhost:3000')
+  )
+  allExercisesUrl.searchParams.append('type', 'warmup')
 
-export default async function WarmupPage({ params }: { params: { id: string } }) {
-  const exercise = await getExerciseData(params.id)
-  const allExercises = await getWarmupExercises()
+  const allExercisesResponse = await fetch(allExercisesUrl.toString())
+  const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
 
   if (!exercise) {
     return notFound()
   }
+
+  // Get video embed URL if available
+  const embedUrl = getYouTubeEmbedUrl(exercise.video_url || null)
+
+  // Format duration and reps for display
+  const displayDuration = exercise?.duration
+    ? `${exercise.duration} sec`
+    : '30 sec'
+  const displayReps = exercise?.reps || '4'
 
   return (
     <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
@@ -78,36 +94,38 @@ export default async function WarmupPage({ params }: { params: { id: string } })
           <BackButton href="/" />
         </div>
         <Image
-          src={exercise.image || "/placeholder.svg?height=500&width=800"}
-          alt={exercise.name}
+          src={exercise?.image || '/placeholder.svg?height=500&width=800'}
+          alt={exercise?.name || 'Exercise'}
           width={800}
           height={500}
           className="w-full h-[40vh] object-cover"
-          unoptimized={!exercise.image.startsWith("/")}
+          unoptimized={
+            exercise?.image ? !exercise.image.startsWith('/') : false
+          }
         />
       </div>
 
       {/* Title and metadata below the image */}
       <div className="px-4 py-4">
-        <h1>{capitalizeWords(exercise.name)}</h1>
+        <h1>{capitalizeWords(exercise?.name || 'Exercise')}</h1>
         <div className="flex flex-wrap gap-4 mb-6">
-          <DurationLabel duration={exercise.duration} />
-          <RepsLabel reps={exercise.reps || "4"} />
+          <DurationLabel duration={displayDuration} />
+          <RepsLabel reps={displayReps} />
         </div>
 
         {/* Timer component */}
-        <ExerciseTimer duration={exercise.duration} />
+        <ExerciseTimer duration={displayDuration} />
 
         {/* Video section */}
-        {exercise.videoUrl && (
+        {exercise?.video_url && (
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Video Tutorial</h2>
 
-            {exercise.embedUrl ? (
+            {embedUrl ? (
               <div className="aspect-video rounded-lg overflow-hidden">
                 <iframe
-                  src={exercise.embedUrl}
-                  title={`${exercise.name} tutorial`}
+                  src={embedUrl}
+                  title={`${exercise?.name || 'Exercise'} tutorial`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="w-full h-full"
@@ -118,7 +136,8 @@ export default async function WarmupPage({ params }: { params: { id: string } })
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Video Unavailable</AlertTitle>
                 <AlertDescription>
-                  The video for this exercise is currently private or unavailable. Please check back later.
+                  The video for this exercise is currently private or
+                  unavailable. Please check back later.
                 </AlertDescription>
               </Alert>
             )}
@@ -127,8 +146,8 @@ export default async function WarmupPage({ params }: { params: { id: string } })
 
         {/* Instructions box at the bottom */}
         <InstructionsBox
-          description={exercise.description}
-          fallback={`Perform this exercise for ${exercise.duration}. Focus on proper form and controlled movements.`}
+          description={exercise?.description || ''}
+          fallback={`Perform this exercise for ${displayDuration}. Focus on proper form and controlled movements.`}
         />
       </div>
     </div>

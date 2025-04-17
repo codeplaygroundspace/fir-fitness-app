@@ -4,9 +4,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import {
   ArrowLeft,
-  Shuffle,
-  LayoutGrid,
-  LayoutList,
   AlertCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,6 +12,7 @@ import Link from 'next/link'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
+import { ViewControls } from '@/components/controls/view-controls'
 
 export default function ExerciseGroupPage() {
   const params = useParams()
@@ -136,31 +134,12 @@ export default function ExerciseGroupPage() {
       )}
 
       <div className="flex justify-end items-center mb-4">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleLayout}
-            className="flex items-center gap-1"
-          >
-            {isSingleColumn ? (
-              <LayoutGrid className="h-4 w-4" />
-            ) : (
-              <LayoutList className="h-4 w-4" />
-            )}
-            {isSingleColumn ? 'Grid' : 'List'}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={shuffleExercises}
-            className="flex items-center gap-1"
-            disabled={exercises.length === 0}
-          >
-            <Shuffle className="h-4 w-4" />
-            Shuffle
-          </Button>
-        </div>
+        <ViewControls
+          isSingleColumn={isSingleColumn}
+          onToggleLayout={toggleLayout}
+          onShuffle={shuffleExercises}
+          shuffleDisabled={exercises.length === 0}
+        />
       </div>
 
       {loading ? (

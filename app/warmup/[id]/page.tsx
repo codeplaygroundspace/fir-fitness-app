@@ -38,22 +38,25 @@ export default async function WarmupPage({
 }: {
   params: { id: string }
 }) {
-  // Get the exercise ID from the URL parameters
-  const { id } = params
-  const exerciseId = Number.parseInt(id)
-
-  // Fetch the exercise data from the API using proper URL construction
-  const apiUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
-  )
-  apiUrl.searchParams.append('id', exerciseId.toString())
-  
   try {
-    const exerciseResponse = await fetch(apiUrl.toString(), { cache: 'no-store' })
+    // Get the exercise ID from the URL parameters - await params to fix the error
+    const { id } = await params
+    const exerciseId = Number.parseInt(id)
+
+    // Fetch the exercise data from the API using proper URL construction
+    const apiUrl = new URL(
+      '/api/exercises',
+      process.env.NEXT_PUBLIC_BASE_URL ||
+        (typeof window !== 'undefined'
+          ? window.location.origin
+          : 'http://localhost:3000')
+    )
+    apiUrl.searchParams.append('id', exerciseId.toString())
+
+    const exerciseResponse = await fetch(apiUrl.toString(), { 
+      cache: 'no-store',
+      next: { revalidate: 3600 } // Revalidate every hour
+    })
 
     if (!exerciseResponse.ok) {
       console.error('Failed to fetch exercise:', await exerciseResponse.text())
@@ -61,24 +64,6 @@ export default async function WarmupPage({
     }
 
     const exercise: ExerciseWithLabels = await exerciseResponse.json()
-
-    // Fetch all warmup exercises with proper URL construction
-    const allExercisesUrl = new URL(
-      '/api/exercises',
-      process.env.NEXT_PUBLIC_BASE_URL ||
-        (typeof window !== 'undefined'
-          ? window.location.origin
-          : 'http://localhost:3000')
-    )
-    allExercisesUrl.searchParams.append('type', 'warmup')
-    
-    const allExercisesResponse = await fetch(allExercisesUrl.toString(), { cache: 'no-store' })
-    
-    if (!allExercisesResponse.ok) {
-      console.error('Failed to fetch all exercises:', await allExercisesResponse.text())
-    }
-    
-    const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
 
     if (!exercise) {
       return notFound()
@@ -98,7 +83,7 @@ export default async function WarmupPage({
         {/* Image at the top with floating back button */}
         <div className="relative w-full">
           <div className="absolute top-4 left-4 z-10">
-            <BackButton href="/warmup" />
+            <BackButton href="/" />
           </div>
           <Image
             src={exercise?.image || '/placeholder.svg?height=500&width=800'}
@@ -106,6 +91,7 @@ export default async function WarmupPage({
             width={800}
             height={500}
             className="w-full h-[40vh] object-cover"
+            priority={true} // Add priority for LCP optimization
             unoptimized={
               exercise?.image ? !exercise.image.startsWith('/') : false
             }

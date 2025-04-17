@@ -10,6 +10,9 @@ export type ExerciseGroup = {
   description: string | null
   image_url: string | null
   body_sec: number
+  body_section_name: string | null
+  fit_level: number | null
+  fit_level_name: string | null
   category_id?: string // Add this field as optional
 }
 
@@ -485,17 +488,97 @@ export async function getExercisesByType(
 // Add this new function to fetch exercise groups
 export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
   try {
-    const { data: groups, error } = await supabaseServer
-      .from('exercise_groups')
-      .select('*')
-      .order('name')
-
-    if (error || !groups) {
-      console.error('Error fetching exercise groups:', error)
-      return []
+    console.log('Fetching exercise groups from database');
+    
+    // Direct SQL approach to ensure we get the proper joins
+    const { data, error } = await supabaseServer.rpc('get_exercise_groups_with_details');
+    
+    if (error) {
+      console.error('Error fetching exercise groups with RPC:', error);
+      
+      // Fallback to regular query with explicit joins
+      const { data: fallbackData, error: fallbackError } = await supabaseServer
+        .from('exercise_groups')
+        .select(`
+          id,
+          name,
+          description,
+          image_url,
+          body_sec,
+          fir_level,
+          category_id
+        `)
+        .order('name');
+        
+      if (fallbackError || !fallbackData) {
+        console.error('Error in fallback query:', fallbackError);
+        return [];
+      }
+      
+      // Manually get the related data
+      const groupIds = fallbackData.map(g => g.id);
+      console.log(`Got ${groupIds.length} groups, fetching related data`);
+      
+      // Get the intensity levels
+      const { data: intensityData } = await supabaseServer
+        .from('exercise_intensity')
+        .select('id, name');
+        
+      // Get the body sections
+      const { data: bodySectionData } = await supabaseServer
+        .from('exercise_body_section')
+        .select('id, body_section');
+        
+      // Create lookups
+      const intensityMap = (intensityData || []).reduce((acc, item) => {
+        acc[item.id] = item.name;
+        return acc;
+      }, {} as Record<number, string>);
+      
+      const bodySectionMap = (bodySectionData || []).reduce((acc, item) => {
+        acc[item.id] = item.body_section;
+        return acc;
+      }, {} as Record<number, string>);
+      
+      console.log('Intensity map:', intensityMap);
+      console.log('Body section map:', bodySectionMap);
+      
+      // Map the data
+      return fallbackData.map(group => {
+        const result = {
+          id: group.id,
+          name: group.name,
+          description: group.description,
+          image_url: group.image_url,
+          body_sec: group.body_sec,
+          body_section_name: group.body_sec ? bodySectionMap[group.body_sec] || null : null,
+          fit_level: group.fir_level,
+          fit_level_name: group.fir_level ? intensityMap[group.fir_level] || null : null,
+          category_id: group.category_id
+        };
+        
+        console.log(`Mapped group ${group.id} (${group.name}):`, {
+          fir_level: group.fir_level,
+          fit_level_name: result.fit_level_name
+        });
+        
+        return result;
+      });
     }
-
-    return groups
+    
+    // If RPC successful, use that data
+    console.log('RPC data:', data);
+    return data.map((group: any) => ({
+      id: group.id,
+      name: group.name,
+      description: group.description,
+      image_url: group.image_url,
+      body_sec: group.body_sec,
+      body_section_name: group.body_section || null,
+      fit_level: group.fir_level,
+      fit_level_name: group.intensity_name || null,
+      category_id: group.category_id
+    }));
   } catch (error) {
     console.error('Error in getExerciseGroups:', error)
     return []

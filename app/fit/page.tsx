@@ -12,11 +12,12 @@ import { getExerciseGroups, type ExerciseGroup } from "../actions"
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
 
-// Map body section numbers to their names
-const BODY_SECTIONS = {
-  1: "Upper",
-  2: "Lower",
-  3: "Middle",
+// Map FIT level names to display names
+const FIT_LEVELS = {
+  "high": "FIT: High",
+  "moderate": "FIT: Moderate",
+  "low": "FIT: Low",
+  "very high": "FIT: Very High"
 }
 
 export default function FitPage() {
@@ -80,10 +81,66 @@ export default function FitPage() {
     loadExerciseGroups()
   }, [])
 
-  // Define static categories for the filter
+  // Get unique body section names from exercise groups
+  const availableBodySections = useMemo(() => {
+    const sections = new Set<string>()
+    
+    exerciseGroups.forEach(group => {
+      if (group.body_section_name) {
+        const sectionName = group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
+        sections.add(sectionName)
+      }
+    })
+    
+    return Array.from(sections)
+  }, [exerciseGroups])
+  
+  // Get unique FIT levels from exercise groups
+  const availableFitLevels = useMemo(() => {
+    const levels = new Set<string>()
+    
+    console.log('Exercise Groups for FIT levels:', exerciseGroups.map(g => ({
+      id: g.id,
+      name: g.name,
+      fit_level_name: g.fit_level_name
+    })));
+    
+    exerciseGroups.forEach(group => {
+      if (group.fit_level_name) {
+        const displayName = FIT_LEVELS[group.fit_level_name as keyof typeof FIT_LEVELS] || 
+          `FIT: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`;
+        console.log(`Adding FIT level: ${group.fit_level_name} → ${displayName}`);
+        levels.add(displayName);
+      }
+    })
+    
+    const result = Array.from(levels);
+    console.log('Available FIT levels:', result);
+    return result;
+  }, [exerciseGroups])
+
+  // Define categories for the filter including dynamic body sections and FIT levels
   const allCategories = useMemo(() => {
-    return ["Upper", "Middle", "Lower", "FIR: High", "FIR: Moderate", "FIR: Low"]
-  }, [])
+    // Use body sections from the database, or fall back to static options
+    const bodyCategories = availableBodySections.length > 0
+      ? availableBodySections
+      : ["Upper", "Middle", "Lower"]
+    
+    // Use FIT levels from the database, or fall back to static options
+    const fitCategories = availableFitLevels.length > 0 
+      ? availableFitLevels
+      : ["FIT: High", "FIT: Moderate", "FIT: Low", "FIT: Very High"]
+    
+    const result = [...bodyCategories, ...fitCategories];
+    
+    console.log("Filter categories:", {
+      bodyCategories,
+      fitCategories,
+      result
+    });
+    
+    return result;
+  }, [availableBodySections, availableFitLevels])
 
   // Filter exercise groups based on selected categories
   const filteredGroups = useMemo(() => {
@@ -92,26 +149,32 @@ export default function FitPage() {
     }
 
     // Check if we have any body region filters
-    const bodyFilters = selectedFilters.filter((filter) => ["Upper", "Middle", "Lower"].includes(filter))
+    const bodyFilters = selectedFilters.filter((filter) => !filter.startsWith("FIT:"))
 
-    // Check if we have any FIR level filters
-    const firFilters = selectedFilters.filter((filter) => filter.startsWith("FIR:"))
+    // Check if we have any FIT level filters
+    const fitFilters = selectedFilters.filter((filter) => filter.startsWith("FIT:"))
 
     return exerciseGroups.filter((group) => {
       // If we have body filters, check if the group matches any of them
       if (bodyFilters.length > 0) {
-        const bodySectionName = BODY_SECTIONS[group.body_sec as keyof typeof BODY_SECTIONS]
+        if (!group.body_section_name) return false
+        
+        const bodySectionName = group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
         if (!bodyFilters.includes(bodySectionName)) {
           return false
         }
       }
 
-      // For FIR filters, we don't have that data in the groups table yet
-      // This is a placeholder for when that data becomes available
-      if (firFilters.length > 0) {
-        // For now, always return true for FIR filters
-        // In the future, we can filter based on FIR level if that data is added
-        return true
+      // If we have FIT filters, check if the group matches any of them
+      if (fitFilters.length > 0) {
+        if (!group.fit_level_name) return false
+        
+        const groupFitDisplay = FIT_LEVELS[group.fit_level_name as keyof typeof FIT_LEVELS] || 
+          `FIT: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`
+        
+        if (!fitFilters.includes(groupFitDisplay)) {
+          return false
+        }
       }
 
       return true
@@ -141,9 +204,23 @@ export default function FitPage() {
     setIsSingleColumn(!isSingleColumn)
   }
 
-  // Helper function to get body section name
-  const getBodySectionName = (bodySec: number): string => {
-    return BODY_SECTIONS[bodySec as keyof typeof BODY_SECTIONS] || "Unknown"
+  // Helper function to get capitalized body section name
+  const getBodySectionName = (group: ExerciseGroup): string => {
+    if (!group.body_section_name) return "Unknown"
+    return group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
+  }
+
+  // Helper function to get FIT level display name
+  const getFitLevelName = (fitLevel: string | null): string => {
+    if (!fitLevel) return "Unknown"
+    
+    // Check if it's in our mapping
+    if (FIT_LEVELS[fitLevel as keyof typeof FIT_LEVELS]) {
+      return FIT_LEVELS[fitLevel as keyof typeof FIT_LEVELS];
+    }
+    
+    // Otherwise, create a properly formatted name with FIT: prefix
+    return `FIT: ${fitLevel.charAt(0).toUpperCase() + fitLevel.slice(1)}`;
   }
 
   return (
@@ -153,17 +230,20 @@ export default function FitPage() {
       <Info>
         <p className="text-sm text-muted-foreground">
           Below are 8 Functional Moves, each offering multiple exercise variations. The higher your Functional Imbalance
-          Risk (FIR) for each Functional Move, the more effort you should exert when performing that exercise:
+          Target (FIT) for each Functional Move, the more effort you should exert when performing that exercise:
         </p>
         <ul className="mt-2 text-sm text-muted-foreground list-disc pl-5 space-y-1">
           <li>
-            <strong>FIR: High 🔴</strong> = Maximal Relative Effort (Push yourself to the max when doing this exercise)
+            <strong>FIT: Very High 🔴</strong> = Maximum Intensity Effort (Push beyond your limits for this exercise)
           </li>
           <li>
-            <strong>FIR: Mod</strong> = Moderate Relative Effort
+            <strong>FIT: High 🔴</strong> = High Relative Effort (Push yourself to the max when doing this exercise)
           </li>
           <li>
-            <strong>FIR: Low</strong> = Minimal Relative Effort (Don't push too hard - just maintain your current
+            <strong>FIT: Mod</strong> = Moderate Relative Effort
+          </li>
+          <li>
+            <strong>FIT: Low</strong> = Minimal Relative Effort (Don't push too hard - just maintain your current
             strength)
           </li>
         </ul>
@@ -218,9 +298,25 @@ export default function FitPage() {
                         .join(" ")}
                     </h3>
                     <div className="flex flex-wrap mb-2">
-                      <span className="text-xs bg-muted text-muted-foreground px-3 py-1 rounded-full inline-block mr-1 mb-1">
-                        {getBodySectionName(group.body_sec)}
-                      </span>
+                      {group.body_section_name && (
+                        <span className="text-xs bg-muted text-muted-foreground px-3 py-1 rounded-full inline-block mr-1 mb-1">
+                          {getBodySectionName(group)}
+                        </span>
+                      )}
+                      {group.fit_level_name && (
+                        <span className={`text-xs px-3 py-1 rounded-full inline-block mr-1 mb-1 ${
+                          group.fit_level_name === 'high' ? 'bg-red-100 text-red-800' : 
+                          group.fit_level_name === 'very high' ? 'bg-red-200 text-red-900' :
+                          group.fit_level_name === 'moderate' ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {(() => {
+                            const displayName = getFitLevelName(group.fit_level_name);
+                            console.log(`Rendering FIT pill: ${group.fit_level_name} → ${displayName}`);
+                            return displayName;
+                          })()}
+                        </span>
+                      )}
                     </div>
                     {group.description && (
                       <p className="text-sm text-muted-foreground line-clamp-2">{group.description}</p>

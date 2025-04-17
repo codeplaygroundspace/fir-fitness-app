@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { Shuffle, LayoutGrid, LayoutList } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
-import type { ExerciseWithLabels } from '@/lib/types' // Import from the correct location
+import { Button } from '@/components/ui/button'
+import type { ExerciseWithLabels } from '@/lib/types'
+import { LayoutGrid, LayoutList, Shuffle } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000

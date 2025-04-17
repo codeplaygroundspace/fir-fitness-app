@@ -2,14 +2,14 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 // Update imports for moved components
-import { ThemeToggle } from "@/components/layout/theme-toggle"
-import { WeeklyProgress } from "@/components/profile/weekly-progress"
-import { MonthlyCalendar } from "@/components/profile/monthly-calendar"
 import { useAuth } from "@/components/auth/auth-provider"
-import { LogOut } from "lucide-react"
-import { WorkoutProvider } from "@/contexts/workout-context"
-import { useState } from "react"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
+import { MonthlyCalendar } from "@/components/profile/monthly-calendar"
 import { UserAvatar } from "@/components/profile/user-avatar"
+import { WeeklyProgress } from "@/components/profile/weekly-progress"
+import { WorkoutProvider } from "@/contexts/workout-context"
+import { LogOut } from "lucide-react"
+import { useState } from "react"
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth()

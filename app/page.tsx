@@ -47,7 +47,6 @@ export default function HomePage() {
         }
 
         // If no cache or expired, fetch from API
-        console.log('Fetching from warmup API...')
         const response = await fetch('/api/exercises?type=warmup')
 
         if (!response.ok) {
@@ -201,7 +200,7 @@ export default function HomePage() {
                 id={exercise.id}
                 name={exercise.name}
                 image={exercise.image}
-                linkPrefix="/warmup"
+                linkPrefix=""
                 duration={`${exercise.duration} sec`}
                 reps={exercise.reps}
                 showLabels={true}

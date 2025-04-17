@@ -55,7 +55,6 @@ export default function LoginPage() {
 
       // Make sure we have a session before redirecting
       if (data.session) {
-        console.log("Login successful, redirecting to home page")
         // Use router.push instead of replace to ensure proper navigation
         router.push("/")
       }

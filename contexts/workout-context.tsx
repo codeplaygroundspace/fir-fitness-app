@@ -66,7 +66,6 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
             filter: `user_id=eq.${user.id}`,
           },
           (payload) => {
-            console.log("Workout days changed:", payload)
             // Refresh workouts when changes occur
             getUserWorkouts(user.id).then((workouts) => {
               setWorkoutDays(workouts)

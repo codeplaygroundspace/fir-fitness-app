@@ -42,7 +42,6 @@ export default function StretchPage() {
         }
 
         // If no cache or expired, fetch from API
-        console.log('Fetching from stretch API...')
         const response = await fetch('/api/exercises?type=stretch')
 
         if (!response.ok) {
@@ -61,8 +60,6 @@ export default function StretchPage() {
           console.error('Invalid API response format:', exercises)
           throw new Error('Invalid response format from API')
         }
-
-        console.log(`Received ${exercises.length} stretch exercises from API`)
 
         // Ensure each exercise has a valid image property
         const validatedExercises = exercises.map((exercise) => ({

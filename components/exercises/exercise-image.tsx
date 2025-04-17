@@ -15,7 +15,6 @@ export default function ExerciseImage({ src, alt, width = 300, height = 200, cla
   }, [src])
 
   const handleError = () => {
-    console.log(`Image failed to load: ${src}`)
     setIsError(true)
     setImageSrc(`/placeholder.svg?height=${height}&width=${width}`)
   }

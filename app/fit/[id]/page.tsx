@@ -4,6 +4,7 @@ import { CategoryLabel } from '@/components/exercises/category-label'
 import { BackButton } from '@/components/layout/back-button'
 import { InstructionsBox } from '@/components/exercises/instructions-box'
 import type { ExerciseWithLabels } from '@/lib/types'
+import { getBaseUrl } from '@/lib/utils'
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {
@@ -22,14 +23,8 @@ export default async function FitExercisePage({
   const { id } = await params
   const exerciseId = Number.parseInt(id)
 
-  // Fetch the exercise data from the API
-  const apiUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
-  )
+  // Fetch the exercise data from the API using the new utility
+  const apiUrl = new URL('/api/exercises', getBaseUrl())
   apiUrl.searchParams.append('id', exerciseId.toString())
 
   const exerciseResponse = await fetch(apiUrl.toString())

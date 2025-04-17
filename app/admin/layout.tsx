@@ -2,7 +2,13 @@ import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ 
+  children,
+  params
+}: { 
+  children: React.ReactNode
+  params?: { id?: string }
+}) {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-6">
@@ -14,16 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
 
-      <div className="flex mb-6">
-        <nav className="flex gap-4">
-          <Link href="/admin" className="text-blue-600 hover:underline">
-            Exercises
-          </Link>
-          <Link href="/admin/categories" className="text-blue-600 hover:underline">
-            Categories
-          </Link>
-        </nav>
-      </div>
+      {/* We'll use segment configuration to handle this instead */}
 
       {children}
     </div>

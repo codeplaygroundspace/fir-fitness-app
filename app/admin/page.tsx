@@ -4,6 +4,11 @@ import { supabaseServer } from "@/lib/supabase"
 import { PlusCircle, Edit } from "lucide-react"
 import { DeleteExerciseButton } from "./components/delete-exercise-button"
 
+// Helper function to capitalize the first letter of exercise names
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 // Add a button to create categories if none exist
 
 export default async function AdminPage() {
@@ -83,7 +88,9 @@ export default async function AdminPage() {
               {exercises?.map((exercise) => (
                 <tr key={exercise.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{exercise.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{exercise.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
+                    {capitalizeFirstLetter(exercise.name)}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {exercise.categories?.name}
                   </td>

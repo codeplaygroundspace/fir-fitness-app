@@ -36,11 +36,11 @@ export async function createExercise(formData: FormData) {
       return { error: "Name and category are required" }
     }
 
-    // Insert the exercise
+    // Insert the exercise with lowercase name
     const { data: exercise, error: exerciseError } = await supabaseServer
       .from("exercises")
       .insert({
-        name,
+        name: name.toLowerCase(), // Store name in lowercase
         ex_description: description || null,
         image_url: image_url || null,
         video_url: video_url || null,
@@ -90,11 +90,11 @@ export async function updateExercise(id: number, formData: FormData) {
       return { error: "Name and category are required" }
     }
 
-    // Update the exercise
+    // Update the exercise with lowercase name
     const { error: exerciseError } = await supabaseServer
       .from("exercises")
       .update({
-        name,
+        name: name.toLowerCase(), // Store name in lowercase
         ex_description: description || null,
         image_url: image_url || null,
         video_url: video_url || null,
@@ -182,10 +182,6 @@ export async function getExerciseForEdit(id: number) {
       .from("exercise_labels")
       .select("*")
       .eq("exercise_id", id)
-
-    if (labelsError) {
-      console.error("Error fetching labels:", labelsError)
-    }
 
     return {
       ...exercise,

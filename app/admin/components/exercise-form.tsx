@@ -20,11 +20,20 @@ interface ExerciseFormProps {
   isEdit?: boolean
 }
 
+// Helper function to capitalize the first letter
+function capitalizeFirstLetter(string: string) {
+  if (!string) return ""
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export function ExerciseForm({ categories, exercise, isEdit = false }: ExerciseFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedLabels, setSelectedLabels] = useState<string[]>(exercise?.labels || [])
+
+  // Get the display name with first letter capitalized
+  const displayName = exercise?.name ? capitalizeFirstLetter(exercise.name) : ""
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -72,7 +81,7 @@ export function ExerciseForm({ categories, exercise, isEdit = false }: ExerciseF
         <div className="space-y-4">
           <div>
             <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" defaultValue={exercise?.name || ""} required />
+            <Input id="name" name="name" defaultValue={displayName} required />
           </div>
 
           <div>

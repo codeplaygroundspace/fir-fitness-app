@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { createExercise, updateExercise } from "../actions"
 import type { Database } from "@/lib/supabase"
+import { capitalizeFirstLetter } from "@/lib/text-utils"
 
 type Category = Database["public"]["tables"]["categories"]["Row"]
 
@@ -18,12 +19,6 @@ interface ExerciseFormProps {
   categories: Category[]
   exercise?: any
   isEdit?: boolean
-}
-
-// Helper function to capitalize the first letter
-function capitalizeFirstLetter(string: string) {
-  if (!string) return ""
-  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export function ExerciseForm({ categories, exercise, isEdit = false }: ExerciseFormProps) {

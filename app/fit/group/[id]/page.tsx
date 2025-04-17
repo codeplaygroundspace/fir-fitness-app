@@ -194,7 +194,10 @@ export default function ExerciseGroupPage() {
               name={exercise.name}
               image={exercise.image}
               linkPrefix="/fit"
+              duration={exercise.duration}
+              reps={exercise.reps}
               categories={exercise.categories}
+              showLabels={true}
               showCategories={true}
             />
           ))}

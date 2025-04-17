@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
-import { Shuffle, LayoutGrid, LayoutList } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-// Update imports for moved components
-import { CategoryFilter } from "@/components/exercises/category-filter"
 import { Info } from "@/components/common/info"
+import { CategoryFilter } from "@/components/exercises/category-filter"
+import { ExerciseCard } from "@/components/exercises/exercise-card"
+import { Button } from "@/components/ui/button"
+import { LayoutGrid, LayoutList, Shuffle } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
 import { getExerciseGroups, type ExerciseGroup } from "../actions"
 
 // Cache expiration time (24 hours in milliseconds)
@@ -209,6 +208,21 @@ export default function FitPage() {
     return `FIT: ${fitLevel.charAt(0).toUpperCase() + fitLevel.slice(1)}`;
   }
 
+  // Create categories for each group
+  const getGroupCategories = (group: ExerciseGroup): string[] => {
+    const categories: string[] = []
+    
+    if (group.body_section_name) {
+      categories.push(getBodySectionName(group))
+    }
+    
+    if (group.fit_level_name) {
+      categories.push(getFitLevelName(group.fit_level_name))
+    }
+    
+    return categories
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
       <h1>FIT</h1>
@@ -267,48 +281,15 @@ export default function FitPage() {
         ) : filteredGroups.length > 0 ? (
           <div className={`grid ${isSingleColumn ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
             {filteredGroups.map((group) => (
-              <Link key={group.id} href={`/fit/group/${group.id}`} className="block h-full">
-                <div className="rounded-lg overflow-hidden bg-card shadow-md hover:shadow-lg transition-shadow h-full">
-                  <div className="aspect-video relative">
-                    <img
-                      src={group.image_url || "/placeholder.svg?height=200&width=300"}
-                      alt={`${group.name} exercises`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-heading font-medium text-xl mb-2 text-card-foreground">
-                      {group.name
-                        .split(" ")
-                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(" ")}
-                    </h3>
-                    <div className="flex flex-wrap mb-2">
-                      {group.body_section_name && (
-                        <span className="text-xs bg-muted text-muted-foreground px-3 py-1 rounded-full inline-block mr-1 mb-1">
-                          {getBodySectionName(group)}
-                        </span>
-                      )}
-                      {group.fit_level_name && (
-                        <span className={`text-xs px-3 py-1 rounded-full inline-block mr-1 mb-1 ${
-                          group.fit_level_name === 'high' ? 'bg-red-100 text-red-800' : 
-                          group.fit_level_name === 'very high' ? 'bg-red-200 text-red-900' :
-                          group.fit_level_name === 'moderate' ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-green-100 text-green-800'
-                        }`}>
-                          {(() => {
-                            const displayName = getFitLevelName(group.fit_level_name);
-                            return displayName;
-                          })()}
-                        </span>
-                      )}
-                    </div>
-                    {group.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">{group.description}</p>
-                    )}
-                  </div>
-                </div>
-              </Link>
+              <ExerciseCard
+                key={group.id}
+                id={group.id}
+                name={group.name}
+                image={group.image_url || "/placeholder.svg?height=200&width=300"}
+                linkPrefix="/fit/group"
+                categories={getGroupCategories(group)}
+                showCategories={true}
+              />
             ))}
           </div>
         ) : (

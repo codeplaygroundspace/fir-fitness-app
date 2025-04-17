@@ -5,14 +5,7 @@ import { BackButton } from '@/components/layout/back-button'
 import { InstructionsBox } from '@/components/exercises/instructions-box'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { getBaseUrl } from '@/lib/utils'
-
-// Helper function to capitalize the first letter of each word
-function capitalizeWords(str: string): string {
-  return str
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ')
-}
+import { capitalizeFirstLetter } from '@/lib/text-utils'
 
 export default async function FitExercisePage({
   params,
@@ -73,7 +66,7 @@ export default async function FitExercisePage({
 
       {/* Title and metadata below the image */}
       <div className="px-4 py-4">
-        <h1>{capitalizeWords(exercise?.name || 'Fit Exercise')}</h1>
+        <h1>{capitalizeFirstLetter(exercise?.name || 'Fit Exercise')}</h1>
         <div className="flex flex-wrap mb-6">
           {Array.isArray(exercise?.categories) &&
             exercise.categories.map((category, index) => (

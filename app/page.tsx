@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Shuffle, LayoutGrid, LayoutList } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import { DurationLabel } from '@/components/exercises/duration-label'
@@ -9,6 +8,9 @@ import type { ExerciseWithLabels } from '@/lib/types'
 import { Info } from '@/components/common/info'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ConfigError } from '@/components/common/config-error'
+import { ViewControls } from '@/components/controls/view-controls'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
@@ -127,12 +129,6 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Warmup</h1>
 
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-lg mb-4">
-          Error: {error}
-        </div>
-      )}
-
       <Info>
         <div className="flex justify-between items-center">
           <h3 className="font-semibold text-base">HR Rise (always do first)</h3>
@@ -142,31 +138,20 @@ export default function HomePage() {
 
       <section>
         <div className="flex items-center mb-4 justify-end">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleLayout}
-              className="flex items-center gap-1"
-            >
-              {isSingleColumn ? (
-                <LayoutGrid className="h-4 w-4" />
-              ) : (
-                <LayoutList className="h-4 w-4" />
-              )}
-              {isSingleColumn ? 'Grid' : 'List'}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={shuffleExercises}
-              className="flex items-center gap-1"
-            >
-              <Shuffle className="h-4 w-4" />
-              Shuffle
-            </Button>
-          </div>
+          <ViewControls
+            isSingleColumn={isSingleColumn}
+            onToggleLayout={toggleLayout}
+            onShuffle={shuffleExercises}
+            shuffleDisabled={cardioExercises.length === 0}
+          />
         </div>
+
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         {loading ? (
           <div

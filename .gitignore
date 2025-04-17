@@ -25,3 +25,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Cursor IDE
+.cursor/
+.cursor-settings.json
+.cursor-history.json
+.cursor-snippets.json
+.cursor-workspace.json
+.cursor-debug.log

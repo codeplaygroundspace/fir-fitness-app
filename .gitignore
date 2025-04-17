@@ -33,3 +33,6 @@ next-env.d.ts
 .cursor-snippets.json
 .cursor-workspace.json
 .cursor-debug.log
+
+# macOS
+.DS_Store

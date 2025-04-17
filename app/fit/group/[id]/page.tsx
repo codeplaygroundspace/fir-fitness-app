@@ -14,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import Link from 'next/link'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import type { ExerciseWithLabels } from '@/lib/types'
+import { capitalizeFirstLetter } from '@/lib/text-utils'
 
 export default function ExerciseGroupPage() {
   const params = useParams()
@@ -115,16 +116,16 @@ export default function ExerciseGroupPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-6">
-        <Link href="/fit">
+        <Link href="/fit" className="flex items-center">
           <Button
             variant="outline"
             size="icon"
-            className="h-10 w-10 rounded-full"
+            className="h-10 w-10 rounded-full flex items-center justify-center"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">{groupName}</h1>
+        <span className="text-2xl font-bold leading-none">{capitalizeFirstLetter(groupName)}</span>
       </div>
 
       {error && (

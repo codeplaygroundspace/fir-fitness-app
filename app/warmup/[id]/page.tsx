@@ -1,13 +1,13 @@
-import { notFound } from 'next/navigation'
-import Image from 'next/image'
-import { AlertCircle } from 'lucide-react'
 import { DurationLabel } from '@/components/exercises/duration-label'
-import { RepsLabel } from '@/components/exercises/reps-label'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { BackButton } from '@/components/layout/back-button'
-import { InstructionsBox } from '@/components/exercises/instructions-box'
 import { ExerciseTimer } from '@/components/exercises/exercise-timer'
+import { InstructionsBox } from '@/components/exercises/instructions-box'
+import { RepsLabel } from '@/components/exercises/reps-label'
+import { BackButton } from '@/components/layout/back-button'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import type { ExerciseWithLabels } from '@/lib/types'
+import { AlertCircle } from 'lucide-react'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
 
 // Helper function to capitalize the first letter of each word
 function capitalizeWords(str: string): string {

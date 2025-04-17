@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react'
 import { Shuffle, LayoutGrid, LayoutList } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-// Update imports for moved components
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import { DurationLabel } from '@/components/exercises/duration-label'
-import type { ExerciseWithLabels } from '@/lib/types' // Import from the correct location
+import type { ExerciseWithLabels } from '@/lib/types'
 import { Info } from '@/components/common/info'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ConfigError } from '@/components/common/config-error'
@@ -200,7 +199,7 @@ export default function HomePage() {
                 id={exercise.id}
                 name={exercise.name}
                 image={exercise.image}
-                linkPrefix=""
+                linkPrefix="/warmup"
                 duration={`${exercise.duration} sec`}
                 reps={exercise.reps}
                 showLabels={true}

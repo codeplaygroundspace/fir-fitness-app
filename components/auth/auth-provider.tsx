@@ -52,8 +52,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           data: { session },
         } = await supabase.auth.getSession()
 
-        console.log("Auth session check:", session ? "Session found" : "No session")
-
         setSession(session)
         setUser(session?.user ?? null)
         setIsLoading(false)
@@ -70,7 +68,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((_event, session) => {
-        console.log("Auth state changed:", _event)
         setSession(session)
         setUser(session?.user ?? null)
         setIsLoading(false)
@@ -92,11 +89,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!isLoading) {
       if (!user && pathname !== "/login" && !error) {
         // Redirect to login if not authenticated
-        console.log("No user found, redirecting to login")
         router.push("/login")
       } else if (user && pathname === "/login") {
         // Redirect to home if already authenticated and on login page
-        console.log("User already authenticated, redirecting to home")
         router.push("/")
       }
     }

@@ -33,7 +33,7 @@ function getYouTubeEmbedUrl(url: string | null): string | null {
     : null
 }
 
-export default async function WarmupPage({
+export default async function ExercisePage({
   params,
 }: {
   params: { id: string }
@@ -98,7 +98,7 @@ export default async function WarmupPage({
         {/* Image at the top with floating back button */}
         <div className="relative w-full">
           <div className="absolute top-4 left-4 z-10">
-            <BackButton href="/warmup" />
+            <BackButton href="/" />
           </div>
           <Image
             src={exercise?.image || '/placeholder.svg?height=500&width=800'}
@@ -160,7 +160,7 @@ export default async function WarmupPage({
       </div>
     )
   } catch (error) {
-    console.error('Error in WarmupPage:', error)
+    console.error('Error in ExercisePage:', error)
     return notFound()
   }
 } 

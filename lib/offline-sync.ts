@@ -95,7 +95,6 @@ export async function syncOfflineLogs() {
 export function setupOfflineSync() {
   if (typeof window !== "undefined") {
     window.addEventListener("online", () => {
-      console.log("Back online, syncing logs...")
       syncOfflineLogs()
     })
   }

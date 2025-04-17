@@ -99,23 +99,15 @@ export default function FitPage() {
   const availableFitLevels = useMemo(() => {
     const levels = new Set<string>()
     
-    console.log('Exercise Groups for FIT levels:', exerciseGroups.map(g => ({
-      id: g.id,
-      name: g.name,
-      fit_level_name: g.fit_level_name
-    })));
-    
     exerciseGroups.forEach(group => {
       if (group.fit_level_name) {
         const displayName = FIT_LEVELS[group.fit_level_name as keyof typeof FIT_LEVELS] || 
           `FIT: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`;
-        console.log(`Adding FIT level: ${group.fit_level_name} → ${displayName}`);
         levels.add(displayName);
       }
     })
     
     const result = Array.from(levels);
-    console.log('Available FIT levels:', result);
     return result;
   }, [exerciseGroups])
 
@@ -132,12 +124,6 @@ export default function FitPage() {
       : ["FIT: High", "FIT: Moderate", "FIT: Low", "FIT: Very High"]
     
     const result = [...bodyCategories, ...fitCategories];
-    
-    console.log("Filter categories:", {
-      bodyCategories,
-      fitCategories,
-      result
-    });
     
     return result;
   }, [availableBodySections, availableFitLevels])
@@ -312,7 +298,6 @@ export default function FitPage() {
                         }`}>
                           {(() => {
                             const displayName = getFitLevelName(group.fit_level_name);
-                            console.log(`Rendering FIT pill: ${group.fit_level_name} → ${displayName}`);
                             return displayName;
                           })()}
                         </span>

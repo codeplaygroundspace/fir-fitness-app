@@ -87,7 +87,6 @@ export function ExerciseTimer({ duration, onComplete }: ExerciseTimerProps) {
       // Start timer after 1 second delay
       startTimerTimeoutRef.current = setTimeout(() => {
         setIsActive(true)
-        console.log("Timer started after delay")
       }, 1000)
     }
 

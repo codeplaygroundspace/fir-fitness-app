@@ -13,7 +13,7 @@ export type ExerciseGroup = {
   body_section_name: string | null
   fit_level: number | null
   fit_level_name: string | null
-  category_id?: string // Add this field as optional
+  category_id?: string | null // Allow null value
 }
 
 export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
@@ -502,11 +502,9 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
         .select(`
           id,
           name,
-          description,
           image_url,
           body_sec,
-          fir_level,
-          category_id
+          fir_level
         `)
         .order('name');
         
@@ -548,13 +546,13 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
         const result = {
           id: group.id,
           name: group.name,
-          description: group.description,
+          description: null, // No description column in the database
           image_url: group.image_url,
           body_sec: group.body_sec,
           body_section_name: group.body_sec ? bodySectionMap[group.body_sec] || null : null,
           fit_level: group.fir_level,
           fit_level_name: group.fir_level ? intensityMap[group.fir_level] || null : null,
-          category_id: group.category_id
+          category_id: null // No category_id column in the database
         };
         
         console.log(`Mapped group ${group.id} (${group.name}):`, {
@@ -567,17 +565,17 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
     }
     
     // If RPC successful, use that data
-    console.log('RPC data:', data);
-    return data.map((group: any) => ({
+    console.log('RPC data found, mapping results');
+    return (data || []).map((group: any) => ({
       id: group.id,
       name: group.name,
-      description: group.description,
+      description: null, // No description in our database
       image_url: group.image_url,
       body_sec: group.body_sec,
       body_section_name: group.body_section || null,
       fit_level: group.fir_level,
       fit_level_name: group.intensity_name || null,
-      category_id: group.category_id
+      category_id: null // No category_id in our database
     }));
   } catch (error) {
     console.error('Error in getExerciseGroups:', error)

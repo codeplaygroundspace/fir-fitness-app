@@ -1,12 +1,7 @@
 import { notFound } from "next/navigation"
 import { getCategories, getExerciseForEdit } from "../../actions"
 import { ExerciseForm } from "../../components/exercise-form"
-
-// Helper function to capitalize the first letter
-function capitalizeFirstLetter(string: string) {
-  if (!string) return ""
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
+import { capitalizeFirstLetter } from "@/lib/text-utils"
 
 export default async function EditExercisePage({ params }: { params: { id: string } }) {
   const id = Number.parseInt(params.id)

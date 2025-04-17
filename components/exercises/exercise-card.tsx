@@ -4,11 +4,7 @@ import { DurationLabel } from "@/components/exercises/duration-label"
 import { RepsLabel } from "@/components/exercises/reps-label"
 import { CategoryLabel } from "@/components/exercises/category-label"
 import type { ExerciseCardProps } from "@/lib/types"
-
-// Helper function to capitalize only the first letter of the sentence
-function capitalizeFirstLetter(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-}
+import { capitalizeFirstLetter } from "@/lib/text-utils"
 
 export function ExerciseCard({
   id,

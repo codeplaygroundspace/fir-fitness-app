@@ -4,14 +4,7 @@ import Image from 'next/image'
 import { BackButton } from '@/components/layout/back-button'
 import { InstructionsBox } from '@/components/exercises/instructions-box'
 import type { ExerciseWithLabels } from '@/lib/types'
-
-// Helper function to capitalize the first letter of each word
-function capitalizeWords(str: string): string {
-  return str
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ')
-}
+import { capitalizeFirstLetter } from '@/lib/text-utils'
 
 export default async function StretchDetailPage({
   params,
@@ -85,7 +78,7 @@ export default async function StretchDetailPage({
 
         {/* Title and metadata below the image */}
         <div className="px-4 py-4">
-          <h1>{capitalizeWords(exercise?.name || 'Stretch Exercise')}</h1>
+          <h1>{capitalizeFirstLetter(exercise?.name || 'Stretch Exercise')}</h1>
 
           {/* Remove the timer component */}
 

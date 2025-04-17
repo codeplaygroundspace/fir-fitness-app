@@ -5,17 +5,10 @@ import { RepsLabel } from '@/components/exercises/reps-label'
 import { BackButton } from '@/components/layout/back-button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import type { ExerciseWithLabels } from '@/lib/types'
+import { capitalizeFirstLetter } from '@/lib/text-utils'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-
-// Helper function to capitalize the first letter of each word
-function capitalizeWords(str: string): string {
-  return str
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ')
-}
 
 // Helper function to convert YouTube URL to embed URL
 function getYouTubeEmbedUrl(url: string | null): string | null {
@@ -100,7 +93,7 @@ export default async function WarmupPage({
 
         {/* Title and metadata below the image */}
         <div className="px-4 py-4">
-          <h1>{capitalizeWords(exercise?.name || 'Exercise')}</h1>
+          <h1>{capitalizeFirstLetter(exercise?.name || 'Exercise')}</h1>
           <div className="flex flex-wrap gap-4 mb-6">
             <DurationLabel duration={displayDuration} />
             <RepsLabel reps={displayReps} />

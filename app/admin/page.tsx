@@ -3,11 +3,7 @@ import { Button } from "@/components/ui/button"
 import { supabaseServer } from "@/lib/supabase"
 import { PlusCircle, Edit } from "lucide-react"
 import { DeleteExerciseButton } from "./components/delete-exercise-button"
-
-// Helper function to capitalize the first letter of exercise names
-function capitalizeFirstLetter(string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
+import { capitalizeFirstLetter } from "@/lib/text-utils"
 
 // Add a button to create categories if none exist
 

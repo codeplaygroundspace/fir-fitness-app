@@ -43,9 +43,9 @@ export function CategoryFilter({ categories, onFilterChange }: CategoryFilterPro
 
         {/* FIR levels row */}
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="font-medium text-sm mr-1">FIR:</span>
+          <span className="font-medium text-sm mr-1">FIT:</span>
           {categories
-            .filter((category) => category.includes("FIR:"))
+            .filter((category) => category.includes("FIT:"))
             .map((category) => (
               <Button
                 key={category}
@@ -56,7 +56,7 @@ export function CategoryFilter({ categories, onFilterChange }: CategoryFilterPro
                   selectedCategories.includes(category) ? "bg-primary/10 text-primary hover:bg-primary/20" : ""
                 }`}
               >
-                {category.replace("FIR: ", "")}
+                {category.replace("FIT: ", "")}
               </Button>
             ))}
         </div>

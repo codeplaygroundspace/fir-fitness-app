@@ -39,117 +39,114 @@ export default async function WarmupPage({
   params: { id: string }
 }) {
   // Get the exercise ID from the URL parameters
-  const { id } = await params
+  const { id } = params
   const exerciseId = Number.parseInt(id)
 
   // Fetch the exercise data from the API
-  const apiUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
-  )
-  apiUrl.searchParams.append('id', exerciseId.toString())
+  // Simplified URL construction that works in all environments
+  const apiUrl = `/api/exercises?id=${exerciseId}`
+  
+  try {
+    const exerciseResponse = await fetch(apiUrl, { cache: 'no-store' })
 
-  const exerciseResponse = await fetch(apiUrl.toString())
+    if (!exerciseResponse.ok) {
+      console.error('Failed to fetch exercise:', await exerciseResponse.text())
+      return notFound()
+    }
 
-  if (!exerciseResponse.ok) {
-    return notFound()
-  }
+    const exercise: ExerciseWithLabels = await exerciseResponse.json()
 
-  const exercise: ExerciseWithLabels = await exerciseResponse.json()
+    // Fetch all warmup exercises - simplified URL
+    const allExercisesUrl = `/api/exercises?type=warmup`
+    const allExercisesResponse = await fetch(allExercisesUrl, { cache: 'no-store' })
+    
+    if (!allExercisesResponse.ok) {
+      console.error('Failed to fetch all exercises:', await allExercisesResponse.text())
+    }
+    
+    const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
 
-  // Fetch all warmup exercises
-  const allExercisesUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
-  )
-  allExercisesUrl.searchParams.append('type', 'warmup')
+    if (!exercise) {
+      return notFound()
+    }
 
-  const allExercisesResponse = await fetch(allExercisesUrl.toString())
-  const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
+    // Get video embed URL if available
+    const embedUrl = getYouTubeEmbedUrl(exercise.video_url || null)
 
-  if (!exercise) {
-    return notFound()
-  }
+    // Format duration and reps for display
+    const displayDuration = exercise?.duration
+      ? `${exercise.duration} sec`
+      : '30 sec'
+    const displayReps = exercise?.reps || '4'
 
-  // Get video embed URL if available
-  const embedUrl = getYouTubeEmbedUrl(exercise.video_url || null)
-
-  // Format duration and reps for display
-  const displayDuration = exercise?.duration
-    ? `${exercise.duration} sec`
-    : '30 sec'
-  const displayReps = exercise?.reps || '4'
-
-  return (
-    <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
-      {/* Image at the top with floating back button */}
-      <div className="relative w-full">
-        <div className="absolute top-4 left-4 z-10">
-          <BackButton href="/" />
-        </div>
-        <Image
-          src={exercise?.image || '/placeholder.svg?height=500&width=800'}
-          alt={exercise?.name || 'Exercise'}
-          width={800}
-          height={500}
-          className="w-full h-[40vh] object-cover"
-          unoptimized={
-            exercise?.image ? !exercise.image.startsWith('/') : false
-          }
-        />
-      </div>
-
-      {/* Title and metadata below the image */}
-      <div className="px-4 py-4">
-        <h1>{capitalizeWords(exercise?.name || 'Exercise')}</h1>
-        <div className="flex flex-wrap gap-4 mb-6">
-          <DurationLabel duration={displayDuration} />
-          <RepsLabel reps={displayReps} />
-        </div>
-
-        {/* Timer component */}
-        <ExerciseTimer duration={displayDuration} />
-
-        {/* Video section */}
-        {exercise?.video_url && (
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Video Tutorial</h2>
-
-            {embedUrl ? (
-              <div className="aspect-video rounded-lg overflow-hidden">
-                <iframe
-                  src={embedUrl}
-                  title={`${exercise?.name || 'Exercise'} tutorial`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                ></iframe>
-              </div>
-            ) : (
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Video Unavailable</AlertTitle>
-                <AlertDescription>
-                  The video for this exercise is currently private or
-                  unavailable. Please check back later.
-                </AlertDescription>
-              </Alert>
-            )}
+    return (
+      <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
+        {/* Image at the top with floating back button */}
+        <div className="relative w-full">
+          <div className="absolute top-4 left-4 z-10">
+            <BackButton href="/" />
           </div>
-        )}
+          <Image
+            src={exercise?.image || '/placeholder.svg?height=500&width=800'}
+            alt={exercise?.name || 'Exercise'}
+            width={800}
+            height={500}
+            className="w-full h-[40vh] object-cover"
+            unoptimized={
+              exercise?.image ? !exercise.image.startsWith('/') : false
+            }
+          />
+        </div>
 
-        {/* Instructions box at the bottom */}
-        <InstructionsBox
-          description={exercise?.description || ''}
-          fallback={`Perform this exercise for ${displayDuration}. Focus on proper form and controlled movements.`}
-        />
+        {/* Title and metadata below the image */}
+        <div className="px-4 py-4">
+          <h1>{capitalizeWords(exercise?.name || 'Exercise')}</h1>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <DurationLabel duration={displayDuration} />
+            <RepsLabel reps={displayReps} />
+          </div>
+
+          {/* Timer component */}
+          <ExerciseTimer duration={displayDuration} />
+
+          {/* Video section */}
+          {exercise?.video_url && (
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-2">Video Tutorial</h2>
+
+              {embedUrl ? (
+                <div className="aspect-video rounded-lg overflow-hidden">
+                  <iframe
+                    src={embedUrl}
+                    title={`${exercise?.name || 'Exercise'} tutorial`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  ></iframe>
+                </div>
+              ) : (
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Video Unavailable</AlertTitle>
+                  <AlertDescription>
+                    The video for this exercise is currently private or
+                    unavailable. Please check back later.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          )}
+
+          {/* Instructions box at the bottom */}
+          <InstructionsBox
+            description={exercise?.description || ''}
+            fallback={`Perform this exercise for ${displayDuration}. Focus on proper form and controlled movements.`}
+          />
+        </div>
       </div>
-    </div>
-  )
+    )
+  } catch (error) {
+    console.error('Error in WarmupPage:', error)
+    return notFound()
+  }
 }

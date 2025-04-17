@@ -19,43 +19,36 @@ export default async function StretchDetailPage({
   params: { id: string }
 }) {
   // Get the exercise ID from the URL parameters
-  const { id } = await params
+  const { id } = params
   const exerciseId = Number.parseInt(id)
 
   // Fetch the exercise data from the API
-  const apiUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
-  )
-  apiUrl.searchParams.append('id', exerciseId.toString())
+  // Simplified URL construction that works in all environments
+  const apiUrl = `/api/exercises?id=${exerciseId}`
+  
+  try {
+    const exerciseResponse = await fetch(apiUrl, { cache: 'no-store' })
 
-  const exerciseResponse = await fetch(apiUrl.toString())
+    if (!exerciseResponse.ok) {
+      console.error('Failed to fetch exercise:', await exerciseResponse.text())
+      return notFound()
+    }
 
-  if (!exerciseResponse.ok) {
-    return notFound()
-  }
+    const exercise: ExerciseWithLabels = await exerciseResponse.json()
 
-  const exercise: ExerciseWithLabels = await exerciseResponse.json()
+    // Fetch all stretch exercises - simplified URL
+    const allExercisesUrl = `/api/exercises?type=stretch`
+    const allExercisesResponse = await fetch(allExercisesUrl, { cache: 'no-store' })
+    
+    if (!allExercisesResponse.ok) {
+      console.error('Failed to fetch all exercises:', await allExercisesResponse.text())
+    }
+    
+    const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
 
-  // Fetch all stretch exercises
-  const allExercisesUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
-  )
-  allExercisesUrl.searchParams.append('type', 'stretch')
-
-  const allExercisesResponse = await fetch(allExercisesUrl.toString())
-  const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
-
-  if (!exercise) {
-    return notFound()
-  }
+    if (!exercise) {
+      return notFound()
+    }
 
   return (
     <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
@@ -76,18 +69,22 @@ export default async function StretchDetailPage({
         />
       </div>
 
-      {/* Title and metadata below the image */}
-      <div className="px-4 py-4">
-        <h1>{capitalizeWords(exercise?.name || 'Stretch Exercise')}</h1>
+        {/* Title and metadata below the image */}
+        <div className="px-4 py-4">
+          <h1>{capitalizeWords(exercise?.name || 'Stretch Exercise')}</h1>
 
-        {/* Remove the timer component */}
+          {/* Remove the timer component */}
 
-        {/* Instructions box at the bottom */}
-        <InstructionsBox
-          description={exercise?.description || ''}
-          fallback="Perform this stretch slowly and hold for 15-30 seconds. Focus on breathing deeply and relaxing into the stretch. Do not bounce or push to the point of pain."
-        />
+          {/* Instructions box at the bottom */}
+          <InstructionsBox
+            description={exercise?.description || ''}
+            fallback="Perform this stretch slowly and hold for 15-30 seconds. Focus on breathing deeply and relaxing into the stretch. Do not bounce or push to the point of pain."
+          />
+        </div>
       </div>
-    </div>
-  )
+    )
+  } catch (error) {
+    console.error('Error in StretchDetailPage:', error)
+    return notFound()
+  }
 }

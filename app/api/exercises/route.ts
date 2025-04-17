@@ -156,8 +156,8 @@ function getDefaultCategories(exerciseName: string): string[] {
     categories.push('Lower')
   }
 
-  // Assign FIR level (just a default)
-  categories.push('FIR: Low')
+  // Assign FIT level (just a default)
+  categories.push('FIT: Low')
 
   return categories
 }

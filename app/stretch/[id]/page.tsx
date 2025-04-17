@@ -19,7 +19,7 @@ export default async function StretchDetailPage({
   params: { id: string }
 }) {
   // Get the exercise ID from the URL parameters
-  const { id } = params
+  const { id } = await params
   const exerciseId = Number.parseInt(id)
 
   // Fetch the exercise data from the API using proper URL construction

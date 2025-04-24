@@ -125,6 +125,21 @@ export default function StretchPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1>Stretch</h1>
+      {/* Image section */}
+      <section className="mb-8">
+        <div className="rounded-lg overflow-hidden shadow-md">
+          <div className="flex justify-center">
+            <Image
+              src="https://live.staticflickr.com/65535/54398757288_bca1273e3a_w.jpg"
+              alt="Yoga stretching pose"
+              width={400}
+              height={600}
+              className="w-auto h-auto max-h-[500px] object-contain"
+              priority
+            />
+          </div>
+        </div>
+      </section>
 
       <section>
         <div className="flex justify-end items-center mb-4">
@@ -204,29 +219,6 @@ export default function StretchPage() {
             </div>
           </div>
         )}
-      </section>
-
-      {/* New section with just an image - updated to show full height */}
-      <section className="mt-12 mb-8">
-        <div className="rounded-lg overflow-hidden shadow-md">
-          <div className="flex justify-center">
-            <Image
-              src="https://live.staticflickr.com/65535/54398757288_bca1273e3a_w.jpg"
-              alt="Yoga stretching pose"
-              width={400}
-              height={600}
-              className="w-auto h-auto max-h-[500px] object-contain"
-              priority
-            />
-          </div>
-          <div className="bg-card p-4 text-center">
-            <h2 className="text-xl font-semibold">Improve Your Flexibility</h2>
-            <p className="text-muted-foreground">
-              Regular stretching helps increase your range of motion and reduces
-              risk of injury
-            </p>
-          </div>
-        </div>
       </section>
     </div>
   )

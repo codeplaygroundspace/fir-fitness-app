@@ -19,6 +19,7 @@ export default function StretchPage() {
   const [loading, setLoading] = useState(true)
   const [isSingleColumn, setIsSingleColumn] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
 
   useEffect(() => {
     async function loadExercises() {
@@ -107,6 +108,11 @@ export default function StretchPage() {
     setIsSingleColumn(!isSingleColumn)
   }
 
+  const handleNumberClick = (number: number) => {
+    setSelectedNumber(number)
+    // Additional logic can be added here
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
       <h1>Stretch</h1>
@@ -123,6 +129,24 @@ export default function StretchPage() {
               priority
             />
           </div>
+        </div>
+      </section>
+
+      {/* Numbered buttons section */}
+      <section className="mb-8">
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+          {Array.from({ length: 17 }, (_, i) => i + 1).map((number) => (
+            <Button
+              key={number}
+              variant={selectedNumber === number ? "default" : "outline"}
+              size="lg"
+              className="h-14 w-14 rounded-full text-xl font-bold"
+              onClick={() => handleNumberClick(number)}
+              aria-label={`Number ${number}`}
+            >
+              {number}
+            </Button>
+          ))}
         </div>
       </section>
 

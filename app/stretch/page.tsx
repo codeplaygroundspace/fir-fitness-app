@@ -103,21 +103,6 @@ export default function StretchPage() {
     loadExercises()
   }, [])
 
-  const shuffleExercises = () => {
-    setStretchExercises((prevExercises) => {
-      // Create a copy of the array
-      const shuffled = [...prevExercises]
-
-      // Fisher-Yates shuffle algorithm
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-
-      return shuffled
-    })
-  }
-
   const toggleLayout = () => {
     setIsSingleColumn(!isSingleColumn)
   }
@@ -146,8 +131,6 @@ export default function StretchPage() {
           <ViewControls
             isSingleColumn={isSingleColumn}
             onToggleLayout={toggleLayout}
-            onShuffle={shuffleExercises}
-            shuffleDisabled={stretchExercises.length === 0}
           />
         </div>
 

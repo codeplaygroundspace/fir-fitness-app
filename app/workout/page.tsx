@@ -173,21 +173,6 @@ export default function WorkoutPage() {
     setSelectedFilters(filters)
   }
 
-  const shuffleGroups = () => {
-    setExerciseGroups((prevGroups) => {
-      // Create a copy of the array
-      const shuffled = [...prevGroups]
-
-      // Fisher-Yates shuffle algorithm
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-
-      return shuffled
-    })
-  }
-
   const toggleLayout = () => {
     setIsSingleColumn(!isSingleColumn)
   }
@@ -235,10 +220,6 @@ export default function WorkoutPage() {
             <Button variant="outline" size="sm" onClick={toggleLayout} className="flex items-center gap-1">
               {isSingleColumn ? <LayoutGrid className="h-4 w-4" /> : <LayoutList className="h-4 w-4" />}
               {isSingleColumn ? "Grid" : "List"}
-            </Button>
-            <Button variant="outline" size="sm" onClick={shuffleGroups} className="flex items-center gap-1">
-              <Shuffle className="h-4 w-4" />
-              Shuffle
             </Button>
           </div>
         </div>

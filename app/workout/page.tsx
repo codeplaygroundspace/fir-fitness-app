@@ -1,23 +1,16 @@
 "use client"
 
-import { Info } from "@/components/common/info"
-import { CategoryFilter } from "@/components/exercises/category-filter"
-import { ExerciseCard } from "@/components/exercises/exercise-card"
+import { useState, useEffect, useMemo } from "react"
+import { ArrowLeft, LayoutGrid, LayoutList, Shuffle } from "lucide-react"
+import { ExerciseFilters } from "@/components/exercises/exercise-filters"
 import { Button } from "@/components/ui/button"
-import { LayoutGrid, LayoutList, Shuffle } from "lucide-react"
-import { useEffect, useMemo, useState } from "react"
-import { getExerciseGroups, type ExerciseGroup } from "../actions"
+import { ExerciseCard } from "@/components/exercises/exercise-card"
+import { Info } from "@/components/common/info"
 import { capitalizeFirstLetter } from "@/lib/text-utils"
+import { getExerciseGroups, type ExerciseGroup } from "../actions"
 
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
-
-// Map FIR level names to display names
-const FIR_LEVELS = {
-  "high": "FIR: High",
-  "moderate": "FIR: Moderate",
-  "low": "FIR: Low"
-}
 
 // Helper function to format FIR level names
 const formatFirLevel = (levelName: string | null): string => {
@@ -33,8 +26,15 @@ const LS_KEYS = {
   TIMESTAMP: "workout-groups-timestamp"
 };
 
-// Default body categories if none are found
-const DEFAULT_BODY_CATEGORIES = ["Upper", "Middle", "Lower"];
+// Default body categories if none are found in the database
+const DEFAULT_BODY_CATEGORIES = ["Upper", "Middle", "Lower"]
+
+// Default FIR levels if none are found in the database
+const FIR_LEVELS = {
+  LOW: "FIR: Low",
+  MODERATE: "FIR: Moderate",
+  HIGH: "FIR: High"
+}
 
 export default function WorkoutPage() {
   const [exerciseGroups, setExerciseGroups] = useState<ExerciseGroup[]>([])
@@ -217,13 +217,13 @@ export default function WorkoutPage() {
         </p>
         <ul className="mt-2 text-sm text-muted-foreground list-disc pl-5 space-y-1">
           <li>
-            FIR: High 🔴 = Maximal Relative Effort (Push yourself to the max when doing this exercise)
+            <strong>FIR: High 🔴</strong> Maximal Relative Effort (Push yourself to the max when doing this exercise)
           </li>
           <li>
-          FIR: Mod = Moderate Relative Effort
+            <strong>FIR: Moderate 🟡</strong> Moderate Relative Effort
           </li>
           <li>
-          FIR: Low = Minimal Relative Effort (Don't push too hard - just maintain your current strength) 
+            <strong>FIR: Low 🟢</strong> Minimal Relative Effort (Don't push too hard - just maintain your current strength) 
           </li>
         </ul>
       </Info>
@@ -243,7 +243,7 @@ export default function WorkoutPage() {
           </div>
         </div>
 
-        <CategoryFilter categories={allCategories} onFilterChange={handleFilterChange} />
+        <ExerciseFilters categories={allCategories} onFilterChange={handleFilterChange} />
 
         {loading ? (
           <div className={`grid ${isSingleColumn ? "grid-cols-1" : "grid-cols-2"} gap-4`}>

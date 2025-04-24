@@ -86,10 +86,44 @@ export async function GET(request: Request) {
         )
       }
 
-      // Import directly here to avoid circular dependencies
-      const { getExercisesByGroup } = await import('@/app/actions')
-      const exercises = await getExercisesByGroup(groupId)
-      return NextResponse.json(exercises)
+      try {
+        // Import directly here to avoid circular dependencies
+        const { getExercisesByGroup } = await import('@/app/actions')
+        const exercises = await getExercisesByGroup(groupId)
+        
+        // Ensure each exercise has categories, especially FIR categories
+        const exercisesWithCategories = exercises.map(exercise => {
+          if (!exercise.categories || exercise.categories.length === 0) {
+            // Add default categories
+            return {
+              ...exercise,
+              categories: getDefaultCategories(exercise.name)
+            };
+          }
+          
+          // Check if there's already a FIR category
+          const hasFirCategory = exercise.categories.some(cat => cat.startsWith('FIR:'));
+          
+          if (!hasFirCategory) {
+            // Add a default FIR category if none exists
+            return {
+              ...exercise,
+              categories: [...exercise.categories, 'FIR: Low']
+            };
+          }
+          
+          console.log(`Exercise ${exercise.name} has categories:`, exercise.categories);
+          return exercise;
+        });
+        
+        return NextResponse.json(exercisesWithCategories)
+      } catch (error) {
+        console.error('Error fetching exercises by group:', error);
+        return NextResponse.json(
+          { error: 'Failed to fetch exercises for this group' },
+          { status: 500 }
+        );
+      }
     }
 
     // Handle type-based query
@@ -156,8 +190,9 @@ function getDefaultCategories(exerciseName: string): string[] {
     categories.push('Lower')
   }
 
-  // Assign Workout level (just a default)
-  categories.push('Workout: Low')
-
+  // Assign FIR level (just a default)
+  categories.push('FIR: Low')
+  
+  console.log(`Default categories for exercise "${exerciseName}":`, categories);
   return categories
 }

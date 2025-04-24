@@ -3,6 +3,7 @@ import ExerciseImage from "@/components/exercises/exercise-image"
 import { DurationLabel } from "@/components/exercises/duration-label"
 import { RepsLabel } from "@/components/exercises/reps-label"
 import { CategoryLabel } from "@/components/exercises/category-label"
+import { Card, CardContent } from "@/components/ui/card"
 import type { ExerciseCardProps } from "@/lib/types"
 import { capitalizeFirstLetter } from "@/lib/text-utils"
 
@@ -18,12 +19,21 @@ export function ExerciseCard({
   showCategories = false,
 }: ExerciseCardProps) {
   const formattedName = capitalizeFirstLetter(name)
+  
+  // Debug categories
+  console.log(`Exercise card ${id} (${name}) categories:`, categories, 'showCategories:', showCategories);
+
+  // Log any FIR categories
+  const firCategories = categories?.filter(c => c.startsWith('FIR:')) || [];
+  if (firCategories.length > 0) {
+    console.log(`Exercise ${name} has FIR categories:`, firCategories);
+  }
 
   return (
-    <article className="h-full">
+    <Card className="h-full">
       <Link
         href={`${linkPrefix}/${id}`}
-        className="block h-full rounded-lg overflow-hidden bg-card shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
+        className="block h-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
         aria-labelledby={`exercise-title-${id}`}
       >
         <div className="aspect-video relative">
@@ -35,27 +45,30 @@ export function ExerciseCard({
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="p-3">
+        <CardContent className="p-3">
           <h2 id={`exercise-title-${id}`} className="font-heading font-medium text-xl mb-2 text-card-foreground">
             {formattedName}
           </h2>
 
           {showLabels && (
-            <div className="flex flex-wrap gap-4 mt-1" aria-label="Exercise details">
+            <div className="flex flex-wrap gap-4 mt-1 mb-2" aria-label="Exercise details">
               {duration && <DurationLabel duration={duration} />}
               {reps && <RepsLabel reps={reps} />}
             </div>
           )}
 
-          {showCategories && categories && categories.length > 0 && (
-            <div className="flex flex-wrap" aria-label="Exercise categories">
-              {categories.map((category, index) => (
+          {/* Always render categories for debugging */}
+          <div className="flex flex-wrap mt-2" aria-label="Exercise categories">
+            {showCategories && categories && categories.length > 0 ? (
+              categories.map((category, index) => (
                 <CategoryLabel key={index} category={category} />
-              ))}
-            </div>
-          )}
-        </div>
+              ))
+            ) : (
+              <span className="text-xs text-muted-foreground">No categories available</span>
+            )}
+          </div>
+        </CardContent>
       </Link>
-    </article>
+    </Card>
   )
 }

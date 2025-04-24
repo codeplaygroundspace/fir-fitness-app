@@ -247,9 +247,21 @@ export interface CategoryLabelProps {
   className?: string
 }
 
-export interface CategoryFilterProps {
+export interface ExerciseFiltersProps {
   categories: string[]
   onFilterChange: (selectedCategories: string[]) => void
+}
+
+export interface BodySectionFilterProps {
+  categories: string[]
+  selectedCategories: string[]
+  onFilterChange: (selected: string[]) => void
+}
+
+export interface FIRFilterProps {
+  categories: string[]
+  selectedCategories: string[]
+  onFilterChange: (selected: string[]) => void
 }
 
 export interface InstructionsBoxProps {

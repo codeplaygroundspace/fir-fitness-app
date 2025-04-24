@@ -484,7 +484,7 @@ export async function getExercisesByGroup(
     // First, get the group details to know what we're looking for
     const { data: group, error: groupError } = await supabaseServer
       .from('exercise_groups')
-      .select('*')
+      .select('*, exercise_body_section!inner(*), exercise_fir!inner(*)')
       .eq('id', groupId)
       .single()
 
@@ -492,6 +492,8 @@ export async function getExercisesByGroup(
       console.error(`Error fetching group ${groupId}:`, groupError)
       return []
     }
+
+    console.log(`Group data for ${groupId}:`, JSON.stringify(group, null, 2));
 
     // Primary approach: Use the exercise_group column (this is the correct column name)
     // We need to convert groupId to string since that's how it's stored in the database
@@ -501,24 +503,129 @@ export async function getExercisesByGroup(
       .eq('exercise_group', groupId.toString())
 
     if (!groupError2 && exercisesByGroup && exercisesByGroup.length > 0) {
+      // Extract body section and FIR level data properly
+      let bodySection = null;
+      let firLevel = 'Low';
+      
+      // Handle multiple possible data structures from Supabase
+      if (group.exercise_body_section) {
+        if (typeof group.exercise_body_section === 'object') {
+          // It could be an array or a single object
+          if (Array.isArray(group.exercise_body_section)) {
+            bodySection = group.exercise_body_section[0]?.body_section || null;
+          } else {
+            bodySection = group.exercise_body_section.body_section || null;
+          }
+        }
+      }
+      
+      // Same for FIR level
+      if (group.exercise_fir) {
+        if (typeof group.exercise_fir === 'object') {
+          if (Array.isArray(group.exercise_fir)) {
+            firLevel = group.exercise_fir[0]?.name || 'Low';
+          } else {
+            firLevel = group.exercise_fir.name || 'Low';
+          }
+        }
+      }
+      
+      // Fallback for body section using direct property
+      if (!bodySection && group.body_sec) {
+        // Get body sections directly
+        const { data: bodySectionData } = await supabaseServer
+          .from('exercise_body_section')
+          .select('body_section')
+          .eq('id', group.body_sec)
+          .single();
+        
+        if (bodySectionData) {
+          bodySection = bodySectionData.body_section;
+        }
+      }
+      
+      // Fallback for FIR level using direct property
+      if (firLevel === 'Low' && group.fir_level) {
+        // Get FIR level directly
+        const { data: firData } = await supabaseServer
+          .from('exercise_fir')
+          .select('name')
+          .eq('id', group.fir_level)
+          .single();
+        
+        if (firData) {
+          firLevel = firData.name;
+        }
+      }
+      
+      console.log(`Group ${groupId} body section: ${bodySection}, FIR level: ${firLevel}`);
+      
       // Map to the expected format
-      return exercisesByGroup.map((exercise) => ({
-        id: exercise.id,
-        name: exercise.name,
-        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
-        description: exercise.ex_description,
-        duration: exercise.duration || null,
-        reps: exercise.reps || null,
-        labels: [],
-        categories: getDefaultCategories(exercise.name),
-      }))
+      return exercisesByGroup.map((exercise) => {
+        // Build categories list
+        const categories = [];
+        
+        // Add body region if available
+        if (bodySection) {
+          // Capitalize first letter of body section
+          categories.push(bodySection.charAt(0).toUpperCase() + bodySection.slice(1));
+        } else {
+          // Use a default based on the exercise name
+          const defaultCategories = getDefaultCategories(exercise.name);
+          const bodyRegion = defaultCategories.find(cat => ['Upper', 'Middle', 'Lower'].includes(cat));
+          if (bodyRegion) {
+            categories.push(bodyRegion);
+          }
+        }
+        
+        // Add FIR level - ensure it's in the correct format
+        categories.push(`FIR: ${firLevel}`);
+        
+        console.log(`Exercise ${exercise.id} (${exercise.name}) categories:`, categories);
+        
+        return {
+          id: exercise.id,
+          name: exercise.name,
+          image: exercise.image_url || '/placeholder.svg?height=200&width=300',
+          description: exercise.ex_description,
+          duration: exercise.duration || null,
+          reps: exercise.reps || null,
+          labels: [],
+          categories: categories,
+        }
+      })
     }
 
+    console.log(`No exercises found for group ${groupId}`);
     // If no exercises found with the exact exercise_group, we'll return an empty array
-    // This is what the user wants - only show exercises that match the specific group
     return []
   } catch (error) {
     console.error(`Error in getExercisesByGroup for ${groupId}:`, error)
     return []
+  }
+}
+
+// Add this new function to fetch body sections from the database
+export async function getBodySections(): Promise<string[]> {
+  try {
+    const { data, error } = await supabaseServer
+      .from('exercise_body_section')
+      .select('body_section')
+      .order('id', { ascending: true })
+
+    if (error) {
+      console.error('Error fetching body sections:', error)
+      return ['lower', 'middle', 'upper'] // Fallback order
+    }
+
+    if (!data || data.length === 0) {
+      return ['lower', 'middle', 'upper'] // Fallback order if no data
+    }
+
+    // Extract the body_section values
+    return data.map(item => item.body_section)
+  } catch (error) {
+    console.error('Error in getBodySections:', error)
+    return ['lower', 'middle', 'upper'] // Fallback order if error
   }
 }

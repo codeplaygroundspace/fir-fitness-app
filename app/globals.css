@@ -31,6 +31,10 @@
     --destructive: 0 100% 45%;
     --destructive-foreground: 0 0% 100%;
 
+    /* Success color for positive messages/indicators */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
     --border: 0 0% 85%; /* Slightly darker border for better visibility */
     --input: 0 0% 85%;
     --ring: 25 100% 50%; /* Match primary */
@@ -65,6 +69,10 @@
 
     --destructive: 0 100% 40%;
     --destructive-foreground: 0 0% 95%;
+
+    /* Success color for positive messages/indicators */
+    --success: 142 76% 42%;
+    --success-foreground: 0 0% 100%;
 
     --border: 0 0% 25%; /* Slightly lighter border for better visibility */
     --input: 0 0% 25%;

@@ -11,15 +11,15 @@ import { getExerciseGroups, type ExerciseGroup } from "../actions"
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
 
-// Map FIT level names to display names
-const FIT_LEVELS = {
-  "high": "FIT: High",
-  "moderate": "FIT: Moderate",
-  "low": "FIT: Low",
-  "very high": "FIT: Very High"
+// Map Workout level names to display names
+const WORKOUT_LEVELS = {
+  "high": "Workout: High",
+  "moderate": "Workout: Moderate",
+  "low": "Workout: Low",
+  "very high": "Workout: Very High"
 }
 
-export default function FitPage() {
+export default function WorkoutPage() {
   const [exerciseGroups, setExerciseGroups] = useState<ExerciseGroup[]>([])
   const [loading, setIsLoading] = useState(true)
   const [isSingleColumn, setIsSingleColumn] = useState(false)
@@ -31,8 +31,8 @@ export default function FitPage() {
       setIsLoading(true)
       try {
         // Check localStorage first
-        const cachedData = localStorage.getItem("fit-groups")
-        const cachedTimestamp = localStorage.getItem("fit-groups-timestamp")
+        const cachedData = localStorage.getItem("workout-groups")
+        const cachedTimestamp = localStorage.getItem("workout-groups-timestamp")
 
         // If we have cached data and it's not expired
         if (cachedData && cachedTimestamp) {
@@ -56,8 +56,8 @@ export default function FitPage() {
         } else {
           setExerciseGroups(groups)
           // Save to localStorage with timestamp
-          localStorage.setItem("fit-groups", JSON.stringify(groups))
-          localStorage.setItem("fit-groups-timestamp", Date.now().toString())
+          localStorage.setItem("workout-groups", JSON.stringify(groups))
+          localStorage.setItem("workout-groups-timestamp", Date.now().toString())
         }
       } catch (error) {
         console.error("Error loading exercise groups:", error)
@@ -65,7 +65,7 @@ export default function FitPage() {
 
         // If API fails, try to use cached data even if expired
         try {
-          const cachedData = localStorage.getItem("fit-groups")
+          const cachedData = localStorage.getItem("workout-groups")
           if (cachedData) {
             setExerciseGroups(JSON.parse(cachedData))
           }
@@ -94,14 +94,14 @@ export default function FitPage() {
     return Array.from(sections)
   }, [exerciseGroups])
   
-  // Get unique FIT levels from exercise groups
-  const availableFitLevels = useMemo(() => {
+  // Get unique Workout levels from exercise groups
+  const availableWorkoutLevels = useMemo(() => {
     const levels = new Set<string>()
     
     exerciseGroups.forEach(group => {
       if (group.fit_level_name) {
-        const displayName = FIT_LEVELS[group.fit_level_name as keyof typeof FIT_LEVELS] || 
-          `FIT: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`;
+        const displayName = WORKOUT_LEVELS[group.fit_level_name as keyof typeof WORKOUT_LEVELS] || 
+          `Workout: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`;
         levels.add(displayName);
       }
     })
@@ -110,22 +110,22 @@ export default function FitPage() {
     return result;
   }, [exerciseGroups])
 
-  // Define categories for the filter including dynamic body sections and FIT levels
+  // Define categories for the filter including dynamic body sections and Workout levels
   const allCategories = useMemo(() => {
     // Use body sections from the database, or fall back to static options
     const bodyCategories = availableBodySections.length > 0
       ? availableBodySections
       : ["Upper", "Middle", "Lower"]
     
-    // Use FIT levels from the database, or fall back to static options
-    const fitCategories = availableFitLevels.length > 0 
-      ? availableFitLevels
-      : ["FIT: High", "FIT: Moderate", "FIT: Low", "FIT: Very High"]
+    // Use Workout levels from the database, or fall back to static options
+    const workoutCategories = availableWorkoutLevels.length > 0 
+      ? availableWorkoutLevels
+      : ["Workout: High", "Workout: Moderate", "Workout: Low", "Workout: Very High"]
     
-    const result = [...bodyCategories, ...fitCategories];
+    const result = [...bodyCategories, ...workoutCategories];
     
     return result;
-  }, [availableBodySections, availableFitLevels])
+  }, [availableBodySections, availableWorkoutLevels])
 
   // Filter exercise groups based on selected categories
   const filteredGroups = useMemo(() => {
@@ -134,10 +134,10 @@ export default function FitPage() {
     }
 
     // Check if we have any body region filters
-    const bodyFilters = selectedFilters.filter((filter) => !filter.startsWith("FIT:"))
+    const bodyFilters = selectedFilters.filter((filter) => !filter.startsWith("Workout:"))
 
-    // Check if we have any FIT level filters
-    const fitFilters = selectedFilters.filter((filter) => filter.startsWith("FIT:"))
+    // Check if we have any Workout level filters
+    const workoutFilters = selectedFilters.filter((filter) => filter.startsWith("Workout:"))
 
     return exerciseGroups.filter((group) => {
       // If we have body filters, check if the group matches any of them
@@ -150,14 +150,14 @@ export default function FitPage() {
         }
       }
 
-      // If we have FIT filters, check if the group matches any of them
-      if (fitFilters.length > 0) {
+      // If we have Workout filters, check if the group matches any of them
+      if (workoutFilters.length > 0) {
         if (!group.fit_level_name) return false
         
-        const groupFitDisplay = FIT_LEVELS[group.fit_level_name as keyof typeof FIT_LEVELS] || 
-          `FIT: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`
+        const groupWorkoutDisplay = WORKOUT_LEVELS[group.fit_level_name as keyof typeof WORKOUT_LEVELS] || 
+          `Workout: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`
         
-        if (!fitFilters.includes(groupFitDisplay)) {
+        if (!workoutFilters.includes(groupWorkoutDisplay)) {
           return false
         }
       }
@@ -195,17 +195,17 @@ export default function FitPage() {
     return group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
   }
 
-  // Helper function to get FIT level display name
-  const getFitLevelName = (fitLevel: string | null): string => {
+  // Helper function to get Workout level display name
+  const getWorkoutLevelName = (fitLevel: string | null): string => {
     if (!fitLevel) return "Unknown"
     
     // Check if it's in our mapping
-    if (FIT_LEVELS[fitLevel as keyof typeof FIT_LEVELS]) {
-      return FIT_LEVELS[fitLevel as keyof typeof FIT_LEVELS];
+    if (WORKOUT_LEVELS[fitLevel as keyof typeof WORKOUT_LEVELS]) {
+      return WORKOUT_LEVELS[fitLevel as keyof typeof WORKOUT_LEVELS];
     }
     
-    // Otherwise, create a properly formatted name with FIT: prefix
-    return `FIT: ${fitLevel.charAt(0).toUpperCase() + fitLevel.slice(1)}`;
+    // Otherwise, create a properly formatted name with Workout: prefix
+    return `Workout: ${fitLevel.charAt(0).toUpperCase() + fitLevel.slice(1)}`;
   }
 
   // Create categories for each group
@@ -217,7 +217,7 @@ export default function FitPage() {
     }
     
     if (group.fit_level_name) {
-      categories.push(getFitLevelName(group.fit_level_name))
+      categories.push(getWorkoutLevelName(group.fit_level_name))
     }
     
     return categories
@@ -225,25 +225,25 @@ export default function FitPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1>FIT</h1>
+      <h1>Workout</h1>
 
       <Info>
         <p className="text-sm text-muted-foreground">
           Below are 8 Functional Moves, each offering multiple exercise variations. The higher your Functional Imbalance
-          Target (FIT) for each Functional Move, the more effort you should exert when performing that exercise:
+          Target (Workout) for each Functional Move, the more effort you should exert when performing that exercise:
         </p>
         <ul className="mt-2 text-sm text-muted-foreground list-disc pl-5 space-y-1">
           <li>
-            <strong>FIT: Very High 🔴</strong> = Maximum Intensity Effort (Push beyond your limits for this exercise)
+            <strong>Workout: Very High 🔴</strong> = Maximum Intensity Effort (Push beyond your limits for this exercise)
           </li>
           <li>
-            <strong>FIT: High 🔴</strong> = High Relative Effort (Push yourself to the max when doing this exercise)
+            <strong>Workout: High 🔴</strong> = High Relative Effort (Push yourself to the max when doing this exercise)
           </li>
           <li>
-            <strong>FIT: Mod</strong> = Moderate Relative Effort
+            <strong>Workout: Mod</strong> = Moderate Relative Effort
           </li>
           <li>
-            <strong>FIT: Low</strong> = Minimal Relative Effort (Don't push too hard - just maintain your current
+            <strong>Workout: Low</strong> = Minimal Relative Effort (Don't push too hard - just maintain your current
             strength)
           </li>
         </ul>
@@ -286,7 +286,7 @@ export default function FitPage() {
                 id={group.id}
                 name={group.name}
                 image={group.image_url || "/placeholder.svg?height=200&width=300"}
-                linkPrefix="/fit/group"
+                linkPrefix="/workout/group"
                 categories={getGroupCategories(group)}
                 showCategories={true}
               />
@@ -298,7 +298,7 @@ export default function FitPage() {
               <p className="text-red-500">{error}</p>
             ) : (
               <p className="text-muted-foreground">
-                No FIT exercise groups found. Please add some groups to get started.
+                No Workout exercise groups found. Please add some groups to get started.
               </p>
             )}
           </div>

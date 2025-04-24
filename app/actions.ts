@@ -171,16 +171,16 @@ export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
 
 // Update the getFitExercises function to handle the missing exercise_id column
 
-export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
+export async function getWorkoutExercises(): Promise<ExerciseWithLabels[]> {
   try {
-    // First, try to get the FIT category ID
+    // First, try to get the Workout category ID
     const { data: categoryData, error: categoryError } = await supabaseServer
       .from('categories')
       .select('id, name')
-      .ilike('name', '%fit%') // Only search for "fit" pattern
+      .ilike('name', '%workout%') // Search for "workout" pattern
 
     if (categoryError) {
-      console.error('Error fetching FIT category:', categoryError)
+      console.error('Error fetching Workout category:', categoryError)
       return []
     }
 
@@ -194,16 +194,16 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
     }
 
     // Use the first category that matches
-    const fitCategoryId = categoryData[0].id
+    const workoutCategoryId = categoryData[0].id
 
-    // Now get all exercises in the FIT category
+    // Now get all exercises in the Workout category
     const { data: exercises, error: exercisesError } = await supabaseServer
       .from('exercises')
       .select('*')
-      .eq('category_id', fitCategoryId)
+      .eq('category_id', workoutCategoryId)
 
     if (exercisesError) {
-      console.error('Error fetching FIT exercises:', exercisesError)
+      console.error('Error fetching Workout exercises:', exercisesError)
       return []
     }
 
@@ -220,10 +220,10 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
         return [
           {
             id: 0,
-            name: 'Sample FIT Exercise',
+            name: 'Sample Workout Exercise',
             image: '/placeholder.svg?height=200&width=300',
             description:
-              'This is a placeholder. No FIT exercises found in the database.',
+              'This is a placeholder. No Workout exercises found in the database.',
             duration: '60',
             reps: null,
             labels: [],
@@ -259,7 +259,7 @@ export async function getFitExercises(): Promise<ExerciseWithLabels[]> {
       }
     })
   } catch (error) {
-    console.error('Unexpected error in getFitExercises:', error)
+    console.error('Unexpected error in getWorkoutExercises:', error)
     return []
   }
 }
@@ -333,7 +333,7 @@ function getDefaultCategories(exerciseName: string): string[] {
 
 // Add a function to get exercises by type (to replace getExercisesByType)
 export async function getExercisesByType(
-  type: 'warmup' | 'stretch' | 'fit'
+  type: 'warmup' | 'stretch' | 'workout'
 ): Promise<ExerciseWithLabels[]> {
   try {
     // Map the type to the appropriate category name pattern
@@ -345,8 +345,8 @@ export async function getExercisesByType(
       case 'stretch':
         categoryPattern = '%stretch%'
         break
-      case 'fit':
-        categoryPattern = '%fit%'
+      case 'workout':
+        categoryPattern = '%workout%'
         break
     }
 

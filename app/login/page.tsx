@@ -71,7 +71,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-[350px] mb-4">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl" id="login-heading">
-            Welcome to FIT
+            Welcome
           </CardTitle>
           <CardDescription>Sign in to access your fitness app</CardDescription>
         </CardHeader>

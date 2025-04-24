@@ -6,14 +6,14 @@ import { supabaseServer } from '@/lib/supabase'
 const CATEGORY_IDS = {
   warmup: '268c3c11-5c85-44a5-82f2-88801189ea0b',
   stretch: '4afc93b4-8465-49fd-ab2d-678a3fccd71e',
-  fit: '976adc34-76e5-44fd-b5b4-b7ff5117a27d',
+  workout: '976adc34-76e5-44fd-b5b4-b7ff5117a27d',
 }
 
 // Default durations for different exercise types
 const DEFAULT_DURATIONS = {
   warmup: '30',
   stretch: '15-30',
-  fit: '60',
+  workout: '60',
 }
 
 export async function GET(request: Request) {
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     const type = url.searchParams.get('type') as
       | 'warmup'
       | 'stretch'
-      | 'fit'
+      | 'workout'
       | null
     const group = url.searchParams.get('group')
     const id = url.searchParams.get('id')
@@ -69,9 +69,9 @@ export async function GET(request: Request) {
     }
 
     // Validate exercise type if provided
-    if (type && !['warmup', 'stretch', 'fit'].includes(type)) {
+    if (type && !['warmup', 'stretch', 'workout'].includes(type)) {
       return NextResponse.json(
-        { error: 'Invalid exercise type. Must be warmup, stretch, or fit.' },
+        { error: 'Invalid exercise type. Must be warmup, stretch, or workout.' },
         { status: 400 }
       )
     }
@@ -102,8 +102,8 @@ export async function GET(request: Request) {
         defaultDuration
       )
 
-      // Add categories for FIT exercises
-      if (type === 'fit') {
+      // Add categories for Workout exercises
+      if (type === 'workout') {
         exercises = exercises.map((exercise) => ({
           ...exercise,
           categories: getDefaultCategories(exercise.name),
@@ -117,7 +117,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         error:
-          'Please specify a type (warmup, stretch, fit), group ID, or exercise ID.',
+          'Please specify a type (warmup, stretch, workout), group ID, or exercise ID.',
       },
       { status: 400 }
     )
@@ -156,8 +156,8 @@ function getDefaultCategories(exerciseName: string): string[] {
     categories.push('Lower')
   }
 
-  // Assign FIT level (just a default)
-  categories.push('FIT: Low')
+  // Assign Workout level (just a default)
+  categories.push('Workout: Low')
 
   return categories
 }

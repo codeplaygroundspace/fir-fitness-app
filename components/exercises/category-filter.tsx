@@ -4,6 +4,10 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import type { CategoryFilterProps } from "@/lib/types"
 
+// Constants for the different filter types
+const BODY_REGIONS = ["Upper", "Middle", "Lower"];
+const FIR_PREFIX = "FIR:";
+
 export function CategoryFilter({ categories, onFilterChange }: CategoryFilterProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
@@ -18,15 +22,24 @@ export function CategoryFilter({ categories, onFilterChange }: CategoryFilterPro
     )
   }
 
+  // Identify body region categories and FIR level categories
+  const bodyCategories = categories.filter(category => 
+    BODY_REGIONS.includes(category) || 
+    (!category.startsWith(FIR_PREFIX) && category)
+  );
+  
+  const firCategories = categories.filter(category => 
+    category.startsWith(FIR_PREFIX)
+  );
+
   return (
     <div className="mb-4">
       <div className="space-y-2 mb-2">
         {/* Body regions row */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="font-medium text-sm mr-1">Body:</span>
-          {categories
-            .filter((category) => ["Upper", "Middle", "Lower"].includes(category))
-            .map((category) => (
+        {bodyCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="font-medium text-sm mr-1">Body:</span>
+            {bodyCategories.map((category) => (
               <Button
                 key={category}
                 variant="outline"
@@ -39,14 +52,14 @@ export function CategoryFilter({ categories, onFilterChange }: CategoryFilterPro
                 {category}
               </Button>
             ))}
-        </div>
+          </div>
+        )}
 
         {/* FIR levels row */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="font-medium text-sm mr-1">Workout:</span>
-          {categories
-            .filter((category) => category.includes("Workout:"))
-            .map((category) => (
+        {firCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="font-medium text-sm mr-1">Functional Imbalance Risk (FIR):</span>
+            {firCategories.map((category) => (
               <Button
                 key={category}
                 variant="outline"
@@ -56,10 +69,11 @@ export function CategoryFilter({ categories, onFilterChange }: CategoryFilterPro
                   selectedCategories.includes(category) ? "bg-primary/10 text-primary hover:bg-primary/20" : ""
                 }`}
               >
-                {category.replace("Workout: ", "")}
+                {category.replace(FIR_PREFIX, "")}
               </Button>
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )

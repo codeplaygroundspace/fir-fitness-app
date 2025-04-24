@@ -11,8 +11,8 @@ export type ExerciseGroup = {
   image_url: string | null
   body_sec: number
   body_section_name: string | null
-  fit_level: number | null
-  fit_level_name: string | null
+  fir_level: number | null
+  fir_level_name: string | null
   category_id?: string | null // Allow null value
 }
 
@@ -420,8 +420,8 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
       const groupIds = fallbackData.map(g => g.id);
       
       // Get the intensity levels
-      const { data: intensityData } = await supabaseServer
-        .from('exercise_intensity')
+      const { data: firData } = await supabaseServer
+        .from('exercise_fir')
         .select('id, name');
         
       // Get the body sections
@@ -430,7 +430,7 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
         .select('id, body_section');
         
       // Create lookups
-      const intensityMap = (intensityData || []).reduce((acc, item) => {
+      const firMap = (firData || []).reduce((acc, item) => {
         acc[item.id] = item.name;
         return acc;
       }, {} as Record<number, string>);
@@ -449,8 +449,8 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
           image_url: group.image_url,
           body_sec: group.body_sec,
           body_section_name: group.body_sec ? bodySectionMap[group.body_sec] || null : null,
-          fit_level: group.fir_level,
-          fit_level_name: group.fir_level ? intensityMap[group.fir_level] || null : null,
+          fir_level: group.fir_level,
+          fir_level_name: group.fir_level ? firMap[group.fir_level] || null : null,
           category_id: null // No category_id column in the database
         };
         
@@ -466,8 +466,8 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
       image_url: group.image_url,
       body_sec: group.body_sec,
       body_section_name: group.body_section || null,
-      fit_level: group.fir_level,
-      fit_level_name: group.intensity_name || null,
+      fir_level: group.fir_level,
+      fir_level_name: group.fir_name || null,
       category_id: null // No category_id in our database
     }));
   } catch (error) {

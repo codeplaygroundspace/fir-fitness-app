@@ -95,22 +95,6 @@ export default function ExerciseGroupPage() {
     setIsSingleColumn(!isSingleColumn)
   }
 
-  // Shuffle exercises
-  const shuffleExercises = () => {
-    setExercises((prevExercises) => {
-      // Create a copy of the array
-      const shuffled = [...prevExercises]
-
-      // Fisher-Yates shuffle algorithm
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-
-      return shuffled
-    })
-  }
-
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-6">
@@ -137,8 +121,6 @@ export default function ExerciseGroupPage() {
         <ViewControls
           isSingleColumn={isSingleColumn}
           onToggleLayout={toggleLayout}
-          onShuffle={shuffleExercises}
-          shuffleDisabled={exercises.length === 0}
         />
       </div>
 

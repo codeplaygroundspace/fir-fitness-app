@@ -7,17 +7,34 @@ import { Button } from "@/components/ui/button"
 import { LayoutGrid, LayoutList, Shuffle } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { getExerciseGroups, type ExerciseGroup } from "../actions"
+import { capitalizeFirstLetter } from "@/lib/text-utils"
 
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
 
-// Map Workout level names to display names
-const WORKOUT_LEVELS = {
-  "high": "Workout: High",
-  "moderate": "Workout: Moderate",
-  "low": "Workout: Low",
-  "very high": "Workout: Very High"
+// Map FIR level names to display names
+const FIR_LEVELS = {
+  "high": "FIR: High",
+  "moderate": "FIR: Moderate",
+  "low": "FIR: Low"
 }
+
+// Helper function to format FIR level names
+const formatFirLevel = (levelName: string | null): string => {
+  if (!levelName) return "Unknown";
+  
+  return FIR_LEVELS[levelName as keyof typeof FIR_LEVELS] || 
+    `FIR: ${capitalizeFirstLetter(levelName)}`;
+}
+
+// Constants for localStorage keys to avoid typos
+const LS_KEYS = {
+  GROUPS: "workout-groups",
+  TIMESTAMP: "workout-groups-timestamp"
+};
+
+// Default body categories if none are found
+const DEFAULT_BODY_CATEGORIES = ["Upper", "Middle", "Lower"];
 
 export default function WorkoutPage() {
   const [exerciseGroups, setExerciseGroups] = useState<ExerciseGroup[]>([])
@@ -31,8 +48,8 @@ export default function WorkoutPage() {
       setIsLoading(true)
       try {
         // Check localStorage first
-        const cachedData = localStorage.getItem("workout-groups")
-        const cachedTimestamp = localStorage.getItem("workout-groups-timestamp")
+        const cachedData = localStorage.getItem(LS_KEYS.GROUPS)
+        const cachedTimestamp = localStorage.getItem(LS_KEYS.TIMESTAMP)
 
         // If we have cached data and it's not expired
         if (cachedData && cachedTimestamp) {
@@ -56,8 +73,8 @@ export default function WorkoutPage() {
         } else {
           setExerciseGroups(groups)
           // Save to localStorage with timestamp
-          localStorage.setItem("workout-groups", JSON.stringify(groups))
-          localStorage.setItem("workout-groups-timestamp", Date.now().toString())
+          localStorage.setItem(LS_KEYS.GROUPS, JSON.stringify(groups))
+          localStorage.setItem(LS_KEYS.TIMESTAMP, Date.now().toString())
         }
       } catch (error) {
         console.error("Error loading exercise groups:", error)
@@ -65,7 +82,7 @@ export default function WorkoutPage() {
 
         // If API fails, try to use cached data even if expired
         try {
-          const cachedData = localStorage.getItem("workout-groups")
+          const cachedData = localStorage.getItem(LS_KEYS.GROUPS)
           if (cachedData) {
             setExerciseGroups(JSON.parse(cachedData))
           }
@@ -86,46 +103,40 @@ export default function WorkoutPage() {
     
     exerciseGroups.forEach(group => {
       if (group.body_section_name) {
-        const sectionName = group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
-        sections.add(sectionName)
+        sections.add(capitalizeFirstLetter(group.body_section_name))
       }
     })
     
     return Array.from(sections)
   }, [exerciseGroups])
   
-  // Get unique Workout levels from exercise groups
-  const availableWorkoutLevels = useMemo(() => {
+  // Get unique FIR levels from exercise groups
+  const availableFirLevels = useMemo(() => {
     const levels = new Set<string>()
     
     exerciseGroups.forEach(group => {
-      if (group.fit_level_name) {
-        const displayName = WORKOUT_LEVELS[group.fit_level_name as keyof typeof WORKOUT_LEVELS] || 
-          `Workout: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`;
-        levels.add(displayName);
+      if (group.fir_level_name) {
+        levels.add(formatFirLevel(group.fir_level_name))
       }
     })
     
-    const result = Array.from(levels);
-    return result;
+    return Array.from(levels)
   }, [exerciseGroups])
 
-  // Define categories for the filter including dynamic body sections and Workout levels
+  // Define categories for the filter
   const allCategories = useMemo(() => {
     // Use body sections from the database, or fall back to static options
     const bodyCategories = availableBodySections.length > 0
       ? availableBodySections
-      : ["Upper", "Middle", "Lower"]
+      : DEFAULT_BODY_CATEGORIES
     
-    // Use Workout levels from the database, or fall back to static options
-    const workoutCategories = availableWorkoutLevels.length > 0 
-      ? availableWorkoutLevels
-      : ["Workout: High", "Workout: Moderate", "Workout: Low", "Workout: Very High"]
+    // Use FIR levels from the database, or fall back to static options
+    const firCategories = availableFirLevels.length > 0 
+      ? availableFirLevels
+      : Object.values(FIR_LEVELS)
     
-    const result = [...bodyCategories, ...workoutCategories];
-    
-    return result;
-  }, [availableBodySections, availableWorkoutLevels])
+    return [...bodyCategories, ...firCategories]
+  }, [availableBodySections, availableFirLevels])
 
   // Filter exercise groups based on selected categories
   const filteredGroups = useMemo(() => {
@@ -133,31 +144,23 @@ export default function WorkoutPage() {
       return exerciseGroups
     }
 
-    // Check if we have any body region filters
-    const bodyFilters = selectedFilters.filter((filter) => !filter.startsWith("Workout:"))
+    // Split filters into body filters and FIR filters
+    const bodyFilters = selectedFilters.filter(filter => !filter.startsWith("FIR:"))
+    const firFilters = selectedFilters.filter(filter => filter.startsWith("FIR:"))
 
-    // Check if we have any Workout level filters
-    const workoutFilters = selectedFilters.filter((filter) => filter.startsWith("Workout:"))
-
-    return exerciseGroups.filter((group) => {
-      // If we have body filters, check if the group matches any of them
+    return exerciseGroups.filter(group => {
+      // Body section filtering
       if (bodyFilters.length > 0) {
         if (!group.body_section_name) return false
-        
-        const bodySectionName = group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
-        if (!bodyFilters.includes(bodySectionName)) {
+        if (!bodyFilters.includes(capitalizeFirstLetter(group.body_section_name))) {
           return false
         }
       }
 
-      // If we have Workout filters, check if the group matches any of them
-      if (workoutFilters.length > 0) {
-        if (!group.fit_level_name) return false
-        
-        const groupWorkoutDisplay = WORKOUT_LEVELS[group.fit_level_name as keyof typeof WORKOUT_LEVELS] || 
-          `Workout: ${group.fit_level_name.charAt(0).toUpperCase() + group.fit_level_name.slice(1)}`
-        
-        if (!workoutFilters.includes(groupWorkoutDisplay)) {
+      // FIR level filtering
+      if (firFilters.length > 0) {
+        if (!group.fir_level_name) return false
+        if (!firFilters.includes(formatFirLevel(group.fir_level_name))) {
           return false
         }
       }
@@ -189,35 +192,16 @@ export default function WorkoutPage() {
     setIsSingleColumn(!isSingleColumn)
   }
 
-  // Helper function to get capitalized body section name
-  const getBodySectionName = (group: ExerciseGroup): string => {
-    if (!group.body_section_name) return "Unknown"
-    return group.body_section_name.charAt(0).toUpperCase() + group.body_section_name.slice(1)
-  }
-
-  // Helper function to get Workout level display name
-  const getWorkoutLevelName = (fitLevel: string | null): string => {
-    if (!fitLevel) return "Unknown"
-    
-    // Check if it's in our mapping
-    if (WORKOUT_LEVELS[fitLevel as keyof typeof WORKOUT_LEVELS]) {
-      return WORKOUT_LEVELS[fitLevel as keyof typeof WORKOUT_LEVELS];
-    }
-    
-    // Otherwise, create a properly formatted name with Workout: prefix
-    return `Workout: ${fitLevel.charAt(0).toUpperCase() + fitLevel.slice(1)}`;
-  }
-
   // Create categories for each group
   const getGroupCategories = (group: ExerciseGroup): string[] => {
     const categories: string[] = []
     
     if (group.body_section_name) {
-      categories.push(getBodySectionName(group))
+      categories.push(capitalizeFirstLetter(group.body_section_name))
     }
     
-    if (group.fit_level_name) {
-      categories.push(getWorkoutLevelName(group.fit_level_name))
+    if (group.fir_level_name) {
+      categories.push(formatFirLevel(group.fir_level_name))
     }
     
     return categories
@@ -229,22 +213,17 @@ export default function WorkoutPage() {
 
       <Info>
         <p className="text-sm text-muted-foreground">
-          Below are 8 Functional Moves, each offering multiple exercise variations. The higher your Functional Imbalance
-          Target (Workout) for each Functional Move, the more effort you should exert when performing that exercise:
+        Below are 8 Functional Moves, each offering multiple exercise variations. The higher your Functional Imbalance Risk (FIR) for each Functional Move, the more effort you should exert when performing that exercise:
         </p>
         <ul className="mt-2 text-sm text-muted-foreground list-disc pl-5 space-y-1">
           <li>
-            <strong>Workout: Very High 🔴</strong> = Maximum Intensity Effort (Push beyond your limits for this exercise)
+            FIR: High 🔴 = Maximal Relative Effort (Push yourself to the max when doing this exercise)
           </li>
           <li>
-            <strong>Workout: High 🔴</strong> = High Relative Effort (Push yourself to the max when doing this exercise)
+          FIR: Mod = Moderate Relative Effort
           </li>
           <li>
-            <strong>Workout: Mod</strong> = Moderate Relative Effort
-          </li>
-          <li>
-            <strong>Workout: Low</strong> = Minimal Relative Effort (Don't push too hard - just maintain your current
-            strength)
+          FIR: Low = Minimal Relative Effort (Don't push too hard - just maintain your current strength) 
           </li>
         </ul>
       </Info>

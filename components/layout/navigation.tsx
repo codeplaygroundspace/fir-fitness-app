@@ -19,7 +19,7 @@ export default function Navigation() {
     return (
       pathname.startsWith("/exercise/") ||
       pathname.startsWith("/stretch/") ||
-      pathname.startsWith("/fit/") ||
+      pathname.startsWith("/workout/") ||
       pathname === "/login"
     )
   }
@@ -62,12 +62,12 @@ export default function Navigation() {
 
           <li>
             <Link
-              href="/fit"
-              className={`flex flex-col items-center p-2 ${isActive("/fit") ? "text-primary font-medium" : "text-muted-foreground"}`}
-              aria-current={isActive("/fit") ? "page" : undefined}
+              href="/workout"
+              className={`flex flex-col items-center p-2 ${isActive("/workout") ? "text-primary font-medium" : "text-muted-foreground"}`}
+              aria-current={isActive("/workout") ? "page" : undefined}
             >
               <IoIosFitness className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs mt-1">FIT</span>
+              <span className="text-xs mt-1">Workout</span>
             </Link>
           </li>
 

@@ -24,7 +24,7 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: "FIT - Fitness App",
+  title: "Workout - Fitness App",
   description: "Your personal fitness companion",
     generator: 'v0.dev'
 }

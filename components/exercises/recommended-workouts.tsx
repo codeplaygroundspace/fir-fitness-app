@@ -13,7 +13,7 @@ interface RecommendedWorkout {
   id: number
   name: string
   image: string
-  type: "warmup" | "stretch" | "fit"
+  type: "warmup" | "stretch" | "workout"
 }
 
 export function RecommendedWorkouts() {
@@ -67,24 +67,24 @@ export function RecommendedWorkouts() {
   }, [user, supabase])
 
   // Helper function to determine exercise type from category name
-  const getExerciseType = (categoryName?: string): "warmup" | "stretch" | "fit" => {
-    if (!categoryName) return "fit"
+  const getExerciseType = (categoryName?: string): "warmup" | "stretch" | "workout" => {
+    if (!categoryName) return "workout"
 
     const lowerCaseName = categoryName.toLowerCase()
     if (lowerCaseName.includes("warmup")) return "warmup"
     if (lowerCaseName.includes("stretch")) return "stretch"
-    return "fit"
+    return "workout"
   }
 
   // Get the correct link prefix based on exercise type
-  const getLinkPrefix = (type: "warmup" | "stretch" | "fit") => {
+  const getLinkPrefix = (type: "warmup" | "stretch" | "workout") => {
     switch (type) {
       case "warmup":
         return "/warmup"
       case "stretch":
         return "/stretch"
-      case "fit":
-        return "/fir"
+      case "workout":
+        return "/workout"
       default:
         return "/warmup"
     }

@@ -7,7 +7,7 @@ import type { ExerciseWithLabels } from '@/lib/types'
 import { getBaseUrl } from '@/lib/utils'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
 
-export default async function FitExercisePage({
+export default async function WorkoutExercisePage({
   params,
 }: {
   params: { id: string }
@@ -28,7 +28,7 @@ export default async function FitExercisePage({
 
   const exercise: ExerciseWithLabels = await exerciseResponse.json()
 
-  // Fetch all fit exercises to show related exercises
+  // Fetch all workout exercises to show related exercises
   const allExercisesUrl = new URL(
     '/api/exercises',
     process.env.NEXT_PUBLIC_BASE_URL ||
@@ -36,7 +36,7 @@ export default async function FitExercisePage({
         ? window.location.origin
         : 'http://localhost:3000')
   )
-  allExercisesUrl.searchParams.append('type', 'fit')
+  allExercisesUrl.searchParams.append('type', 'workout')
 
   const allExercisesResponse = await fetch(allExercisesUrl.toString())
   const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
@@ -50,11 +50,11 @@ export default async function FitExercisePage({
       {/* Image at the top with floating back button */}
       <div className="relative w-full">
         <div className="absolute top-4 left-4 z-10">
-          <BackButton href="/fit" />
+          <BackButton href="/workout" />
         </div>
         <Image
           src={exercise?.image || '/placeholder.svg?height=500&width=800'}
-          alt={exercise?.name || 'Fit Exercise'}
+          alt={exercise?.name || 'Workout Exercise'}
           width={800}
           height={500}
           className="w-full h-[40vh] object-cover"
@@ -66,7 +66,7 @@ export default async function FitExercisePage({
 
       {/* Title and metadata below the image */}
       <div className="px-4 py-4">
-        <h1>{capitalizeFirstLetter(exercise?.name || 'Fit Exercise')}</h1>
+        <h1>{capitalizeFirstLetter(exercise?.name || 'Workout Exercise')}</h1>
         <div className="flex flex-wrap mb-6">
           {Array.isArray(exercise?.categories) &&
             exercise.categories.map((category, index) => (

@@ -114,7 +114,7 @@ export default function ExerciseGroupPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-6">
-        <Link href="/fit" className="flex items-center">
+        <Link href="/workout" className="flex items-center">
           <Button
             variant="outline"
             size="icon"
@@ -173,7 +173,7 @@ export default function ExerciseGroupPage() {
               id={exercise.id}
               name={exercise.name}
               image={exercise.image}
-              linkPrefix="/fit"
+              linkPrefix="/workout"
               duration={exercise.duration}
               reps={exercise.reps}
               categories={exercise.categories}
@@ -196,8 +196,8 @@ export default function ExerciseGroupPage() {
               exercises in the database to set their "exercise_group" value to "
               {groupId}".
             </p>
-            <Button onClick={() => router.push('/fit')} variant="outline">
-              Return to FIT page
+            <Button onClick={() => router.push('/workout')} variant="outline">
+              Return to Workout page
             </Button>
           </div>
         </div>

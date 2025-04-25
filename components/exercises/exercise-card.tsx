@@ -57,16 +57,18 @@ export function ExerciseCard({
             </div>
           )}
 
-          {/* Always render categories for debugging */}
-          <div className="flex flex-wrap mt-2" aria-label="Exercise categories">
-            {showCategories && categories && categories.length > 0 ? (
-              categories.map((category, index) => (
-                <CategoryLabel key={index} category={category} />
-              ))
-            ) : (
-              <span className="text-xs text-muted-foreground">No categories available</span>
-            )}
-          </div>
+          {/* Only render categories section when showCategories is true */}
+          {showCategories && (
+            <div className="flex flex-wrap mt-2" aria-label="Exercise categories">
+              {categories && categories.length > 0 ? (
+                categories.map((category, index) => (
+                  <CategoryLabel key={index} category={category} />
+                ))
+              ) : (
+                <span className="text-xs text-muted-foreground">No categories available</span>
+              )}
+            </div>
+          )}
         </CardContent>
       </Link>
     </Card>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { cn } from '@/lib/utils'
 
 interface MuscleGroupSelectorProps {
@@ -13,7 +13,10 @@ export const MuscleGroupSelector: React.FC<MuscleGroupSelectorProps> = ({
   onSelectNumber,
 }) => {
   // Create an array with numbers 1 through maxMuscleGroup for the buttons
-  const muscleGroupButtons = Array.from({ length: maxMuscleGroup }, (_, i) => i + 1)
+  const muscleGroupButtons = useMemo(
+    () => Array.from({ length: maxMuscleGroup }, (_, i) => i + 1),
+    [maxMuscleGroup]
+  )
 
   return (
     <section className="mb-8">
@@ -40,7 +43,7 @@ export const MuscleGroupSelector: React.FC<MuscleGroupSelectorProps> = ({
 
         {/* Numbered buttons */}
         {muscleGroupButtons.map(number => (
-          <div key={number} className="h-10 p-1 relative">
+          <div key={`muscle-group-${number}`} className="h-10 p-1 relative">
             <button
               onClick={() => onSelectNumber(number)}
               className={cn(

@@ -25,18 +25,25 @@ export default function StretchPage() {
       setStretchExercises(allExercises)
     } else {
       const filtered = allExercises.filter(exercise => {
+        // Check body_muscle property first
         const exerciseMuscleId = exercise.body_muscle !== null ? Number(exercise.body_muscle) : null
-        let matches = exerciseMuscleId === selectedNumber
-
-        if (!matches && exercise.name) {
-          const nameContainsNumber =
-            exercise.name.includes(`- ${selectedNumber}`) ||
-            exercise.name.includes(`(${selectedNumber})`) ||
-            exercise.name.endsWith(` ${selectedNumber}`)
-          matches = nameContainsNumber
+        if (exerciseMuscleId === selectedNumber) {
+          return true
         }
 
-        return matches
+        // Then check name for muscle group indicators
+        if (exercise.name) {
+          // Look for patterns like "- 5", "(5)", " 5" at the end of the name
+          const namePatterns = [
+            new RegExp(`- ${selectedNumber}(\\s|$)`),
+            new RegExp(`\\(${selectedNumber}\\)`),
+            new RegExp(`\\s${selectedNumber}$`),
+          ]
+
+          return namePatterns.some(pattern => pattern.test(exercise.name))
+        }
+
+        return false
       })
 
       setStretchExercises(filtered)

@@ -21,10 +21,7 @@ export async function fetchExercisesByCategory(
       .eq('category_id', categoryId)
 
     if (error) {
-      console.error(
-        `API error fetching exercises for category ${categoryId}:`,
-        error
-      )
+      console.error(`API error fetching exercises for category ${categoryId}:`, error)
       return []
     }
 
@@ -42,7 +39,7 @@ export async function fetchExercisesByCategory(
     const imageFormatter = formatImageFn || defaultImageFormatter
 
     // Transform to the expected format
-    return exercises.map((exercise) => ({
+    return exercises.map(exercise => ({
       id: exercise.id,
       name: exercise.name,
       image: imageFormatter(exercise.image_url),
@@ -50,13 +47,11 @@ export async function fetchExercisesByCategory(
       duration: exercise.duration || defaultDuration,
       reps: exercise.reps || null,
       video_url: exercise.video_url || null,
+      body_muscle: exercise.body_muscle || null,
       labels: [],
     }))
   } catch (error) {
-    console.error(
-      `Unexpected error fetching exercises for category ${categoryId}:`,
-      error
-    )
+    console.error(`Unexpected error fetching exercises for category ${categoryId}:`, error)
     return []
   }
 }

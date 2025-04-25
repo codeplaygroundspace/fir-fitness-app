@@ -21,10 +21,21 @@ export const useStretchExercises = () => {
           maxId = muscleId
         }
       }
+
+      // Also check the exercise name for muscle group numbers
+      if (exercise.name) {
+        const nameMatches = exercise.name.match(/[-\s(](\d+)[)\s]?$/)
+        if (nameMatches && nameMatches[1]) {
+          const nameId = parseInt(nameMatches[1], 10)
+          if (!isNaN(nameId) && nameId > maxId) {
+            maxId = nameId
+          }
+        }
+      }
     })
 
-    // Use either the calculated max or default to 1 if no data
-    setMaxMuscleGroup(Math.max(maxId, 1))
+    // Use either the calculated max or default to 19 if no data or too low
+    setMaxMuscleGroup(Math.max(maxId, 19))
   }
 
   // Function to clear cache and reload the page

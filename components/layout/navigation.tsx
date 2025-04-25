@@ -16,12 +16,16 @@ export default function Navigation() {
 
   // Check if current page is a details page or login
   const isDetailsPage = () => {
-    return (
-      pathname.startsWith("/exercise/") ||
-      pathname.startsWith("/stretch/") ||
-      pathname.startsWith("/workout/") ||
-      pathname === "/login"
-    )
+    // Main section pages that should have navigation
+    const mainPages = ['/', '/stretch', '/workout', '/profile']
+    
+    // If the pathname is exactly one of our main pages, it's not a details page
+    if (mainPages.includes(pathname)) {
+      return false
+    }
+    
+    // If it's not a main page, it's a details/internal page
+    return true
   }
 
   // Don't render navigation on details pages

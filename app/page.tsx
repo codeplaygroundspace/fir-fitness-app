@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import { DurationLabel } from '@/components/exercises/duration-label'
 import type { ExerciseWithLabels } from '@/lib/types'
-import { Info } from '@/components/common/info'
+import { InfoBox } from '@/components/common/info'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ConfigError } from '@/components/common/config-error'
 import { ViewControls } from '@/components/controls/view-controls'
@@ -114,12 +114,12 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Warmup</h1>
 
-      <Info>
+      <InfoBox title="HR Rise">
         <div className="flex justify-between items-center">
-          <h3 className="font-semibold text-base">HR Rise (always do first)</h3>
+          <p className="text-muted-foreground">Always do this first</p>
           <DurationLabel duration="2 min" />
         </div>
-      </Info>
+      </InfoBox>
 
       <section>
         <div className="flex items-center mb-4 justify-end">

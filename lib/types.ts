@@ -269,6 +269,13 @@ export interface InstructionsBoxProps {
   fallback?: string
 }
 
+export interface CollapsibleBoxProps {
+  children: React.ReactNode
+  title?: string
+  defaultOpen?: boolean
+  className?: string
+}
+
 export interface WorkoutLoggerProps {
   exerciseId: number
   exerciseName: string
@@ -293,6 +300,7 @@ export interface BackButtonProps {
 export interface InfoProps {
   children: React.ReactNode
   className?: string
+  title?: string | null
 }
 
 export interface ConfigErrorProps {

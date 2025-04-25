@@ -18,6 +18,7 @@ export type Database = {
           reps: string | null
           kit: string | null
           exercise_group: string | null // Add this field
+          body_muscle: number | null
         }
         Insert: {
           id?: number
@@ -31,6 +32,7 @@ export type Database = {
           reps?: string | null
           kit?: string | null
           exercise_group?: string | null // Add this field
+          body_muscle?: number | null
         }
         Update: {
           id?: number
@@ -44,6 +46,7 @@ export type Database = {
           reps?: string | null
           kit?: string | null
           exercise_group?: string | null // Add this field
+          body_muscle?: number | null
         }
       }
       categories: {
@@ -152,6 +155,7 @@ export type ExerciseWithLabels = {
   duration: string | null
   reps: string | null
   video_url?: string | null
+  body_muscle?: number | null
   labels: {
     label_name: string
     label_type: string
@@ -308,9 +312,7 @@ export interface ConfigErrorProps {
 }
 
 // Function to get exercises by group
-export type GetExercisesByGroupFn = (
-  groupId: number
-) => Promise<ExerciseWithLabels[]>
+export type GetExercisesByGroupFn = (groupId: number) => Promise<ExerciseWithLabels[]>
 
 export type ExerciseGroup = {
   id: number

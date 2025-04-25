@@ -5,7 +5,7 @@ import { ArrowLeft, LayoutGrid, LayoutList, Shuffle } from "lucide-react"
 import { ExerciseFilters } from "@/components/exercises/exercise-filters"
 import { Button } from "@/components/ui/button"
 import { ExerciseCard } from "@/components/exercises/exercise-card"
-import { Info } from "@/components/common/info"
+import { CollapsibleBox } from "@/components/exercises/instructions-box"
 import { capitalizeFirstLetter } from "@/lib/text-utils"
 import { getExerciseGroups, type ExerciseGroup } from "../actions"
 
@@ -196,7 +196,7 @@ export default function WorkoutPage() {
     <div className="container mx-auto px-4 py-6">
       <h1>Workout</h1>
 
-      <Info>
+      <CollapsibleBox title="Functional Moves Guide" defaultOpen={false}>
         <p className="text-sm text-muted-foreground">
         Below are 8 Functional Moves, each offering multiple exercise variations. The higher your Functional Imbalance Risk (FIR) for each Functional Move, the more effort you should exert when performing that exercise:
         </p>
@@ -211,7 +211,7 @@ export default function WorkoutPage() {
             <strong>FIR: Low 🟢</strong> Minimal Relative Effort (Don't push too hard - just maintain your current strength) 
           </li>
         </ul>
-      </Info>
+      </CollapsibleBox>
 
       <section>
         <div className="flex justify-between items-center mb-4">

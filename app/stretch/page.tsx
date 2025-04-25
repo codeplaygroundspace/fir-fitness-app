@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { ViewControls } from '@/components/controls/view-controls'
+import { cn } from '@/lib/utils'
 
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
@@ -17,7 +17,6 @@ export default function StretchPage() {
     ExerciseWithLabels[]
   >([])
   const [loading, setLoading] = useState(true)
-  const [isSingleColumn, setIsSingleColumn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
 
@@ -104,10 +103,6 @@ export default function StretchPage() {
     loadExercises()
   }, [])
 
-  const toggleLayout = () => {
-    setIsSingleColumn(!isSingleColumn)
-  }
-
   const handleNumberClick = (number: number) => {
     setSelectedNumber(number)
     // Additional logic can be added here
@@ -115,7 +110,7 @@ export default function StretchPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1>Stretch</h1>
+      <h1 className='text-2xl font-bold'>Stretch</h1>
       {/* Image section */}
       <section className="mb-8">
         <div className="rounded-lg overflow-hidden shadow-md">
@@ -134,30 +129,29 @@ export default function StretchPage() {
 
       {/* Numbered buttons section */}
       <section className="mb-8">
-        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+        <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-1 text-sm">
           {Array.from({ length: 17 }, (_, i) => i + 1).map((number) => (
-            <Button
-              key={number}
-              variant={selectedNumber === number ? "default" : "outline"}
-              size="lg"
-              className="h-14 w-14 rounded-full text-xl font-bold"
-              onClick={() => handleNumberClick(number)}
-              aria-label={`Number ${number}`}
-            >
-              {number}
-            </Button>
+            <div key={number} className="h-10 p-1 relative">
+              <button
+                onClick={() => handleNumberClick(number)}
+                className={cn(
+                  "h-full w-full flex items-center justify-center rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                  selectedNumber === number && "ring-1 ring-primary",
+                  selectedNumber === number
+                    ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90"
+                    : "border-2 border-border hover:border-primary/50"
+                )}
+                aria-label={`Number ${number}`}
+                aria-pressed={selectedNumber === number}
+              >
+                <span className={cn("z-10", selectedNumber === number && "text-primary-foreground")}>{number}</span>
+              </button>
+            </div>
           ))}
         </div>
       </section>
 
       <section>
-        <div className="flex justify-end items-center mb-4">
-          <ViewControls
-            isSingleColumn={isSingleColumn}
-            onToggleLayout={toggleLayout}
-          />
-        </div>
-
         {error && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
@@ -166,11 +160,7 @@ export default function StretchPage() {
         )}
 
         {loading ? (
-          <div
-            className={`grid ${
-              isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'
-            } gap-4`}
-          >
+          <div className="grid grid-cols-1 gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -185,11 +175,7 @@ export default function StretchPage() {
             ))}
           </div>
         ) : stretchExercises.length > 0 ? (
-          <div
-            className={`grid ${
-              isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'
-            } gap-4`}
-          >
+          <div className="grid grid-cols-1 gap-4">
             {stretchExercises.map((exercise) => (
               <ExerciseCard
                 key={exercise.id}

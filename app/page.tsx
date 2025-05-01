@@ -1,14 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
-import { DurationLabel } from '@/components/exercises/duration-label'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { InfoBox } from '@/components/common/info'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ConfigError } from '@/components/common/config-error'
-import { ViewControls } from '@/components/controls/view-controls'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 
@@ -18,7 +15,6 @@ const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
 export default function HomePage() {
   const [cardioExercises, setCardioExercises] = useState<ExerciseWithLabels[]>([])
   const [loading, setLoading] = useState(true)
-  const [isSingleColumn, setIsSingleColumn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { user, error: authError } = useAuth()
 
@@ -94,10 +90,6 @@ export default function HomePage() {
     return <ConfigError message={authError} />
   }
 
-  const toggleLayout = () => {
-    setIsSingleColumn(!isSingleColumn)
-  }
-
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Warmup</h1>
@@ -106,17 +98,14 @@ export default function HomePage() {
         <div className="space-y-2">
           <p className="text-muted-foreground">E.g. jogging, skipping, cardio machines, dancing.</p>
           <p className="text-muted-foreground">
-            This is called ‘Heart Rate Raiser’ as the goal is to get your heart rate up and get you
-            feeling warmer before you move on to section 2 of your warm up.
+            This is called 'Heart Rate Raiser' as the goal is to get your heart rate up and get you
+            feeling warmer before you move on to section 2 of your warmup. Total warmup time is
+            approx. 5 minutes.
           </p>
         </div>
       </InfoBox>
 
       <section>
-        <div className="flex items-center mb-4 justify-end">
-          <ViewControls isSingleColumn={isSingleColumn} onToggleLayout={toggleLayout} />
-        </div>
-
         {error && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
@@ -125,7 +114,7 @@ export default function HomePage() {
         )}
 
         {loading ? (
-          <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+          <div className="grid grid-cols-1 gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
                 <div className="aspect-video"></div>
@@ -137,7 +126,7 @@ export default function HomePage() {
             ))}
           </div>
         ) : cardioExercises.length > 0 ? (
-          <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+          <div className="grid grid-cols-1 gap-4">
             {cardioExercises.map(exercise => (
               <ExerciseCard
                 key={exercise.id}

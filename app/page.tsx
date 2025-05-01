@@ -99,8 +99,7 @@ export default function HomePage() {
           <p className="text-muted-foreground">E.g. jogging, skipping, cardio machines, dancing.</p>
           <p className="text-muted-foreground">
             This is called 'Heart Rate Raiser' as the goal is to get your heart rate up and get you
-            feeling warmer before you move on to section 2 of your warmup. Total warmup time is
-            approx. 5 minutes.
+            feeling warmer before you move on to stretching. Total warmup time is approx. 5 minutes.
           </p>
         </div>
       </InfoBox>

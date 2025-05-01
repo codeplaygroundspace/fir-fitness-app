@@ -1,13 +1,14 @@
 'use client'
 
+import { InfoBox } from '@/components/common/info'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
+import { MuscleGroupSelector } from '@/components/stretch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useStretchExercises } from '@/hooks'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { MuscleGroupSelector } from '@/components/stretch'
-import { useStretchExercises } from '@/hooks'
 
 export default function StretchPage() {
   const { allExercises, loading, error, maxMuscleGroup, clearCacheAndReload } =
@@ -56,6 +57,16 @@ export default function StretchPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
+      <h1 className="font-heading">Stretching</h1>
+      <InfoBox title="Active">
+        <div className="space-y-2">
+          <p className="text-muted-foreground">
+            Only stretch muscles that feel tight during warm up. Remember to stay ‘Active’ ❤️‍🔥 whilst
+            stretching, move in and out of the stretch. This is to stop your body from cooling down
+            and to best prepare your body for strengthening.
+          </p>
+        </div>
+      </InfoBox>
       {/* Image section */}
       <section className="mb-8">
         <div className="rounded-lg overflow-hidden shadow-md">

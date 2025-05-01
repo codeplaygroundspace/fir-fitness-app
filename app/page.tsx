@@ -16,9 +16,7 @@ import { AlertCircle } from 'lucide-react'
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
 
 export default function HomePage() {
-  const [cardioExercises, setCardioExercises] = useState<ExerciseWithLabels[]>(
-    []
-  )
+  const [cardioExercises, setCardioExercises] = useState<ExerciseWithLabels[]>([])
   const [loading, setLoading] = useState(true)
   const [isSingleColumn, setIsSingleColumn] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -29,9 +27,7 @@ export default function HomePage() {
       try {
         // Check localStorage first
         const cachedData = localStorage.getItem('warmup-exercises')
-        const cachedTimestamp = localStorage.getItem(
-          'warmup-exercises-timestamp'
-        )
+        const cachedTimestamp = localStorage.getItem('warmup-exercises-timestamp')
 
         // If we have cached data and it's not expired
         if (cachedData && cachedTimestamp) {
@@ -53,10 +49,7 @@ export default function HomePage() {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
           console.error('API error:', errorData)
-          throw new Error(
-            errorData.error ||
-              `Failed to fetch warmup exercises: ${response.status}`
-          )
+          throw new Error(errorData.error || `Failed to fetch warmup exercises: ${response.status}`)
         }
 
         const exercises = await response.json()
@@ -71,15 +64,10 @@ export default function HomePage() {
 
         // Save to localStorage with timestamp
         localStorage.setItem('warmup-exercises', JSON.stringify(exercises))
-        localStorage.setItem(
-          'warmup-exercises-timestamp',
-          Date.now().toString()
-        )
+        localStorage.setItem('warmup-exercises-timestamp', Date.now().toString())
       } catch (error) {
         console.error('Error loading exercises:', error)
-        setError(
-          error instanceof Error ? error.message : 'Failed to load exercises'
-        )
+        setError(error instanceof Error ? error.message : 'Failed to load exercises')
 
         // If API fails, try to use cached data even if expired
         try {
@@ -114,19 +102,19 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Warmup</h1>
 
-      <InfoBox title="HR Rise">
-        <div className="flex justify-between items-center">
-          <p className="text-muted-foreground">Always do this first</p>
-          <DurationLabel duration="2 min" />
+      <InfoBox title="Heart Rate Raiser (2 min)">
+        <div className="space-y-2">
+          <p className="text-muted-foreground">E.g. jogging, skipping, cardio machines, dancing.</p>
+          <p className="text-muted-foreground">
+            This is called ‘Heart Rate Raiser’ as the goal is to get your heart rate up and get you
+            feeling warmer before you move on to section 2 of your warm up.
+          </p>
         </div>
       </InfoBox>
 
       <section>
         <div className="flex items-center mb-4 justify-end">
-          <ViewControls
-            isSingleColumn={isSingleColumn}
-            onToggleLayout={toggleLayout}
-          />
+          <ViewControls isSingleColumn={isSingleColumn} onToggleLayout={toggleLayout} />
         </div>
 
         {error && (
@@ -137,16 +125,9 @@ export default function HomePage() {
         )}
 
         {loading ? (
-          <div
-            className={`grid ${
-              isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'
-            } gap-4`}
-          >
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="rounded-lg overflow-hidden h-full bg-muted animate-pulse"
-              >
+          <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
                 <div className="aspect-video"></div>
                 <div className="p-3">
                   <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
@@ -156,12 +137,8 @@ export default function HomePage() {
             ))}
           </div>
         ) : cardioExercises.length > 0 ? (
-          <div
-            className={`grid ${
-              isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'
-            } gap-4`}
-          >
-            {cardioExercises.map((exercise) => (
+          <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+            {cardioExercises.map(exercise => (
               <ExerciseCard
                 key={exercise.id}
                 id={exercise.id}
@@ -178,8 +155,7 @@ export default function HomePage() {
           <div className="space-y-6">
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                No warmup exercises found. Please add some exercises to get
-                started.
+                No warmup exercises found. Please add some exercises to get started.
               </p>
             </div>
 

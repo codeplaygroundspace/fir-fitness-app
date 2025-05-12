@@ -133,9 +133,7 @@ export default function HomePage() {
                 name={exercise.name}
                 image={exercise.image}
                 linkPrefix="/warmup"
-                duration={`${exercise.duration} sec`}
-                reps={exercise.reps}
-                showLabels={true}
+                showLabels={false}
               />
             ))}
           </div>

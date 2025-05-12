@@ -1,6 +1,4 @@
-import { DurationLabel } from '@/components/exercises/duration-label'
 import { InstructionsBox } from '@/components/exercises/instructions-box'
-import { RepsLabel } from '@/components/exercises/reps-label'
 import { BackButton } from '@/components/layout/back-button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import type { ExerciseWithLabels } from '@/lib/types'
@@ -56,10 +54,6 @@ export default async function WarmupPage({ params }: { params: { id: string } })
     // Get video embed URL if available
     const embedUrl = getYouTubeEmbedUrl(exercise.video_url || null)
 
-    // Format duration and reps for display
-    const displayDuration = exercise?.duration ? `${exercise.duration} sec` : '30 sec'
-    const displayReps = exercise?.reps || '4'
-
     return (
       <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
         {/* Image at the top with floating back button */}
@@ -81,10 +75,6 @@ export default async function WarmupPage({ params }: { params: { id: string } })
         {/* Title and metadata below the image */}
         <div className="px-4 py-4">
           <h1>{capitalizeFirstLetter(exercise?.name || 'Exercise')}</h1>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <DurationLabel duration={displayDuration} />
-            <RepsLabel reps={displayReps} />
-          </div>
 
           {/* Video section */}
           {exercise?.video_url && (
@@ -117,7 +107,7 @@ export default async function WarmupPage({ params }: { params: { id: string } })
           {/* Instructions box at the bottom */}
           <InstructionsBox
             description={exercise?.description || ''}
-            fallback={`Perform this exercise for ${displayDuration}. Focus on proper form and controlled movements.`}
+            fallback="Perform this exercise with proper form and controlled movements."
           />
         </div>
       </div>

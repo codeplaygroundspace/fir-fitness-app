@@ -229,11 +229,6 @@ export interface ExerciseImageProps {
   className?: string
 }
 
-export interface ExerciseTimerProps {
-  duration: string | number
-  onComplete?: () => void
-}
-
 export interface DurationLabelProps {
   duration: string
   className?: string

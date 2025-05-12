@@ -1,5 +1,4 @@
 import { DurationLabel } from '@/components/exercises/duration-label'
-import { ExerciseTimer } from '@/components/exercises/exercise-timer'
 import { InstructionsBox } from '@/components/exercises/instructions-box'
 import { RepsLabel } from '@/components/exercises/reps-label'
 import { BackButton } from '@/components/layout/back-button'
@@ -21,16 +20,10 @@ function getYouTubeEmbedUrl(url: string | null): string | null {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
   const match = url?.match(regExp)
 
-  return match && match[2].length === 11
-    ? `https://www.youtube.com/embed/${match[2]}`
-    : null
+  return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
 }
 
-export default async function WarmupPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+export default async function WarmupPage({ params }: { params: { id: string } }) {
   try {
     // Get the exercise ID from the URL parameters - await params to fix the error
     const { id } = await params
@@ -40,15 +33,13 @@ export default async function WarmupPage({
     const apiUrl = new URL(
       '/api/exercises',
       process.env.NEXT_PUBLIC_BASE_URL ||
-        (typeof window !== 'undefined'
-          ? window.location.origin
-          : 'http://localhost:3000')
+        (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
     )
     apiUrl.searchParams.append('id', exerciseId.toString())
 
-    const exerciseResponse = await fetch(apiUrl.toString(), { 
+    const exerciseResponse = await fetch(apiUrl.toString(), {
       cache: 'no-store',
-      next: { revalidate: 3600 } // Revalidate every hour
+      next: { revalidate: 3600 }, // Revalidate every hour
     })
 
     if (!exerciseResponse.ok) {
@@ -66,9 +57,7 @@ export default async function WarmupPage({
     const embedUrl = getYouTubeEmbedUrl(exercise.video_url || null)
 
     // Format duration and reps for display
-    const displayDuration = exercise?.duration
-      ? `${exercise.duration} sec`
-      : '30 sec'
+    const displayDuration = exercise?.duration ? `${exercise.duration} sec` : '30 sec'
     const displayReps = exercise?.reps || '4'
 
     return (
@@ -85,9 +74,7 @@ export default async function WarmupPage({
             height={500}
             className="w-full h-[40vh] object-cover"
             priority={true} // Add priority for LCP optimization
-            unoptimized={
-              exercise?.image ? !exercise.image.startsWith('/') : false
-            }
+            unoptimized={exercise?.image ? !exercise.image.startsWith('/') : false}
           />
         </div>
 
@@ -98,9 +85,6 @@ export default async function WarmupPage({
             <DurationLabel duration={displayDuration} />
             <RepsLabel reps={displayReps} />
           </div>
-
-          {/* Timer component */}
-          <ExerciseTimer duration={displayDuration} />
 
           {/* Video section */}
           {exercise?.video_url && (
@@ -122,8 +106,8 @@ export default async function WarmupPage({
                   <AlertCircle className="h-4 w-4" />
                   <AlertTitle>Video Unavailable</AlertTitle>
                   <AlertDescription>
-                    The video for this exercise is currently private or
-                    unavailable. Please check back later.
+                    The video for this exercise is currently private or unavailable. Please check
+                    back later.
                   </AlertDescription>
                 </Alert>
               )}
@@ -142,4 +126,4 @@ export default async function WarmupPage({
     console.error('Error in WarmupPage:', error)
     return notFound()
   }
-} 
+}

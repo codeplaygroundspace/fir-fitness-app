@@ -1,6 +1,6 @@
 'use client'
 
-import { InfoBox } from '@/components/common/info'
+import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import { MuscleGroupSelector } from '@/components/stretch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -58,15 +58,15 @@ export default function StretchPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Stretching</h1>
-      <InfoBox title="Active">
+      <CollapsibleBox title="Active" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">
-            Only stretch muscles that feel tight during warm up. Remember to stay ‘Active’ ❤️‍🔥 whilst
+            Only stretch muscles that feel tight during warm up. Remember to stay 'Active' ❤️‍🔥 whilst
             stretching, move in and out of the stretch. This is to stop your body from cooling down
             and to best prepare your body for strengthening.
           </p>
         </div>
-      </InfoBox>
+      </CollapsibleBox>
       {/* Image section */}
       <section className="mb-8">
         <div className="rounded-lg overflow-hidden shadow-md">

@@ -1,4 +1,4 @@
-import { InstructionsBox } from '@/components/exercises/instructions-box'
+import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { BackButton } from '@/components/layout/back-button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import type { ExerciseWithLabels } from '@/lib/types'
@@ -105,10 +105,13 @@ export default async function WarmupPage({ params }: { params: { id: string } })
           )}
 
           {/* Instructions box at the bottom */}
-          <InstructionsBox
-            description={exercise?.description || ''}
-            fallback="Perform this exercise with proper form and controlled movements."
-          />
+          <CollapsibleBox title="Instructions">
+            <p className="text-muted-foreground">
+              {exercise?.description
+                ? exercise.description.charAt(0).toUpperCase() + exercise.description.slice(1)
+                : 'Perform this exercise with proper form and controlled movements.'}
+            </p>
+          </CollapsibleBox>
         </div>
       </div>
     )

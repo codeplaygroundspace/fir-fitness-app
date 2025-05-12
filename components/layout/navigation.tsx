@@ -1,11 +1,12 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { GrYoga } from "react-icons/gr"
-import { GiJumpAcross } from "react-icons/gi"
-import { IoIosFitness } from "react-icons/io"
-import { BsFillPersonFill } from "react-icons/bs"
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { GrYoga } from 'react-icons/gr'
+import { GiJumpAcross } from 'react-icons/gi'
+import { IoIosFitness } from 'react-icons/io'
+import { BsFillPersonFill } from 'react-icons/bs'
+import { FaWind } from 'react-icons/fa'
 
 export default function Navigation() {
   const pathname = usePathname()
@@ -17,13 +18,13 @@ export default function Navigation() {
   // Check if current page is a details page or login
   const isDetailsPage = () => {
     // Main section pages that should have navigation
-    const mainPages = ['/', '/stretch', '/workout', '/profile']
-    
+    const mainPages = ['/', '/stretch', '/workout', '/cooldown', '/profile']
+
     // If the pathname is exactly one of our main pages, it's not a details page
     if (mainPages.includes(pathname)) {
       return false
     }
-    
+
     // If it's not a main page, it's a details/internal page
     return true
   }
@@ -43,8 +44,8 @@ export default function Navigation() {
           <li>
             <Link
               href="/"
-              className={`flex flex-col items-center p-2 ${isActive("/") ? "text-primary font-medium" : "text-muted-foreground"}`}
-              aria-current={isActive("/") ? "page" : undefined}
+              className={`flex flex-col items-center p-2 ${isActive('/') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+              aria-current={isActive('/') ? 'page' : undefined}
             >
               <GiJumpAcross className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Warmup</span>
@@ -55,9 +56,9 @@ export default function Navigation() {
             <Link
               href="/stretch"
               className={`flex flex-col items-center p-2 ${
-                isActive("/stretch") ? "text-primary font-medium" : "text-muted-foreground"
+                isActive('/stretch') ? 'text-primary font-medium' : 'text-muted-foreground'
               }`}
-              aria-current={isActive("/stretch") ? "page" : undefined}
+              aria-current={isActive('/stretch') ? 'page' : undefined}
             >
               <GrYoga className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Stretch</span>
@@ -67,8 +68,8 @@ export default function Navigation() {
           <li>
             <Link
               href="/workout"
-              className={`flex flex-col items-center p-2 ${isActive("/workout") ? "text-primary font-medium" : "text-muted-foreground"}`}
-              aria-current={isActive("/workout") ? "page" : undefined}
+              className={`flex flex-col items-center p-2 ${isActive('/workout') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+              aria-current={isActive('/workout') ? 'page' : undefined}
             >
               <IoIosFitness className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Workout</span>
@@ -77,11 +78,22 @@ export default function Navigation() {
 
           <li>
             <Link
+              href="/cooldown"
+              className={`flex flex-col items-center p-2 ${isActive('/cooldown') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+              aria-current={isActive('/cooldown') ? 'page' : undefined}
+            >
+              <FaWind className="h-6 w-6" aria-hidden="true" />
+              <span className="text-xs mt-1">Cooldown</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
               href="/profile"
               className={`flex flex-col items-center p-2 ${
-                isActive("/profile") ? "text-primary font-medium" : "text-muted-foreground"
+                isActive('/profile') ? 'text-primary font-medium' : 'text-muted-foreground'
               }`}
-              aria-current={isActive("/profile") ? "page" : undefined}
+              aria-current={isActive('/profile') ? 'page' : undefined}
             >
               <BsFillPersonFill className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Profile</span>

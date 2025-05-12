@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import type { ExerciseWithLabels } from '@/lib/types'
-import { InfoBox } from '@/components/common/info'
+import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ConfigError } from '@/components/common/config-error'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -94,7 +94,7 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Warmup</h1>
 
-      <InfoBox title="Heart Rate Raiser (2 min)">
+      <CollapsibleBox title="Heart Rate Raiser (2 min)" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">E.g. jogging, skipping, cardio machines, dancing.</p>
           <p className="text-muted-foreground">
@@ -102,7 +102,7 @@ export default function HomePage() {
             feeling warmer before you move on to stretching. Total warmup time is approx. 5 minutes.
           </p>
         </div>
-      </InfoBox>
+      </CollapsibleBox>
 
       <section>
         {error && (

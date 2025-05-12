@@ -2,16 +2,12 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { CategoryLabel } from '@/components/exercises/category-label'
 import { BackButton } from '@/components/layout/back-button'
-import { InstructionsBox } from '@/components/exercises/instructions-box'
+import { CollapsibleBox } from '@/components/common/collapsible-box'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { getBaseUrl } from '@/lib/utils'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
 
-export default async function WorkoutExercisePage({
-  params,
-}: {
-  params: { id: string }
-}) {
+export default async function WorkoutExercisePage({ params }: { params: { id: string } }) {
   // Get the exercise ID from the URL parameters
   const { id } = await params
   const exerciseId = Number.parseInt(id)
@@ -32,9 +28,7 @@ export default async function WorkoutExercisePage({
   const allExercisesUrl = new URL(
     '/api/exercises',
     process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined'
-        ? window.location.origin
-        : 'http://localhost:3000')
+      (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
   )
   allExercisesUrl.searchParams.append('type', 'workout')
 
@@ -58,9 +52,7 @@ export default async function WorkoutExercisePage({
           width={800}
           height={500}
           className="w-full h-[40vh] object-cover"
-          unoptimized={
-            exercise?.image ? !exercise.image.startsWith('/') : false
-          }
+          unoptimized={exercise?.image ? !exercise.image.startsWith('/') : false}
         />
       </div>
 
@@ -77,10 +69,13 @@ export default async function WorkoutExercisePage({
         {/* Remove the timer component */}
 
         {/* Instructions box at the bottom */}
-        <InstructionsBox
-          description={exercise?.description || ''}
-          fallback="Focus on proper form and controlled movements. Adjust your effort level based on your Functional Imbalance Risk (FIR) indicators."
-        />
+        <CollapsibleBox title="Instructions">
+          <p className="text-muted-foreground">
+            {exercise?.description
+              ? exercise.description.charAt(0).toUpperCase() + exercise.description.slice(1)
+              : 'Focus on proper form and controlled movements. Adjust your effort level based on your Functional Imbalance Risk (FIR) indicators.'}
+          </p>
+        </CollapsibleBox>
 
         {/* Exercise navigation */}
       </div>

@@ -263,11 +263,6 @@ export interface FIRFilterProps {
   onFilterChange: (selected: string[]) => void
 }
 
-export interface InstructionsBoxProps {
-  description: string | null
-  fallback?: string
-}
-
 export interface CollapsibleBoxProps {
   children: React.ReactNode
   title?: string

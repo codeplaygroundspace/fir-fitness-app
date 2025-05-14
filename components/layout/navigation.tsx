@@ -39,8 +39,8 @@ export default function Navigation() {
       className="fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-md border-t border-border py-2 z-50"
       aria-label="Main navigation"
     >
-      <div className="container mx-auto">
-        <ul className="flex justify-between items-center">
+      <div className="mx-auto">
+        <ul className="flex justify-around items-center">
           <li>
             <Link
               href="/"

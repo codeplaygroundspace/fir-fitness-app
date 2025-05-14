@@ -54,7 +54,7 @@ export default async function StretchDetailPage({ params }: { params: { id: stri
         {/* Image at the top with floating back button */}
         <div className="relative w-full">
           <div className="absolute top-4 left-4 z-10">
-            <BackButton href="/stretch" />
+            <BackButton href="/mobilise" />
           </div>
           <Image
             src={exercise?.image || '/placeholder.svg?height=500&width=800'}

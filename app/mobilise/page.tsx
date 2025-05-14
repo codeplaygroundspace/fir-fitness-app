@@ -2,17 +2,17 @@
 
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
-import { MuscleGroupSelector } from '@/components/stretch'
+import { MuscleGroupSelector } from '@/components/mobilise'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useStretchExercises } from '@/hooks'
+import { useMobiliseExercises } from '@/hooks'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-export default function StretchPage() {
+export default function MobilisePage() {
   const { allExercises, loading, error, maxMuscleGroup, clearCacheAndReload } =
-    useStretchExercises()
+    useMobiliseExercises()
   const [stretchExercises, setStretchExercises] = useState<ExerciseWithLabels[]>([])
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
 
@@ -57,7 +57,7 @@ export default function StretchPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="font-heading">Stretching</h1>
+      <h1 className="font-heading">Mobilise</h1>
       <CollapsibleBox title="Active" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">
@@ -124,7 +124,7 @@ export default function StretchPage() {
                 id={exercise.id}
                 name={exercise.name}
                 image={exercise.image}
-                linkPrefix="/stretch"
+                linkPrefix="/mobilise"
                 showLabels={false}
               />
             ))}

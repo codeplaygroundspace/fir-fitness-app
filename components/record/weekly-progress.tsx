@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Check, Loader2, AlertCircle } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useWorkout } from "@/contexts/workout-context"
+import { useState, useEffect } from 'react'
+import { Check, Loader2, AlertCircle } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useRecord } from '@/contexts/record-context'
 
 interface WeeklyProgressProps {
   className?: string
@@ -16,7 +16,7 @@ type DayInfo = {
 }
 
 export function WeeklyProgress({ className }: WeeklyProgressProps) {
-  const { toggleWorkoutDay, isWorkoutCompleted, isLoading, error } = useWorkout()
+  const { toggleWorkoutDay, isWorkoutCompleted, isLoading, error } = useRecord()
   const [weekDays, setWeekDays] = useState<DayInfo[]>([])
 
   // Initialize days of the week with their dates
@@ -26,8 +26,8 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
     const days: DayInfo[] = []
 
     // Define day names starting with Monday
-    const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    const shortNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    const shortNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
     // Calculate the date for each day of the current week, starting with Monday
     for (let i = 0; i < 7; i++) {
@@ -52,8 +52,8 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
   // Format date as YYYY-MM-DD
   const formatDate = (date: Date): string => {
     const year = date.getFullYear()
-    const month = (date.getMonth() + 1).toString().padStart(2, "0")
-    const day = date.getDate().toString().padStart(2, "0")
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
     return `${year}-${month}-${day}`
   }
 
@@ -65,7 +65,7 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
 
   if (error) {
     return (
-      <div className={cn("space-y-4", className)}>
+      <div className={cn('space-y-4', className)}>
         <h3 className="text-lg font-semibold" id="weekly-progress-title">
           Weekly Progress
         </h3>
@@ -79,7 +79,7 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
 
   if (isLoading) {
     return (
-      <div className={cn("space-y-4", className)}>
+      <div className={cn('space-y-4', className)}>
         <h3 className="text-lg font-semibold" id="weekly-progress-title">
           Weekly Progress
         </h3>
@@ -92,7 +92,7 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       <h3 className="text-lg font-semibold" id="weekly-progress-title">
         Weekly Progress
       </h3>
@@ -103,7 +103,10 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
           return (
             <div key={day.day} className="flex flex-col items-center">
               <span
-                className={cn("text-sm mb-1", index === currentDayIndex && "font-bold text-primary")}
+                className={cn(
+                  'text-sm mb-1',
+                  index === currentDayIndex && 'font-bold text-primary'
+                )}
                 id={`day-label-${index}`}
               >
                 {day.shortName}
@@ -113,13 +116,13 @@ export function WeeklyProgress({ className }: WeeklyProgressProps) {
                 onClick={() => toggleWorkoutDay(day.date)}
                 disabled={isLoading}
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary",
+                  'w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary',
                   isCompleted
-                    ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90"
-                    : "border-border hover:border-primary/50",
-                  isLoading && "opacity-70 cursor-not-allowed",
+                    ? 'bg-primary border-primary text-primary-foreground hover:bg-primary/90'
+                    : 'border-border hover:border-primary/50',
+                  isLoading && 'opacity-70 cursor-not-allowed'
                 )}
-                aria-label={`Mark ${day.day} as ${isCompleted ? "incomplete" : "complete"}`}
+                aria-label={`Mark ${day.day} as ${isCompleted ? 'incomplete' : 'complete'}`}
                 aria-pressed={isCompleted}
                 aria-describedby={`day-label-${index}`}
               >

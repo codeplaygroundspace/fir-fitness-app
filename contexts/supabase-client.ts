@@ -1,19 +1,19 @@
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from '@supabase/supabase-js'
 
-// Create a standalone Supabase client for the workout context
-export const createWorkoutClient = () => {
+// Create a standalone Supabase client for the record context
+export const createRecordClient = () => {
   // Directly use the values from the environment variables
-  const supabaseUrl = "https://nadfduujsmcwckcdsmlb.supabase.co"
+  const supabaseUrl = 'https://nadfduujsmcwckcdsmlb.supabase.co'
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Supabase configuration is missing")
+    throw new Error('Supabase configuration is missing')
   }
 
   return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
-      storageKey: "fit-app-auth",
+      storageKey: 'fit-app-auth',
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
@@ -21,8 +21,8 @@ export const createWorkoutClient = () => {
 }
 
 // Create a mock client for testing or when real client can't be initialized
-export const createMockWorkoutClient = () => {
-  console.warn("Using mock Supabase client")
+export const createMockRecordClient = () => {
+  console.warn('Using mock Supabase client')
 
   return {
     auth: {

@@ -22,8 +22,8 @@ export default function HomePage() {
     async function loadExercises() {
       try {
         // Check localStorage first
-        const cachedData = localStorage.getItem('warmup-exercises')
-        const cachedTimestamp = localStorage.getItem('warmup-exercises-timestamp')
+        const cachedData = localStorage.getItem('warm-up-exercises')
+        const cachedTimestamp = localStorage.getItem('warm-up-exercises-timestamp')
 
         // If we have cached data and it's not expired
         if (cachedData && cachedTimestamp) {
@@ -40,7 +40,7 @@ export default function HomePage() {
         }
 
         // If no cache or expired, fetch from API
-        const response = await fetch('/api/exercises?type=warmup')
+        const response = await fetch('/api/exercises?type=warm-up')
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
@@ -59,15 +59,15 @@ export default function HomePage() {
         setCardioExercises(exercises)
 
         // Save to localStorage with timestamp
-        localStorage.setItem('warmup-exercises', JSON.stringify(exercises))
-        localStorage.setItem('warmup-exercises-timestamp', Date.now().toString())
+        localStorage.setItem('warm-up-exercises', JSON.stringify(exercises))
+        localStorage.setItem('warm-up-exercises-timestamp', Date.now().toString())
       } catch (error) {
         console.error('Error loading exercises:', error)
         setError(error instanceof Error ? error.message : 'Failed to load exercises')
 
         // If API fails, try to use cached data even if expired
         try {
-          const cachedData = localStorage.getItem('warmup-exercises')
+          const cachedData = localStorage.getItem('warm-up-exercises')
           if (cachedData) {
             setCardioExercises(JSON.parse(cachedData))
           }
@@ -92,7 +92,7 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="font-heading">Warmup</h1>
+      <h1 className="font-heading">Warm up</h1>
 
       <CollapsibleBox title="Heart Rate Raiser (2 min)" defaultOpen={false}>
         <div className="space-y-2">
@@ -132,7 +132,7 @@ export default function HomePage() {
                 id={exercise.id}
                 name={exercise.name}
                 image={exercise.image}
-                linkPrefix="/warmup"
+                linkPrefix="/warm-up"
                 showLabels={false}
               />
             ))}
@@ -150,8 +150,8 @@ export default function HomePage() {
               <button
                 onClick={() => {
                   // Force reload without cache
-                  localStorage.removeItem('warmup-exercises')
-                  localStorage.removeItem('warmup-exercises-timestamp')
+                  localStorage.removeItem('warm-up-exercises')
+                  localStorage.removeItem('warm-up-exercises-timestamp')
                   window.location.reload()
                 }}
                 className="px-3 py-1 bg-secondary text-secondary-foreground rounded-md text-sm"

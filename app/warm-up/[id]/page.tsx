@@ -21,7 +21,7 @@ function getYouTubeEmbedUrl(url: string | null): string | null {
   return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null
 }
 
-export default async function WarmupPage({ params }: { params: { id: string } }) {
+export default async function WarmUpPage({ params }: { params: { id: string } }) {
   try {
     // Get the exercise ID from the URL parameters - await params to fix the error
     const { id } = await params
@@ -116,7 +116,7 @@ export default async function WarmupPage({ params }: { params: { id: string } })
       </div>
     )
   } catch (error) {
-    console.error('Error in WarmupPage:', error)
+    console.error('Error in WarmUpPage:', error)
     return notFound()
   }
 }

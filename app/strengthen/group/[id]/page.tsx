@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import {
-  ArrowLeft,
-  AlertCircle,
-} from 'lucide-react'
+import { ArrowLeft, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import Link from 'next/link'
@@ -41,9 +38,7 @@ export default function ExerciseGroupPage() {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
-          throw new Error(
-            errorData.error || `Failed to load exercises: ${response.status}`
-          )
+          throw new Error(errorData.error || `Failed to load exercises: ${response.status}`)
         }
 
         const groupExercises = await response.json()
@@ -63,7 +58,7 @@ export default function ExerciseGroupPage() {
               // If API fails, use a default name based on the URL
               const nameFromUrl = decodeURIComponent(groupIdFromPath)
                 .replace(/-/g, ' ')
-                .replace(/\b\w/g, (l) => l.toUpperCase())
+                .replace(/\b\w/g, l => l.toUpperCase())
               setGroupName(nameFromUrl)
             }
           } catch (error) {
@@ -77,9 +72,7 @@ export default function ExerciseGroupPage() {
         setExercises(groupExercises)
       } catch (error) {
         console.error(`Error loading exercises for group ${groupId}:`, error)
-        setError(
-          error instanceof Error ? error.message : 'Failed to load exercises'
-        )
+        setError(error instanceof Error ? error.message : 'Failed to load exercises')
       } finally {
         setLoading(false)
       }
@@ -98,7 +91,7 @@ export default function ExerciseGroupPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-6">
-        <Link href="/workout" className="flex items-center">
+        <Link href="/strengthen" className="flex items-center">
           <Button
             variant="outline"
             size="icon"
@@ -118,23 +111,13 @@ export default function ExerciseGroupPage() {
       )}
 
       <div className="flex justify-end items-center mb-4">
-        <ViewControls
-          isSingleColumn={isSingleColumn}
-          onToggleLayout={toggleLayout}
-        />
+        <ViewControls isSingleColumn={isSingleColumn} onToggleLayout={toggleLayout} />
       </div>
 
       {loading ? (
-        <div
-          className={`grid ${
-            isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'
-          } gap-4`}
-        >
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="rounded-lg overflow-hidden h-full bg-muted animate-pulse"
-            >
+        <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
               <div className="aspect-video"></div>
               <div className="p-3">
                 <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
@@ -144,18 +127,14 @@ export default function ExerciseGroupPage() {
           ))}
         </div>
       ) : exercises.length > 0 ? (
-        <div
-          className={`grid ${
-            isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'
-          } gap-4`}
-        >
-          {exercises.map((exercise) => (
+        <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+          {exercises.map(exercise => (
             <ExerciseCard
               key={exercise.id}
               id={exercise.id}
               name={exercise.name}
               image={exercise.image}
-              linkPrefix="/workout"
+              linkPrefix="/strengthen"
               duration={exercise.duration}
               reps={exercise.reps}
               categories={exercise.categories}
@@ -168,18 +147,15 @@ export default function ExerciseGroupPage() {
         <div className="text-center py-8">
           <Alert className="max-w-md mx-auto">
             <AlertTitle>No exercises found</AlertTitle>
-            <AlertDescription>
-              There are no exercises assigned to this group yet.
-            </AlertDescription>
+            <AlertDescription>There are no exercises assigned to this group yet.</AlertDescription>
           </Alert>
           <div className="mt-6 flex flex-col items-center gap-4">
             <p className="text-muted-foreground">
-              To add exercises to this group, an admin needs to update the
-              exercises in the database to set their "exercise_group" value to "
-              {groupId}".
+              To add exercises to this group, an admin needs to update the exercises in the database
+              to set their "exercise_group" value to "{groupId}".
             </p>
-            <Button onClick={() => router.push('/workout')} variant="outline">
-              Return to Workout page
+            <Button onClick={() => router.push('/strengthen')} variant="outline">
+              Return to Strengthen page
             </Button>
           </div>
         </div>

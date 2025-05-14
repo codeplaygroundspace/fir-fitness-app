@@ -195,7 +195,7 @@ export default function CreateYourOwnWorkoutPage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="mb-6">
-        <Link href="/workout" className="flex items-center">
+        <Link href="/strengthen" className="flex items-center">
           <Button
             variant="outline"
             size="icon"
@@ -271,7 +271,7 @@ export default function CreateYourOwnWorkoutPage() {
                 id={group.id}
                 name={group.name}
                 image={group.image_url || '/placeholder.svg?height=200&width=300'}
-                linkPrefix="/workout/group"
+                linkPrefix="/strengthen/group"
                 categories={getGroupCategories(group)}
                 showCategories={true}
               />

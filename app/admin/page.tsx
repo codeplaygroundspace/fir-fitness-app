@@ -1,18 +1,21 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { supabaseServer } from "@/lib/supabase"
-import { PlusCircle, Edit } from "lucide-react"
-import { DeleteExerciseButton } from "./components/delete-exercise-button"
-import { capitalizeFirstLetter } from "@/lib/text-utils"
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { supabaseServer } from '@/lib/supabase'
+import { PlusCircle, Edit } from 'lucide-react'
+import { DeleteExerciseButton } from './components/delete-exercise-button'
+import { capitalizeFirstLetter } from '@/lib/text-utils'
 
 // Add a button to create categories if none exist
 
 export default async function AdminPage() {
-  const { data: exercises, error } = await supabaseServer.from("exercises").select("*, categories(name)").order("name")
-  const { data: categories } = await supabaseServer.from("categories").select("*")
+  const { data: exercises, error } = await supabaseServer
+    .from('exercises')
+    .select('*, categories(name)')
+    .order('name')
+  const { data: categories } = await supabaseServer.from('categories').select('*')
 
   if (error) {
-    console.error("Error fetching exercises:", error)
+    console.error('Error fetching exercises:', error)
   }
 
   return (
@@ -34,12 +37,14 @@ export default async function AdminPage() {
         <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-md mb-4">
           <h3 className="font-semibold mb-2">No Categories Found</h3>
           <p className="mb-2">
-            You need to create categories before adding exercises. At minimum, create these categories:
+            You need to create categories before adding exercises. At minimum, create these
+            categories:
           </p>
           <ul className="list-disc pl-5 mb-2">
-            <li>Warmup</li>
-            <li>Stretch</li>
-            <li>FIR</li>
+            <li>Warm-up</li>
+            <li>Mobilise</li>
+            <li>Strengthen</li>
+            <li>Recover</li>
           </ul>
           <Link href="/admin/categories">
             <Button variant="outline" size="sm">
@@ -81,9 +86,11 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="bg-card divide-y divide-border">
-              {exercises?.map((exercise) => (
+              {exercises?.map(exercise => (
                 <tr key={exercise.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{exercise.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                    {exercise.id}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                     {capitalizeFirstLetter(exercise.name)}
                   </td>

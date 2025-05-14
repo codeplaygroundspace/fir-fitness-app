@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -10,17 +10,27 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
-import { Share2, Copy, Check } from "lucide-react"
-import type { ShareWorkoutProps } from "@/lib/types"
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { Share2, Copy, Check } from 'lucide-react'
+import type { ShareWorkoutProps } from '@/lib/types'
 
 export function ShareWorkout({ exerciseId, exerciseName, exerciseType }: ShareWorkoutProps) {
   const [copied, setCopied] = useState(false)
   const { toast } = useToast()
 
-  const shareUrl = `${window.location.origin}/${exerciseType === "warmup" ? "warmup" : exerciseType}/${exerciseId}`
+  const shareUrl = `${window.location.origin}/${
+    exerciseType === 'warm-up'
+      ? 'warm-up'
+      : exerciseType === 'mobilise'
+        ? 'mobilise'
+        : exerciseType === 'strengthen'
+          ? 'strengthen'
+          : exerciseType === 'recover'
+            ? 'recover'
+            : exerciseType
+  }/${exerciseId}`
 
   const handleCopy = async () => {
     try {
@@ -28,13 +38,13 @@ export function ShareWorkout({ exerciseId, exerciseName, exerciseType }: ShareWo
       setCopied(true)
 
       toast({
-        title: "Link copied!",
-        description: "Share it with your friends",
+        title: 'Link copied!',
+        description: 'Share it with your friends',
       })
 
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error("Failed to copy:", err)
+      console.error('Failed to copy:', err)
     }
   }
 
@@ -47,7 +57,7 @@ export function ShareWorkout({ exerciseId, exerciseName, exerciseType }: ShareWo
           url: shareUrl,
         })
       } catch (err) {
-        console.error("Share failed:", err)
+        console.error('Share failed:', err)
       }
     } else {
       handleCopy()
@@ -78,7 +88,7 @@ export function ShareWorkout({ exerciseId, exerciseName, exerciseType }: ShareWo
         <DialogFooter>
           <Button onClick={handleShare} className="w-full sm:w-auto">
             <Share2 className="h-4 w-4 mr-2" />
-            {navigator.share ? "Share" : "Copy Link"}
+            {navigator.share ? 'Share' : 'Copy Link'}
           </Button>
         </DialogFooter>
       </DialogContent>

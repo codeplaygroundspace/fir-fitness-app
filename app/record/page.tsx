@@ -1,32 +1,31 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-// Update imports for moved components
-import { useAuth } from "@/components/auth/auth-provider"
-import { ThemeToggle } from "@/components/layout/theme-toggle"
-import { MonthlyCalendar } from "@/components/profile/monthly-calendar"
-import { UserAvatar } from "@/components/profile/user-avatar"
-import { WeeklyProgress } from "@/components/profile/weekly-progress"
-import { WorkoutProvider } from "@/contexts/workout-context"
-import { LogOut } from "lucide-react"
-import { useState } from "react"
+'use client'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { useAuth } from '@/components/auth/auth-provider'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
+import { MonthlyCalendar } from '@/components/record/monthly-calendar'
+import { UserAvatar } from '@/components/record/user-avatar'
+import { WeeklyProgress } from '@/components/record/weekly-progress'
+import { RecordProvider } from '@/contexts/record-context'
+import { LogOut } from 'lucide-react'
+import { useState } from 'react'
 
-export default function ProfilePage() {
+export default function RecordPage() {
   const { user, signOut } = useAuth()
   const [error, setError] = useState<string | null>(null)
 
   // Use user data from Supabase auth
   const userData = {
-    name: user?.email?.split("@")[0] || "Fitness User",
-    email: user?.email || "user@example.com",
-    profilePicture: "/placeholder.svg?height=100&width=100",
+    name: user?.email?.split('@')[0] || 'Fitness User',
+    email: user?.email || 'user@example.com',
+    profilePicture: '/placeholder.svg?height=100&width=100',
   }
 
   return (
     <div className="container mx-auto px-4 py-6">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold" id="profile-heading">
-          Profile
+          Record
         </h1>
         <ThemeToggle />
       </header>
@@ -54,7 +53,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         ) : (
-          <WorkoutProvider>
+          <RecordProvider>
             {/* Weekly Progress */}
             <section className="mb-6">
               <Card className="border-0 shadow-sm">
@@ -72,7 +71,7 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
             </section>
-          </WorkoutProvider>
+          </RecordProvider>
         )}
 
         <section aria-labelledby="account-heading">

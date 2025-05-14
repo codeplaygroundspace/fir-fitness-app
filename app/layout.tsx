@@ -1,41 +1,41 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inconsolata, Montserrat } from "next/font/google"
-import "./globals.css"
+import type React from 'react'
+import type { Metadata } from 'next'
+import { Inconsolata, Montserrat } from 'next/font/google'
+import './globals.css'
 // Update imports for moved components
-import Navigation from "@/components/layout/navigation"
-import { AuthProvider } from "@/components/auth/auth-provider"
-import { ThemeInitScript } from "@/components/theme/theme-init-script"
+import Navigation from '@/components/layout/navigation'
+import { AuthProvider } from '@/components/auth/auth-provider'
+import { ThemeInitScript } from '@/components/theme/theme-init-script'
 
 // Define the font with all available weights
 const inconsolata = Inconsolata({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-sans",
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans',
+  weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
 // Add Montserrat font for headings
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-montserrat",
-  weight: ["500"], // Changed from 700 to 500
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
+  weight: ['500'], // Changed from 700 to 500
 })
 
 export const metadata: Metadata = {
-  title: "Workout - Fitness App",
-  description: "Your personal fitness companion",
-    generator: 'v0.dev'
+  title: 'FIR Fitness App',
+  description: 'Your personal fitness companion',
+  generator: 'v0.dev',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inconsolata.variable} ${montserrat.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inconsolata.variable} ${montserrat.variable}`}
+    >
       <head>
         <ThemeInitScript />
       </head>
@@ -58,6 +58,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-import './globals.css'

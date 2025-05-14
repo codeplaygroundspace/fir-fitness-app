@@ -4,23 +4,48 @@ import { supabaseServer } from '@/lib/supabase'
 
 // Category IDs for different exercise types
 const CATEGORY_IDS = {
+  // Old names (for backward compatibility)
   warmup: '268c3c11-5c85-44a5-82f2-88801189ea0b',
   stretch: '4afc93b4-8465-49fd-ab2d-678a3fccd71e',
   workout: '976adc34-76e5-44fd-b5b4-b7ff5117a27d',
+  cooldown: '976adc34-76e5-44fd-b5b4-b7ff5117a27d', // Using same as workout for now
+
+  // New names
+  'warm-up': '268c3c11-5c85-44a5-82f2-88801189ea0b',
+  mobilise: '4afc93b4-8465-49fd-ab2d-678a3fccd71e',
+  strengthen: '976adc34-76e5-44fd-b5b4-b7ff5117a27d',
+  recover: '976adc34-76e5-44fd-b5b4-b7ff5117a27d', // Using same as workout for now
 }
 
 // Default durations for different exercise types
 const DEFAULT_DURATIONS = {
+  // Old names
   warmup: '30',
   stretch: '15-30',
   workout: '60',
+  cooldown: '30',
+
+  // New names
+  'warm-up': '30',
+  mobilise: '15-30',
+  strengthen: '60',
+  recover: '30',
 }
 
 export async function GET(request: Request) {
   try {
     // Parse query parameters
     const url = new URL(request.url)
-    const type = url.searchParams.get('type') as 'warmup' | 'stretch' | 'workout' | null
+    const type = url.searchParams.get('type') as
+      | 'warm-up'
+      | 'mobilise'
+      | 'strengthen'
+      | 'recover'
+      | 'warmup'
+      | 'stretch'
+      | 'workout'
+      | 'cooldown'
+      | null
     const group = url.searchParams.get('group')
     const id = url.searchParams.get('id')
 
@@ -63,9 +88,9 @@ export async function GET(request: Request) {
     }
 
     // Validate exercise type if provided
-    if (type && !['warmup', 'stretch', 'workout'].includes(type)) {
+    if (type && !Object.keys(CATEGORY_IDS).includes(type)) {
       return NextResponse.json(
-        { error: 'Invalid exercise type. Must be warmup, stretch, or workout.' },
+        { error: 'Invalid exercise type. Must be one of: ' + Object.keys(CATEGORY_IDS).join(', ') },
         { status: 400 }
       )
     }
@@ -124,8 +149,8 @@ export async function GET(request: Request) {
 
       let exercises = await fetchExercisesByCategory(categoryId, defaultDuration)
 
-      // Add categories for Workout exercises
-      if (type === 'workout') {
+      // Add categories for Workout/Strengthen exercises
+      if (type === 'workout' || type === 'strengthen') {
         exercises = exercises.map(exercise => ({
           ...exercise,
           categories: getDefaultCategories(exercise.name),
@@ -138,7 +163,7 @@ export async function GET(request: Request) {
     // If no specific query, return an error (or could return all exercises)
     return NextResponse.json(
       {
-        error: 'Please specify a type (warmup, stretch, workout), group ID, or exercise ID.',
+        error: 'Please specify a type, group ID, or exercise ID.',
       },
       { status: 400 }
     )

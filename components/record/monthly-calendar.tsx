@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { ChevronLeft, ChevronRight, Loader2, AlertCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { useWorkout } from "@/contexts/workout-context"
+import { useState } from 'react'
+import { ChevronLeft, ChevronRight, Loader2, AlertCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { useRecord } from '@/contexts/record-context'
 
 interface MonthlyCalendarProps {
   className?: string
@@ -12,11 +12,11 @@ interface MonthlyCalendarProps {
 
 export function MonthlyCalendar({ className }: MonthlyCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const { toggleWorkoutDay, isWorkoutCompleted, isLoading, error } = useWorkout()
+  const { toggleWorkoutDay, isWorkoutCompleted, isLoading, error } = useRecord()
 
   // Navigate to previous month
   const prevMonth = () => {
-    setCurrentDate((prev) => {
+    setCurrentDate(prev => {
       const newDate = new Date(prev)
       newDate.setMonth(prev.getMonth() - 1)
       return newDate
@@ -25,7 +25,7 @@ export function MonthlyCalendar({ className }: MonthlyCalendarProps) {
 
   // Navigate to next month
   const nextMonth = () => {
-    setCurrentDate((prev) => {
+    setCurrentDate(prev => {
       const newDate = new Date(prev)
       newDate.setMonth(prev.getMonth() + 1)
       return newDate
@@ -44,8 +44,8 @@ export function MonthlyCalendar({ className }: MonthlyCalendarProps) {
 
   // Format date as YYYY-MM-DD
   const formatDate = (year: number, month: number, day: number) => {
-    const monthStr = (month + 1).toString().padStart(2, "0")
-    const dayStr = day.toString().padStart(2, "0")
+    const monthStr = (month + 1).toString().padStart(2, '0')
+    const dayStr = day.toString().padStart(2, '0')
     return `${year}-${monthStr}-${dayStr}`
   }
 
@@ -72,27 +72,28 @@ export function MonthlyCalendar({ className }: MonthlyCalendarProps) {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = formatDate(year, month, day)
       const completed = isWorkoutCompleted(date)
-      const isToday = date === formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+      const isToday =
+        date === formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
 
       days.push(
-        <div key={date} className={cn("h-10 p-1 relative", isToday && "font-bold")}>
+        <div key={date} className={cn('h-10 p-1 relative', isToday && 'font-bold')}>
           <button
             onClick={() => toggleWorkoutDay(date)}
             disabled={isLoading}
             className={cn(
-              "h-full w-full flex items-center justify-center rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-              isToday && "ring-1 ring-primary",
+              'h-full w-full flex items-center justify-center rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+              isToday && 'ring-1 ring-primary',
               completed
-                ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90"
-                : "border-2 border-border hover:border-primary/50",
-              isLoading && "opacity-70 cursor-not-allowed",
+                ? 'bg-primary border-primary text-primary-foreground hover:bg-primary/90'
+                : 'border-2 border-border hover:border-primary/50',
+              isLoading && 'opacity-70 cursor-not-allowed'
             )}
-            aria-label={`${completed ? "Completed" : "Not completed"} workout on ${month + 1}/${day}/${year}`}
+            aria-label={`${completed ? 'Completed' : 'Not completed'} workout on ${month + 1}/${day}/${year}`}
             aria-pressed={completed}
           >
-            <span className={cn("z-10", completed && "text-primary-foreground")}>{day}</span>
+            <span className={cn('z-10', completed && 'text-primary-foreground')}>{day}</span>
           </button>
-        </div>,
+        </div>
       )
     }
 
@@ -101,20 +102,32 @@ export function MonthlyCalendar({ className }: MonthlyCalendarProps) {
 
   // Get month name
   const getMonthName = (month: number) => {
-    return new Date(0, month).toLocaleString("default", { month: "long" })
+    return new Date(0, month).toLocaleString('default', { month: 'long' })
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">
           {getMonthName(currentDate.getMonth())} {currentDate.getFullYear()}
         </h3>
         <div className="flex space-x-2">
-          <Button variant="outline" size="icon" onClick={prevMonth} aria-label="Previous month" disabled={isLoading}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={prevMonth}
+            aria-label="Previous month"
+            disabled={isLoading}
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" onClick={nextMonth} aria-label="Next month" disabled={isLoading}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={nextMonth}
+            aria-label="Next month"
+            disabled={isLoading}
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

@@ -142,7 +142,7 @@ export type Exercise = {
   name: string
   image: string
   duration?: string
-  type: 'warmup' | 'stretch' | 'fit'
+  type: 'warm-up' | 'mobilise' | 'strengthen' | 'recover'
   instructions?: string
 }
 
@@ -273,7 +273,7 @@ export interface CollapsibleBoxProps {
 export interface WorkoutLoggerProps {
   exerciseId: number
   exerciseName: string
-  exerciseType: 'warmup' | 'stretch' | 'fit'
+  exerciseType: 'warm-up' | 'mobilise' | 'strengthen' | 'recover'
 }
 
 export interface ShareWorkoutProps {

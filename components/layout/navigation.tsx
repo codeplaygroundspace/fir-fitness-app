@@ -18,14 +18,14 @@ export default function Navigation() {
   // Check if current page is a details page or login
   const isDetailsPage = () => {
     // Main section pages that should have navigation
-    const mainPages = ['/', '/stretch', '/workout', '/cooldown', '/profile']
+    const mainPages = ['/', '/mobilise', '/strengthen', '/recover', '/record']
 
-    // If the pathname is exactly one of our main pages, it's not a details page
+    // Check if the pathname exactly matches one of our main pages
     if (mainPages.includes(pathname)) {
       return false
     }
 
-    // If it's not a main page, it's a details/internal page
+    // For all other paths, consider them internal/detail pages
     return true
   }
 
@@ -48,55 +48,55 @@ export default function Navigation() {
               aria-current={isActive('/') ? 'page' : undefined}
             >
               <GiJumpAcross className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs mt-1">Warmup</span>
+              <span className="text-xs mt-1">Warm up</span>
             </Link>
           </li>
 
           <li>
             <Link
-              href="/stretch"
+              href="/mobilise"
               className={`flex flex-col items-center p-2 ${
-                isActive('/stretch') ? 'text-primary font-medium' : 'text-muted-foreground'
+                isActive('/mobilise') ? 'text-primary font-medium' : 'text-muted-foreground'
               }`}
-              aria-current={isActive('/stretch') ? 'page' : undefined}
+              aria-current={isActive('/mobilise') ? 'page' : undefined}
             >
               <GrYoga className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs mt-1">Stretch</span>
+              <span className="text-xs mt-1">Mobilise</span>
             </Link>
           </li>
 
           <li>
             <Link
-              href="/workout"
-              className={`flex flex-col items-center p-2 ${isActive('/workout') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
-              aria-current={isActive('/workout') ? 'page' : undefined}
+              href="/strengthen"
+              className={`flex flex-col items-center p-2 ${isActive('/strengthen') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+              aria-current={isActive('/strengthen') ? 'page' : undefined}
             >
               <IoIosFitness className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs mt-1">Workout</span>
+              <span className="text-xs mt-1">Strengthen</span>
             </Link>
           </li>
 
           <li>
             <Link
-              href="/cooldown"
-              className={`flex flex-col items-center p-2 ${isActive('/cooldown') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
-              aria-current={isActive('/cooldown') ? 'page' : undefined}
+              href="/recover"
+              className={`flex flex-col items-center p-2 ${isActive('/recover') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+              aria-current={isActive('/recover') ? 'page' : undefined}
             >
               <FaWind className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs mt-1">Cooldown</span>
+              <span className="text-xs mt-1">Recover</span>
             </Link>
           </li>
 
           <li>
             <Link
-              href="/profile"
+              href="/record"
               className={`flex flex-col items-center p-2 ${
-                isActive('/profile') ? 'text-primary font-medium' : 'text-muted-foreground'
+                isActive('/record') ? 'text-primary font-medium' : 'text-muted-foreground'
               }`}
-              aria-current={isActive('/profile') ? 'page' : undefined}
+              aria-current={isActive('/record') ? 'page' : undefined}
             >
               <BsFillPersonFill className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs mt-1">Profile</span>
+              <span className="text-xs mt-1">Record</span>
             </Link>
           </li>
         </ul>

@@ -3,10 +3,10 @@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
-export default function WorkoutPage() {
+export default function StrengthenPage() {
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1>Workout</h1>
+      <h1>Strengthen</h1>
 
       <div className="mt-6">
         <h3>Day 1</h3>
@@ -18,7 +18,7 @@ export default function WorkoutPage() {
 
       <div className="mt-8">
         <Button asChild>
-          <Link href="/workout/create-your-own">Create your own workout</Link>
+          <Link href="/strengthen/create-your-own">Create your own workout</Link>
         </Button>
       </div>
     </div>

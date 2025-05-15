@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { GrYoga } from 'react-icons/gr'
-import { GiJumpAcross } from 'react-icons/gi'
-import { IoIosFitness } from 'react-icons/io'
-import { BsFillPersonFill } from 'react-icons/bs'
-import { FaWind } from 'react-icons/fa'
+import { GiWeightLiftingUp } from 'react-icons/gi'
+import { TbStretching } from 'react-icons/tb'
+import { TfiWrite } from 'react-icons/tfi'
+import { FaHeartPulse } from 'react-icons/fa6'
 
 export default function Navigation() {
   const pathname = usePathname()
@@ -47,7 +47,7 @@ export default function Navigation() {
               className={`flex flex-col items-center p-2 ${isActive('/') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
               aria-current={isActive('/') ? 'page' : undefined}
             >
-              <GiJumpAcross className="h-6 w-6" aria-hidden="true" />
+              <FaHeartPulse className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Warm up</span>
             </Link>
           </li>
@@ -60,7 +60,7 @@ export default function Navigation() {
               }`}
               aria-current={isActive('/mobilise') ? 'page' : undefined}
             >
-              <GrYoga className="h-6 w-6" aria-hidden="true" />
+              <TbStretching className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Mobilise</span>
             </Link>
           </li>
@@ -71,7 +71,7 @@ export default function Navigation() {
               className={`flex flex-col items-center p-2 ${isActive('/strengthen') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
               aria-current={isActive('/strengthen') ? 'page' : undefined}
             >
-              <IoIosFitness className="h-6 w-6" aria-hidden="true" />
+              <GiWeightLiftingUp className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Strengthen</span>
             </Link>
           </li>
@@ -82,7 +82,7 @@ export default function Navigation() {
               className={`flex flex-col items-center p-2 ${isActive('/recover') ? 'text-primary font-medium' : 'text-muted-foreground'}`}
               aria-current={isActive('/recover') ? 'page' : undefined}
             >
-              <FaWind className="h-6 w-6" aria-hidden="true" />
+              <GrYoga className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Recover</span>
             </Link>
           </li>
@@ -95,7 +95,7 @@ export default function Navigation() {
               }`}
               aria-current={isActive('/record') ? 'page' : undefined}
             >
-              <BsFillPersonFill className="h-6 w-6" aria-hidden="true" />
+              <TfiWrite className="h-6 w-6" aria-hidden="true" />
               <span className="text-xs mt-1">Record</span>
             </Link>
           </li>

@@ -9,6 +9,8 @@ import type { ExerciseWithLabels } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export default function MobilisePage() {
   const { allExercises, loading, error, maxMuscleGroup, clearCacheAndReload } =
@@ -115,6 +117,36 @@ export default function MobilisePage() {
             <p className="text-muted-foreground">
               Please select a muscle group from above to view exercises
             </p>
+
+            {/* Previous mobility limitations form */}
+            <div className="mt-10 max-w-md mx-auto">
+              <h2 className="text-2xl font-heading mb-6">Previous mobility limitations</h2>
+              <form className="space-y-4">
+                <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                  <div className="p-6">
+                    <label htmlFor="mobilityLimitations" className="sr-only">
+                      Record stiff muscles and severity
+                    </label>
+                    <Input
+                      id="mobilityLimitations"
+                      placeholder="Record stiff muscles and severity (e.g., 'lower back 6/10')"
+                      className="w-full"
+                      aria-describedby="mobility-limitations-description"
+                    />
+                    <div id="mobility-limitations-description" className="sr-only">
+                      Enter the names of stiff muscles and their severity on a scale of 1-10
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                  aria-label="Save mobility limitations"
+                >
+                  Save
+                </Button>
+              </form>
+            </div>
           </div>
         ) : stretchExercises.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">

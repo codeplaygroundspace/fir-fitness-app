@@ -2,21 +2,43 @@
 
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
-import { MuscleGroupSelector } from '@/components/mobilise'
+import { MuscleGroupSelector, MobilityLimitationsForm } from '@/components/mobilise'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMobiliseExercises } from '@/hooks'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { useAuth } from '@/components/auth/auth-provider'
+import { getUserMobilityLimitations } from './actions'
 
 export default function MobilisePage() {
   const { allExercises, loading, error, maxMuscleGroup, clearCacheAndReload } =
     useMobiliseExercises()
   const [stretchExercises, setStretchExercises] = useState<ExerciseWithLabels[]>([])
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
+  const { user } = useAuth()
+  const [mobilityLimitations, setMobilityLimitations] = useState('')
+  const [isLoadingLimitations, setIsLoadingLimitations] = useState(false)
+
+  // Load user's mobility limitations
+  useEffect(() => {
+    const loadMobilityLimitations = async () => {
+      if (!user?.id) return
+
+      setIsLoadingLimitations(true)
+      try {
+        const limitations = await getUserMobilityLimitations(user.id)
+        setMobilityLimitations(limitations)
+      } catch (error) {
+        console.error('Error loading mobility limitations:', error)
+      } finally {
+        setIsLoadingLimitations(false)
+      }
+    }
+
+    loadMobilityLimitations()
+  }, [user?.id])
 
   useEffect(() => {
     if (selectedNumber === null) {
@@ -121,31 +143,11 @@ export default function MobilisePage() {
             {/* Previous mobility limitations form */}
             <div className="mt-10 max-w-md mx-auto">
               <h2 className="text-2xl font-heading mb-6">Previous mobility limitations</h2>
-              <form className="space-y-4">
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-                  <div className="p-6">
-                    <label htmlFor="mobilityLimitations" className="sr-only">
-                      Record stiff muscles and severity
-                    </label>
-                    <Input
-                      id="mobilityLimitations"
-                      placeholder="Record stiff muscles and severity (e.g., 'lower back 6/10')"
-                      className="w-full"
-                      aria-describedby="mobility-limitations-description"
-                    />
-                    <div id="mobility-limitations-description" className="sr-only">
-                      Enter the names of stiff muscles and their severity on a scale of 1-10
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                  aria-label="Save mobility limitations"
-                >
-                  Save
-                </Button>
-              </form>
+              <MobilityLimitationsForm
+                userId={user?.id}
+                initialLimitations={mobilityLimitations}
+                isLoading={isLoadingLimitations}
+              />
             </div>
           </div>
         ) : stretchExercises.length > 0 ? (

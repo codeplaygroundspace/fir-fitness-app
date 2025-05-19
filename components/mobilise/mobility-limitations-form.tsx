@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Loader2, CheckCircle2 } from 'lucide-react'
 import { saveMobilityLimitations } from '@/app/mobilise/actions'
@@ -54,7 +55,7 @@ export const MobilityLimitationsForm = ({
     }
   }, [showSuccessMessage])
 
-  const handleMobilityLimitationsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMobilityLimitationsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMobilityLimitations(e.target.value)
   }
 
@@ -104,23 +105,29 @@ export const MobilityLimitationsForm = ({
 
   return (
     <form className="space-y-4" onSubmit={handleMobilityLimitationsSubmit} aria-busy={isSaving}>
-      <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm text-left">
         <div className="p-6 space-y-3">
           <label htmlFor="mobilityLimitations" className="sr-only">
             Record stiff muscles and severity
           </label>
-          <Input
+          <Textarea
             id="mobilityLimitations"
             value={mobilityLimitations}
             onChange={handleMobilityLimitationsChange}
-            placeholder="Record stiff muscles and severity (e.g., 'lower back 6/10')"
-            className="w-full"
+            placeholder="Record any previous mobility limitation such as stiff muscles and severity (e.g., 'lower back 6/10')"
+            className="w-full min-h-[120px]"
             aria-describedby="mobility-limitations-description"
             disabled={isSaving}
           />
           <div id="mobility-limitations-description" className="sr-only">
             Enter the names of stiff muscles and their severity on a scale of 1-10
           </div>
+
+          {saveError && (
+            <div className="text-sm text-destructive mt-2" role="alert">
+              {saveError}
+            </div>
+          )}
 
           {savedValue && (
             <div className="text-sm pt-2 mt-3" aria-live="polite">
@@ -135,16 +142,13 @@ export const MobilityLimitationsForm = ({
                   Saved limitations
                 </div>
               )}
-              <p className="text-foreground text-left">{savedValue}</p>
+              <p className="text-foreground">
+                <span className="font-bold">Saved:</span> {savedValue}
+              </p>
             </div>
           )}
         </div>
       </div>
-      {saveError && (
-        <div className="text-sm text-destructive" role="alert">
-          {saveError}
-        </div>
-      )}
       <Button
         type="submit"
         className="w-full bg-orange-500 hover:bg-orange-600 text-white"

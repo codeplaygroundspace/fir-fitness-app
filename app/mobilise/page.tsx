@@ -142,7 +142,6 @@ export default function MobilisePage() {
 
             {/* Previous mobility limitations form */}
             <div className="mt-10 max-w-md mx-auto">
-              <h2 className="text-2xl font-heading mb-6">Previous mobility limitations</h2>
               <MobilityLimitationsForm
                 userId={user?.id}
                 initialLimitations={mobilityLimitations}

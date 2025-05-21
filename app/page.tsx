@@ -94,12 +94,15 @@ export default function HomePage() {
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Warm up</h1>
 
-      <CollapsibleBox title="Heart Rate Raiser (2 min)" defaultOpen={false}>
+      <CollapsibleBox
+        title="Objective: Raise your heart rate + move all of your body"
+        defaultOpen={false}
+      >
         <div className="space-y-2">
-          <p className="text-muted-foreground">E.g. jogging, skipping, cardio machines, dancing.</p>
           <p className="text-muted-foreground">
-            This is called 'Heart Rate Raiser' as the goal is to get your heart rate up and get you
-            feeling warmer before you move on to stretching. Total warmup time is approx. 5 minutes.
+            Raising your Heart Rate whilst moving all your major joints and muscles is vital to
+            safely prepare your body for exercise. You can do this in just 5 min by following the
+            exercises below:
           </p>
         </div>
       </CollapsibleBox>

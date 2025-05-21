@@ -105,7 +105,7 @@ export const MobilityLimitationsForm = ({
 
   return (
     <form className="space-y-4" onSubmit={handleMobilityLimitationsSubmit} aria-busy={isSaving}>
-      <div className="rounded-lg border bg-card text-card-foreground shadow-sm text-left">
+      <div className="rounded-lg bg-card text-card-foreground text-left">
         <div className="p-2 space-y-1">
           <label htmlFor="mobilityLimitations" className="sr-only">
             Record stiff muscles and severity

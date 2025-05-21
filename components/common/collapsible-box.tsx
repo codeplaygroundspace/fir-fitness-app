@@ -21,7 +21,7 @@ export function CollapsibleBox({
 
   return (
     <div
-      className={`bg-secondary p-4 rounded-lg hover:bg-secondary/90 transition-colors mb-6 ${className}`}
+      className={`bg-secondary p-4 rounded-md hover:bg-secondary/90 transition-colors mb-2 ${className}`}
     >
       <button
         className="w-full text-left flex justify-between items-center gap-2"
@@ -31,7 +31,7 @@ export function CollapsibleBox({
       >
         <h2
           id={headingId}
-          className="text-lg font-semibold text-secondary-foreground flex-1 m-0 leading-none"
+          className="text-lg font-semibold text-secondary-foreground flex-1 m-0 leading-6"
         >
           {title}
         </h2>

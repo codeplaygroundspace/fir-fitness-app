@@ -82,12 +82,26 @@ export default function MobilisePage() {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-heading">Mobilise</h1>
-      <CollapsibleBox title="Active" defaultOpen={false}>
+      <CollapsibleBox title="Objective: Actively stretch all tight muscles" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">
-            Only stretch muscles that feel tight during warm up. Remember to stay 'Active' ❤️‍🔥 whilst
-            stretching, move in and out of the stretch. This is to stop your body from cooling down
-            and to best prepare your body for strengthening.
+            Actively Stretching ALL the tight muscles muscles in your body will improve your ability
+            to move functionally during the next step in your workout: Strengthen, helping you to
+            get better results. Actively Stretching means stretching whilst moving (i.e. move in and
+            out of the stretch rather than hold). Spend 15-30sec on each stretch.
+          </p>
+        </div>
+      </CollapsibleBox>
+      <CollapsibleBox title="Recent tight" defaultOpen={false}>
+        <div className="space-y-2">
+          <p className="text-muted-foreground">
+            This is a list of muscles recently found to be tight in your body during training.
+            Stretch these muscles in addition to any muscles that feel tight to you that day. This
+            list will keep changing as your Functional Imbalances change. Record here any muscles
+            that feel tight during any stage of your workout (i.e. during Warm up, Strengthen, and
+            Recovery). This will help you remember to mobilise these muscles next time you come to
+            train, so that you can get better results during the next step: Strengthen. If you feel
+            like a muscle has stopped being tight you can delete it from this list.
           </p>
         </div>
       </CollapsibleBox>

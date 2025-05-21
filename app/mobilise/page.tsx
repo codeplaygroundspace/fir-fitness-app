@@ -105,6 +105,16 @@ export default function MobilisePage() {
           </p>
         </div>
       </CollapsibleBox>
+
+      {/* Mobility Limitations Form */}
+      <div className="max-w-md mx-auto my-2">
+        <MobilityLimitationsForm
+          userId={user?.id}
+          initialLimitations={mobilityLimitations}
+          isLoading={isLoadingLimitations}
+        />
+      </div>
+
       {/* Image section */}
       <section className="mb-8">
         <div className="rounded-lg overflow-hidden shadow-md">
@@ -149,19 +159,10 @@ export default function MobilisePage() {
             ))}
           </div>
         ) : selectedNumber === null ? (
-          <div className="text-center py-8">
+          <div className="text-center py-2">
             <p className="text-muted-foreground">
               Please select a muscle group from above to view exercises
             </p>
-
-            {/* Previous mobility limitations form */}
-            <div className="mt-10 max-w-md mx-auto">
-              <MobilityLimitationsForm
-                userId={user?.id}
-                initialLimitations={mobilityLimitations}
-                isLoading={isLoadingLimitations}
-              />
-            </div>
           </div>
         ) : stretchExercises.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">

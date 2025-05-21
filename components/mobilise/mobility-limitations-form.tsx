@@ -55,7 +55,7 @@ export const MobilityLimitationsForm = ({
     }
   }, [showSuccessMessage])
 
-  const handleMobilityLimitationsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleMobilityLimitationsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMobilityLimitations(e.target.value)
   }
 
@@ -106,16 +106,16 @@ export const MobilityLimitationsForm = ({
   return (
     <form className="space-y-4" onSubmit={handleMobilityLimitationsSubmit} aria-busy={isSaving}>
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm text-left">
-        <div className="p-6 space-y-3">
+        <div className="p-2 space-y-1">
           <label htmlFor="mobilityLimitations" className="sr-only">
             Record stiff muscles and severity
           </label>
-          <Textarea
+          <Input
             id="mobilityLimitations"
             value={mobilityLimitations}
             onChange={handleMobilityLimitationsChange}
-            placeholder="Record any previous mobility limitation such as stiff muscles and severity (e.g., 'lower back 6/10')"
-            className="w-full min-h-[120px]"
+            placeholder="e.g write 11 for 'lower back'"
+            className="w-full"
             aria-describedby="mobility-limitations-description"
             disabled={isSaving}
           />

@@ -5,6 +5,23 @@ import type { User, Session } from '@supabase/supabase-js'
 export type Database = {
   public: {
     tables: {
+      user_imbalance_images: {
+        Row: {
+          id: string
+          user_id: string
+          image_url: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          image_url: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          image_url?: string
+        }
+      }
       exercises: {
         Row: {
           id: number

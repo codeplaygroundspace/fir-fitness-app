@@ -1,14 +1,18 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { useImbalanceImage } from '@/hooks/use-imbalance-image'
+import { useTrainingDays } from '@/hooks/use-training-days'
 import { ImageError, ImageLoading, ImagePlaceholder } from '@/components/common/image-states'
 
 export default function StrengthenPage() {
-  const { imageUrl, loading, error } = useImbalanceImage()
+  const { imageUrl, loading: imageLoading, error: imageError } = useImbalanceImage()
+  const { days, loading: daysLoading, error: daysError } = useTrainingDays()
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -25,10 +29,10 @@ export default function StrengthenPage() {
       </CollapsibleBox>
 
       <div className="mb-8 aspect-[4/3] grid place-items-center bg-muted/30 rounded-lg overflow-hidden">
-        {loading ? (
+        {imageLoading ? (
           <ImageLoading />
-        ) : error ? (
-          <ImageError message={error} />
+        ) : imageError ? (
+          <ImageError message={imageError} />
         ) : !imageUrl ? (
           <ImagePlaceholder />
         ) : (
@@ -55,21 +59,35 @@ export default function StrengthenPage() {
         </div>
       </CollapsibleBox>
 
-      <div className="mt-6">
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/strengthen/day-1">
-            <p className="text-lg">Day 1</p>
-          </Link>
-        </Button>
-      </div>
-
-      <div className="mt-4">
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/strengthen/day-2">
-            <p className="text-lg">Day 2</p>
-          </Link>
-        </Button>
-      </div>
+      {daysLoading ? (
+        <div className="space-y-4 mt-6">
+          <div className="h-10 bg-muted animate-pulse rounded-lg" />
+          <div className="h-10 bg-muted animate-pulse rounded-lg" />
+        </div>
+      ) : daysError ? (
+        <div className="mt-6">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{daysError}</AlertDescription>
+          </Alert>
+        </div>
+      ) : days.length > 0 ? (
+        <div className="space-y-4 mt-6">
+          {days.map(day => (
+            <Button key={day} asChild variant="outline" className="w-full">
+              <Link href={`/strengthen/day/${day}`}>
+                <p className="text-lg">Day {day}</p>
+              </Link>
+            </Button>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6">
+          <Alert>
+            <AlertDescription>No training days have been assigned yet.</AlertDescription>
+          </Alert>
+        </div>
+      )}
 
       <div className="mt-4">
         <Button asChild className="w-full">

@@ -2,10 +2,14 @@
 
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
-import { FeatureImage } from '@/components/user/feature-image'
+import { useImbalanceImage } from '@/hooks/use-imbalance-image'
+import { ImageError, ImageLoading, ImagePlaceholder } from '@/components/common/image-states'
 
 export default function StrengthenPage() {
+  const { imageUrl, loading, error } = useImbalanceImage()
+
   return (
     <div className="container mx-auto px-4 py-6">
       <h1>Strengthen</h1>
@@ -20,10 +24,24 @@ export default function StrengthenPage() {
         </div>
       </CollapsibleBox>
 
-      <FeatureImage
-        src="https://live.staticflickr.com/65535/54398757288_bca1273e3a_w.jpg"
-        alt="Muscles stretching"
-      />
+      <div className="mb-8 aspect-[4/3] grid place-items-center bg-muted/30 rounded-lg overflow-hidden">
+        {loading ? (
+          <ImageLoading />
+        ) : error ? (
+          <ImageError message={error} />
+        ) : !imageUrl ? (
+          <ImagePlaceholder />
+        ) : (
+          <Image
+            src={imageUrl}
+            alt="Personal imbalance image"
+            width={600}
+            height={450}
+            className="w-full h-full object-cover"
+            priority
+          />
+        )}
+      </div>
 
       <CollapsibleBox title="Training days" defaultOpen={false}>
         <div className="space-y-2">

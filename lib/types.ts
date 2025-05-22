@@ -180,7 +180,7 @@ export type ExerciseWithLabels = {
   categories?: string[]
 }
 
-// Form data for exercise admin
+// Form data for exercises
 export type ExerciseFormData = {
   name: string
   description: string | null
@@ -297,11 +297,6 @@ export interface ShareWorkoutProps {
   exerciseId: number
   exerciseName: string
   exerciseType: string
-}
-
-export interface DeleteExerciseButtonProps {
-  id: number
-  name: string
 }
 
 export interface BackButtonProps {

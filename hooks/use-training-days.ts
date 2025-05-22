@@ -1,51 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/components/auth/auth-provider'
 import { getUserTrainingDays } from '@/app/strengthen/actions'
-
-const CACHE_KEY = 'training-days-cache'
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes in milliseconds
-const MAX_RETRIES = 3
-const RETRY_DELAY = 1000 // 1 second
-
-interface CacheEntry {
-  days: number[]
-  timestamp: number
-  userId: string
-}
-
-const getCachedDays = (userId: string): number[] | null => {
-  try {
-    const cached = localStorage.getItem(CACHE_KEY)
-    if (!cached) return null
-
-    const entry: CacheEntry = JSON.parse(cached)
-    const now = Date.now()
-
-    if (entry.userId === userId && now - entry.timestamp < CACHE_DURATION) {
-      return entry.days
-    }
-    return null
-  } catch {
-    return null
-  }
-}
-
-const setCachedDays = (userId: string, days: number[]) => {
-  try {
-    const entry: CacheEntry = {
-      days,
-      timestamp: Date.now(),
-      userId,
-    }
-    localStorage.setItem(CACHE_KEY, JSON.stringify(entry))
-  } catch {
-    // Ignore cache errors
-  }
-}
+import { useCache } from './use-cache'
+import { CACHE_KEYS } from '@/lib/cache-constants'
 
 export const useTrainingDays = () => {
   const { user } = useAuth()
-  const [days, setDays] = useState<number[]>(() => (user ? getCachedDays(user.id) || [] : []))
+  const { getCachedData, setCachedData } = useCache<number[]>(CACHE_KEYS.TRAINING_DAYS)
+  const [days, setDays] = useState<number[]>(() => (user ? getCachedData(user.id) || [] : []))
   const [loading, setLoading] = useState(!days.length)
   const [error, setError] = useState<string | null>(null)
 
@@ -61,7 +23,7 @@ export const useTrainingDays = () => {
       }
 
       // Check cache first
-      const cached = getCachedDays(user.id)
+      const cached = getCachedData(user.id)
       if (cached) {
         setDays(cached)
         setLoading(false)
@@ -76,16 +38,16 @@ export const useTrainingDays = () => {
 
         if (!mounted) return
 
-        setCachedDays(user.id, trainingDays)
+        setCachedData(trainingDays, user.id)
         setDays(trainingDays)
       } catch (err) {
         console.error('Error fetching training days:', err)
 
         if (!mounted) return
 
-        if (retryCount < MAX_RETRIES) {
+        if (retryCount < 3) {
           retryCount++
-          setTimeout(fetchTrainingDays, RETRY_DELAY * retryCount)
+          setTimeout(fetchTrainingDays, 1000 * retryCount)
         } else {
           setError('Failed to load training days')
         }

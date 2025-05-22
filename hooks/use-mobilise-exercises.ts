@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import type { ExerciseWithLabels } from '@/lib/types'
-
-// Cache expiration time (24 hours in milliseconds)
-const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
+import { useCache } from './use-cache'
+import { CACHE_KEYS } from '@/lib/cache-constants'
 
 export const useMobiliseExercises = () => {
   const [allExercises, setAllExercises] = useState<ExerciseWithLabels[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [maxMuscleGroup, setMaxMuscleGroup] = useState(19) // Initial default, will be updated from data
+  const { getCachedData, setCachedData, clearCache } = useCache<ExerciseWithLabels[]>(
+    CACHE_KEYS.MOBILISE_EXERCISES
+  )
 
   // Function to calculate the maximum muscle group ID from the exercises data
   const calculateMaxMuscleGroup = (exercises: ExerciseWithLabels[]) => {
@@ -40,35 +42,20 @@ export const useMobiliseExercises = () => {
 
   // Function to clear cache and reload the page
   const clearCacheAndReload = () => {
-    // Force reload without cache
-    localStorage.removeItem('mobilise-exercises')
-    localStorage.removeItem('mobilise-exercises-timestamp')
+    clearCache()
     window.location.reload()
   }
 
   useEffect(() => {
     async function loadExercises() {
       try {
-        // Check localStorage first
-        const cachedData = localStorage.getItem('mobilise-exercises')
-        const cachedTimestamp = localStorage.getItem('mobilise-exercises-timestamp')
-
-        // If we have cached data and it's not expired
-        if (cachedData && cachedTimestamp) {
-          const timestamp = Number.parseInt(cachedTimestamp, 10)
-          const now = Date.now()
-
-          // Use cached data if it's less than 24 hours old
-          if (now - timestamp < CACHE_EXPIRATION) {
-            const exercises = JSON.parse(cachedData)
-            setAllExercises(exercises)
-
-            // Calculate max muscle group from the data
-            calculateMaxMuscleGroup(exercises)
-
-            setLoading(false)
-            return
-          }
+        // Check cache first
+        const cached = getCachedData()
+        if (cached) {
+          setAllExercises(cached)
+          calculateMaxMuscleGroup(cached)
+          setLoading(false)
+          return
         }
 
         // If no cache or expired, fetch from API
@@ -97,29 +84,17 @@ export const useMobiliseExercises = () => {
         }))
 
         setAllExercises(validatedExercises)
-
-        // Calculate max muscle group from the data
         calculateMaxMuscleGroup(validatedExercises)
-
-        // Save to localStorage with timestamp
-        localStorage.setItem('mobilise-exercises', JSON.stringify(validatedExercises))
-        localStorage.setItem('mobilise-exercises-timestamp', Date.now().toString())
+        setCachedData(validatedExercises)
       } catch (error) {
         console.error('Error loading exercises:', error)
         setError(error instanceof Error ? error.message : 'Failed to load exercises')
 
         // If API fails, try to use cached data even if expired
-        try {
-          const cachedData = localStorage.getItem('mobilise-exercises')
-          if (cachedData) {
-            const exercises = JSON.parse(cachedData)
-            setAllExercises(exercises)
-
-            // Calculate max muscle group from the data
-            calculateMaxMuscleGroup(exercises)
-          }
-        } catch (cacheError) {
-          console.error('Error loading from cache:', cacheError)
+        const cached = getCachedData()
+        if (cached) {
+          setAllExercises(cached)
+          calculateMaxMuscleGroup(cached)
         }
       } finally {
         setLoading(false)

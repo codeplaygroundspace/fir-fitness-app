@@ -151,8 +151,8 @@ export default function ExerciseGroupPage() {
           </Alert>
           <div className="mt-6 flex flex-col items-center gap-4">
             <p className="text-muted-foreground">
-              To add exercises to this group, an admin needs to update the exercises in the database
-              to set their "exercise_group" value to "{groupId}".
+              There are currently no exercises available in this group to set their "exercise_group"
+              value to "{groupId}".
             </p>
             <Button onClick={() => router.push('/strengthen')} variant="outline">
               Return to Strengthen page

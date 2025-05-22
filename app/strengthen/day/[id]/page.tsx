@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { ImageError, ImageLoading, ImagePlaceholder } from '@/components/common/image-states'
 import { useDayImage } from '@/hooks/use-day-image'
 import { useState, useEffect } from 'react'
+import { CollapsibleBox } from '@/components/common/collapsible-box'
 
 export default function DayPage() {
   const params = useParams()
@@ -78,6 +79,16 @@ export default function DayPage() {
 
       <div className="px-4">
         <h1>Day {dayId} Workout</h1>
+        <CollapsibleBox title="Exercises" defaultOpen={false}>
+          <div className="space-y-2">
+            <p className="text-muted-foreground">
+              Below is a list of exercise which altogether will work the muscles highlighted above
+              for Day 1. Click on the 'Exercise picture' to see full technique video. Click on the
+              'Muscle picture' to view exercise alternatives. Write in 'Notes' any info important to
+              you (e.g. Technique reminders, reps/sets/weight).
+            </p>
+          </div>
+        </CollapsibleBox>
       </div>
     </div>
   )

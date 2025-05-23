@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
+import Link from 'next/link'
 
 export default function RecoverPage() {
   return (
@@ -18,16 +19,23 @@ export default function RecoverPage() {
         </div>
       </CollapsibleBox>
 
-      <div className="mt-6">
-        <h3>Day 1</h3>
+      <div className="space-y-4 mt-6">
+        <Button asChild variant="outline" className="w-full">
+          <Link href="/recover/day/1">
+            <p className="text-lg">Day 1</p>
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="w-full">
+          <Link href="/recover/day/2">
+            <p className="text-lg">Day 2</p>
+          </Link>
+        </Button>
       </div>
 
       <div className="mt-4">
-        <h3>Day 2</h3>
-      </div>
-
-      <div className="mt-8">
-        <Button>Create your own workout</Button>
+        <Button asChild className="w-full">
+          <Link href="/recover/create-your-own">Create your own workout</Link>
+        </Button>
       </div>
     </div>
   )

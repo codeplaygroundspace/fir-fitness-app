@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Loader2, CheckCircle2 } from 'lucide-react'
 import { saveMobilityLimitations } from '@/app/mobilise/actions'
 import { cn } from '@/lib/utils'
@@ -96,74 +96,83 @@ export const MobilityLimitationsForm = ({
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center p-6" aria-busy="true" aria-live="polite">
-        <Loader2 className="h-5 w-5 animate-spin text-primary mr-2" />
-        <span>Loading your mobility data...</span>
-      </div>
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-6">
+          <div className="flex justify-center items-center" aria-busy="true" aria-live="polite">
+            <Loader2 className="h-5 w-5 animate-spin text-primary mr-2" />
+            <span>Loading your mobility data...</span>
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleMobilityLimitationsSubmit} aria-busy={isSaving}>
-      <div className="rounded-lg bg-card text-card-foreground text-left">
-        <div className="p-2 space-y-1">
-          <label htmlFor="mobilityLimitations" className="sr-only">
-            Record stiff muscles and severity
-          </label>
-          <Input
-            id="mobilityLimitations"
-            value={mobilityLimitations}
-            onChange={handleMobilityLimitationsChange}
-            placeholder="e.g write 11 for 'lower back'"
-            className="w-full"
-            aria-describedby="mobility-limitations-description"
-            disabled={isSaving}
-          />
-          <div id="mobility-limitations-description" className="sr-only">
-            Enter the names of stiff muscles and their severity on a scale of 1-10
-          </div>
-
-          {saveError && (
-            <div className="text-sm text-destructive mt-2" role="alert">
-              {saveError}
+    <form onSubmit={handleMobilityLimitationsSubmit} aria-busy={isSaving}>
+      <Card className="border-0 shadow-sm">
+        <CardContent className="py-4 px-2">
+          <div className="space-y-2">
+            <div>
+              <label htmlFor="mobilityLimitations" className="sr-only">
+                Record stiff muscles and severity
+              </label>
+              <Input
+                id="mobilityLimitations"
+                value={mobilityLimitations}
+                onChange={handleMobilityLimitationsChange}
+                placeholder="e.g write 11 for 'lower back'"
+                className="w-full"
+                aria-describedby="mobility-limitations-description"
+                disabled={isSaving}
+              />
+              <div id="mobility-limitations-description" className="sr-only">
+                Enter the names of stiff muscles and their severity on a scale of 1-10
+              </div>
             </div>
-          )}
 
-          {savedValue && (
-            <div className="text-sm pt-2 mt-3" aria-live="polite">
-              {showSuccessMessage && (
-                <div
-                  className={cn(
-                    'flex items-center font-medium text-green-600 mb-1 transition-opacity duration-500',
-                    isAnimatingOut ? 'opacity-0' : 'opacity-100'
-                  )}
-                >
-                  <CheckCircle2 className="h-4 w-4 text-green-500 mr-1 shrink-0" />
-                  Saved limitations
-                </div>
+            {saveError && (
+              <div className="text-sm text-destructive" role="alert">
+                {saveError}
+              </div>
+            )}
+
+            {savedValue && (
+              <div aria-live="polite">
+                {showSuccessMessage && (
+                  <div
+                    className={cn(
+                      'flex items-center font-medium text-green-600 mb-1 transition-opacity duration-500',
+                      isAnimatingOut ? 'opacity-0' : 'opacity-100'
+                    )}
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-green-500 mr-1 shrink-0" />
+                    Saved limitations
+                  </div>
+                )}
+                <p className="text-foreground">
+                  <span className="font-bold">Saved:</span> {savedValue}
+                </p>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+              aria-label="Save mobility limitations"
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Saving...
+                </>
+              ) : (
+                'Save'
               )}
-              <p className="text-foreground">
-                <span className="font-bold">Saved:</span> {savedValue}
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-      <Button
-        type="submit"
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-        aria-label="Save mobility limitations"
-        disabled={isSaving}
-      >
-        {isSaving ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            Saving...
-          </>
-        ) : (
-          'Save'
-        )}
-      </Button>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </form>
   )
 }

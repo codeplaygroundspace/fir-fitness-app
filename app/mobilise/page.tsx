@@ -107,7 +107,7 @@ export default function MobilisePage() {
       </CollapsibleBox>
 
       {/* Mobility Limitations Form */}
-      <div className="max-w-md mx-auto my-2">
+      <div className="mb-6">
         <MobilityLimitationsForm
           userId={user?.id}
           initialLimitations={mobilityLimitations}

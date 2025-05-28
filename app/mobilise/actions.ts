@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // Create a server-side Supabase client
 const createServerClient = () => {
-  const supabaseUrl = 'https://nadfduujsmcwckcdsmlb.supabase.co'
+  const supabaseUrl = process.env.SUPABASE_URL || ''
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
   return createClient(supabaseUrl, supabaseServiceKey, {

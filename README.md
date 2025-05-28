@@ -71,7 +71,7 @@ pnpm dev
 The project uses [Shadcn UI](https://ui.shadcn.com/) components, which are built on top of Radix UI primitives and styled with TailwindCSS. This provides:
 
 - Accessible components out of the box
-- Customizable design system
+- Customisable design system
 - Dark mode support
 - Responsive layouts
 
@@ -79,8 +79,7 @@ The project uses [Shadcn UI](https://ui.shadcn.com/) components, which are built
 
 Authentication is handled by Supabase Auth, providing:
 
-- Email/password authentication
-- Social authentication
+- Email/password login
 - Session management
 - Protected routes
 
@@ -91,19 +90,11 @@ Authentication is handled by Supabase Auth, providing:
 - TypeScript for type safety
 - TailwindCSS for styling
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## 🙏 Tech stack
 
 - [Next.js](https://nextjs.org/)
 - [TailwindCSS](https://tailwindcss.com/)

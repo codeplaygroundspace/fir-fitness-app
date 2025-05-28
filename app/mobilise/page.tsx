@@ -120,7 +120,7 @@ export default function MobilisePage() {
         <div className="rounded-lg overflow-hidden shadow-md">
           <div className="flex justify-center">
             <Image
-              src="https://live.staticflickr.com/65535/54398757288_bca1273e3a_w.jpg"
+              src="https://lmkifqxcrrzjjkkpwsgn.supabase.co/storage/v1/object/public/fit-app/mobilise/body-muscles.jpg"
               alt="Muscles stretching"
               width={400}
               height={600}

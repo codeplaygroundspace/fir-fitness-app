@@ -1,7 +1,7 @@
 'use client'
 
 import { CollapsibleBox } from '@/components/common/collapsible-box'
-import { ExerciseCard } from '@/components/exercises/exercise-card'
+import { MobiliseExerciseCard } from '@/components/exercises/mobilise-exercise-card'
 import { MuscleGroupSelector, MobilityLimitationsForm } from '@/components/mobilise'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMobiliseExercises } from '@/hooks'
@@ -120,7 +120,7 @@ export default function MobilisePage() {
         <div className="rounded-lg overflow-hidden shadow-md">
           <div className="flex justify-center">
             <Image
-              src="https://lmkifqxcrrzjjkkpwsgn.supabase.co/storage/v1/object/public/fit-app/mobilise/body-muscles.jpg"
+              src="https://lmkifqxcrrzjjkkpwsgn.supabase.co/storage/v1/object/public/fit-app/mobilise-body-muscles/body-muscles.jpg"
               alt="Muscles stretching"
               width={400}
               height={600}
@@ -150,10 +150,15 @@ export default function MobilisePage() {
           <div className="grid grid-cols-1 gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
-                <div className="aspect-video"></div>
-                <div className="p-3">
-                  <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-muted-foreground/20 rounded w-1/4"></div>
+                <div className="flex">
+                  <div className="w-24 sm:w-32 bg-muted-foreground/20"></div>
+                  <div className="flex-1">
+                    <div className="aspect-video bg-muted-foreground/20"></div>
+                    <div className="p-3">
+                      <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
+                      <div className="h-3 bg-muted-foreground/20 rounded w-1/4"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -167,13 +172,15 @@ export default function MobilisePage() {
         ) : stretchExercises.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {stretchExercises.map(exercise => (
-              <ExerciseCard
+              <MobiliseExerciseCard
                 key={exercise.id}
                 id={exercise.id}
                 name={exercise.name}
                 image={exercise.image}
                 linkPrefix="/mobilise"
-                showLabels={false}
+                categories={exercise.categories}
+                showCategories={true}
+                bodyMuscleId={exercise.body_muscle}
               />
             ))}
           </div>

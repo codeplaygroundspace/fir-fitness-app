@@ -66,8 +66,6 @@ export default async function WorkoutExercisePage({ params }: { params: { id: st
             ))}
         </div>
 
-        {/* Remove the timer component */}
-
         {/* Instructions box at the bottom */}
         <CollapsibleBox title="Instructions">
           <p className="text-muted-foreground">

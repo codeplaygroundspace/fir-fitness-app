@@ -1,11 +1,11 @@
-import Link from "next/link"
-import ExerciseImage from "@/components/exercises/exercise-image"
-import { DurationLabel } from "@/components/exercises/duration-label"
-import { RepsLabel } from "@/components/exercises/reps-label"
-import { CategoryLabel } from "@/components/exercises/category-label"
-import { Card, CardContent } from "@/components/ui/card"
-import type { ExerciseCardProps } from "@/lib/types"
-import { capitalizeFirstLetter } from "@/lib/text-utils"
+import Link from 'next/link'
+import ExerciseImage from '@/components/exercises/exercise-image'
+import { DurationLabel } from '@/components/exercises/duration-label'
+import { RepsLabel } from '@/components/exercises/reps-label'
+import { CategoryLabel } from '@/components/exercises/category-label'
+import { Card, CardContent } from '@/components/ui/card'
+import type { ExerciseCardProps } from '@/lib/types'
+import { capitalizeFirstLetter } from '@/lib/text-utils'
 
 export function ExerciseCard({
   id,
@@ -19,14 +19,19 @@ export function ExerciseCard({
   showCategories = false,
 }: ExerciseCardProps) {
   const formattedName = capitalizeFirstLetter(name)
-  
+
   // Debug categories
-  console.log(`Exercise card ${id} (${name}) categories:`, categories, 'showCategories:', showCategories);
+  console.log(
+    `Exercise card ${id} (${name}) categories:`,
+    categories,
+    'showCategories:',
+    showCategories
+  )
 
   // Log any FIR categories
-  const firCategories = categories?.filter(c => c.startsWith('FIR:')) || [];
+  const firCategories = categories?.filter(c => c.startsWith('FIR:')) || []
   if (firCategories.length > 0) {
-    console.log(`Exercise ${name} has FIR categories:`, firCategories);
+    console.log(`Exercise ${name} has FIR categories:`, firCategories)
   }
 
   return (
@@ -46,7 +51,10 @@ export function ExerciseCard({
           />
         </div>
         <CardContent className="p-3">
-          <h2 id={`exercise-title-${id}`} className="font-heading font-medium text-xl mb-2 text-card-foreground">
+          <h2
+            id={`exercise-title-${id}`}
+            className="font-heading font-medium text-xl mb-2 text-card-foreground"
+          >
             {formattedName}
           </h2>
 

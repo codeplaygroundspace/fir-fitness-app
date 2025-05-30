@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
@@ -26,7 +27,14 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
   showCategories = true,
   bodyMuscleId,
 }) => {
-  const { getBodyMuscle, isLoading } = useBodyMuscle()
+  const { getBodyMuscle, triggerFetch, isLoading } = useBodyMuscle()
+
+  // Trigger fetch when bodyMuscleId changes
+  useEffect(() => {
+    if (bodyMuscleId) {
+      triggerFetch(bodyMuscleId)
+    }
+  }, [bodyMuscleId, triggerFetch])
 
   // Get muscle data from context (cached)
   const bodyMuscle = bodyMuscleId ? getBodyMuscle(bodyMuscleId) : null

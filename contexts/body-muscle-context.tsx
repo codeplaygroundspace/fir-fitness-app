@@ -13,6 +13,7 @@ interface BodyMuscle {
 
 interface BodyMuscleContextType {
   getBodyMuscle: (id: number) => BodyMuscle | null
+  triggerFetch: (id: number) => void
   isLoading: (id: number) => boolean
   error: string | null
 }
@@ -98,12 +99,16 @@ export function BodyMuscleProvider({ children }: { children: ReactNode }) {
 
   const getBodyMuscle = useCallback(
     (id: number): BodyMuscle | null => {
-      const muscle = bodyMuscles.get(id)
-      if (!muscle && !loadingMuscles.has(id)) {
-        // Trigger fetch if not cached and not loading
+      return bodyMuscles.get(id) || null
+    },
+    [bodyMuscles]
+  )
+
+  const triggerFetch = useCallback(
+    (id: number) => {
+      if (!bodyMuscles.has(id) && !loadingMuscles.has(id)) {
         fetchBodyMuscle(id)
       }
-      return muscle || null
     },
     [bodyMuscles, loadingMuscles, fetchBodyMuscle]
   )
@@ -116,7 +121,7 @@ export function BodyMuscleProvider({ children }: { children: ReactNode }) {
   )
 
   return (
-    <BodyMuscleContext.Provider value={{ getBodyMuscle, isLoading, error }}>
+    <BodyMuscleContext.Provider value={{ getBodyMuscle, triggerFetch, isLoading, error }}>
       {children}
     </BodyMuscleContext.Provider>
   )

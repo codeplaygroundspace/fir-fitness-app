@@ -6,4 +6,5 @@ export const CACHE_KEYS = {
   USER_LIMITATIONS: 'user-limitations',
   STRETCH_EXERCISES: 'stretch-exercises',
   BODY_MUSCLES: 'body-muscles',
+  USER_DAY_EXERCISES: 'user-day-exercises',
 } as const

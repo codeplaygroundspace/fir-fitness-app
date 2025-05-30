@@ -100,15 +100,14 @@ export default function DayPage() {
       {/* Feature image with back button */}
       <div className="relative w-full">
         <div className="absolute top-4 left-4 z-10">
-          <Link href="/strengthen">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-sm"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-sm"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
         </div>
         <div className="mb-8 aspect-[4/3] grid place-items-center bg-muted/30 overflow-hidden">
           {loading ? (
@@ -180,44 +179,49 @@ export default function DayPage() {
               </div>
             </div>
           ) : exercises.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
-              {/* Left column: Exercise Groups */}
-              <div className="grid grid-cols-1 gap-4">
-                {exerciseGroups.map(group => (
-                  <ExerciseCard
-                    key={group.id}
-                    id={group.id}
-                    name={group.name}
-                    image={group.image_url || '/placeholder.svg?height=200&width=300'}
-                    linkPrefix="/strengthen/group"
-                    categories={getGroupCategories(group)}
-                    showCategories={true}
-                    showLabels={false}
-                  />
-                ))}
-              </div>
+            <div className="space-y-4">
+              {exercises.map((userExercise, index) => {
+                if (!userExercise.exercise) return null
 
-              {/* Right column: Exercises */}
-              <div className="grid grid-cols-1 gap-4">
-                {exercises.map(userExercise => {
-                  if (!userExercise.exercise) return null
+                // Find the corresponding group for this exercise
+                const exerciseGroup = exerciseGroups.find(
+                  group => group.id === userExercise.exercise?.group?.id
+                )
 
-                  return (
-                    <ExerciseCard
-                      key={userExercise.id}
-                      id={userExercise.exercise.id}
-                      name={userExercise.exercise.name}
-                      image={
-                        userExercise.exercise.image_url || '/placeholder.svg?height=200&width=300'
-                      }
-                      linkPrefix="/strengthen"
-                      reps={userExercise.exercise.reps?.toString()}
-                      showLabels={true}
-                      showCategories={false}
-                    />
-                  )
-                })}
-              </div>
+                return (
+                  <div key={userExercise.id} className="grid grid-cols-2 gap-4">
+                    {/* Left column: Exercise Group */}
+                    <div>
+                      {exerciseGroup && (
+                        <ExerciseCard
+                          id={exerciseGroup.id}
+                          name={exerciseGroup.name}
+                          image={exerciseGroup.image_url || '/placeholder.svg?height=200&width=300'}
+                          linkPrefix="/strengthen/group"
+                          categories={getGroupCategories(exerciseGroup)}
+                          showCategories={true}
+                          showLabels={false}
+                        />
+                      )}
+                    </div>
+
+                    {/* Right column: Exercise */}
+                    <div>
+                      <ExerciseCard
+                        id={userExercise.exercise.id}
+                        name={userExercise.exercise.name}
+                        image={
+                          userExercise.exercise.image_url || '/placeholder.svg?height=200&width=300'
+                        }
+                        linkPrefix="/strengthen"
+                        reps={userExercise.exercise.reps?.toString()}
+                        showLabels={true}
+                        showCategories={false}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <div className="text-center py-8">

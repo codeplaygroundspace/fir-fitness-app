@@ -1,39 +1,66 @@
+'use client'
+
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { CategoryLabel } from '@/components/exercises/category-label'
-import { BackButton } from '@/components/layout/back-button'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { getBaseUrl } from '@/lib/utils'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-export default async function WorkoutExercisePage({ params }: { params: { id: string } }) {
-  // Get the exercise ID from the URL parameters
-  const { id } = await params
-  const exerciseId = Number.parseInt(id)
+export default function WorkoutExercisePage({ params }: { params: { id: string } }) {
+  const router = useRouter()
+  const [exercise, setExercise] = useState<ExerciseWithLabels | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Fetch the exercise data from the API using the new utility
-  const apiUrl = new URL('/api/exercises', getBaseUrl())
-  apiUrl.searchParams.append('id', exerciseId.toString())
+  useEffect(() => {
+    const fetchExercise = async () => {
+      try {
+        // Get the exercise ID from the URL parameters
+        const { id } = await params
+        const exerciseId = Number.parseInt(id)
 
-  const exerciseResponse = await fetch(apiUrl.toString())
+        // Fetch the exercise data from the API using the new utility
+        const apiUrl = new URL('/api/exercises', getBaseUrl())
+        apiUrl.searchParams.append('id', exerciseId.toString())
 
-  if (!exerciseResponse.ok) {
-    return notFound()
+        const exerciseResponse = await fetch(apiUrl.toString())
+
+        if (!exerciseResponse.ok) {
+          notFound()
+          return
+        }
+
+        const exerciseData: ExerciseWithLabels = await exerciseResponse.json()
+        setExercise(exerciseData)
+      } catch (error) {
+        console.error('Error fetching exercise:', error)
+        notFound()
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchExercise()
+  }, [params])
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
+        <div className="animate-pulse">
+          <div className="w-full h-[40vh] bg-muted"></div>
+          <div className="px-4 py-4">
+            <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    )
   }
-
-  const exercise: ExerciseWithLabels = await exerciseResponse.json()
-
-  // Fetch all workout exercises to show related exercises
-  const allExercisesUrl = new URL(
-    '/api/exercises',
-    process.env.NEXT_PUBLIC_BASE_URL ||
-      (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
-  )
-  allExercisesUrl.searchParams.append('type', 'workout')
-
-  const allExercisesResponse = await fetch(allExercisesUrl.toString())
-  const allExercises: ExerciseWithLabels[] = await allExercisesResponse.json()
 
   if (!exercise) {
     return notFound()
@@ -44,7 +71,14 @@ export default async function WorkoutExercisePage({ params }: { params: { id: st
       {/* Image at the top with floating back button */}
       <div className="relative w-full">
         <div className="absolute top-4 left-4 z-10">
-          <BackButton href="/strengthen" />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-sm"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
         </div>
         <Image
           src={exercise?.image || '/placeholder.svg?height=500&width=800'}

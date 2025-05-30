@@ -2,9 +2,9 @@ import type React from 'react'
 import type { Metadata } from 'next'
 import { Inconsolata, Montserrat } from 'next/font/google'
 import './globals.css'
-// Update imports for moved components
 import Navigation from '@/components/layout/navigation'
 import { AuthProvider } from '@/components/auth/auth-provider'
+import { BodyMuscleProvider } from '@/contexts/body-muscle-context'
 import { ThemeInitScript } from '@/components/theme/theme-init-script'
 
 // Define the font with all available weights
@@ -47,12 +47,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <AuthProvider>
-          <div className="min-h-screen bg-background text-foreground">
-            <main id="main-content" className="pb-16">
-              {children}
-            </main>
-            <Navigation />
-          </div>
+          <BodyMuscleProvider>
+            <div className="min-h-screen bg-background text-foreground">
+              <main id="main-content" className="pb-16">
+                {children}
+              </main>
+              <Navigation />
+            </div>
+          </BodyMuscleProvider>
         </AuthProvider>
       </body>
     </html>

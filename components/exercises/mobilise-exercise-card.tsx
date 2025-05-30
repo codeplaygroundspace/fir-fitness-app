@@ -2,17 +2,10 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
-
-interface BodyMuscle {
-  id: number
-  name: string
-  body_section: number
-  image_url: string
-}
+import { useBodyMuscle } from '@/contexts/body-muscle-context'
 
 interface MobiliseExerciseCardProps {
   id: number
@@ -33,30 +26,11 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
   showCategories = true,
   bodyMuscleId,
 }) => {
-  const [bodyMuscle, setBodyMuscle] = useState<BodyMuscle | null>(null)
-  const [isLoadingMuscle, setIsLoadingMuscle] = useState(false)
+  const { getBodyMuscle, isLoading } = useBodyMuscle()
 
-  // Fetch muscle data when bodyMuscleId changes
-  useEffect(() => {
-    const fetchBodyMuscle = async () => {
-      if (!bodyMuscleId) return
-
-      setIsLoadingMuscle(true)
-      try {
-        const response = await fetch(`/api/body-muscles/${bodyMuscleId}`)
-        if (response.ok) {
-          const muscle = await response.json()
-          setBodyMuscle(muscle)
-        }
-      } catch (error) {
-        console.error('Error fetching body muscle:', error)
-      } finally {
-        setIsLoadingMuscle(false)
-      }
-    }
-
-    fetchBodyMuscle()
-  }, [bodyMuscleId])
+  // Get muscle data from context (cached)
+  const bodyMuscle = bodyMuscleId ? getBodyMuscle(bodyMuscleId) : null
+  const isLoadingMuscle = bodyMuscleId ? isLoading(bodyMuscleId) : false
 
   const formattedName = capitalizeFirstLetter(name)
 

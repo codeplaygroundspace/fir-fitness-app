@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { ArrowLeft, LayoutGrid, LayoutList, Shuffle } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { ExerciseFilters } from '@/components/exercises/exercise-filters'
 import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
@@ -41,7 +41,6 @@ const FIR_LEVELS = {
 export default function CreateYourOwnWorkoutPage() {
   const [exerciseGroups, setExerciseGroups] = useState<ExerciseGroup[]>([])
   const [loading, setIsLoading] = useState(true)
-  const [isSingleColumn, setIsSingleColumn] = useState(false)
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
 
@@ -173,10 +172,6 @@ export default function CreateYourOwnWorkoutPage() {
     setSelectedFilters(filters)
   }
 
-  const toggleLayout = () => {
-    setIsSingleColumn(!isSingleColumn)
-  }
-
   // Create categories for each group
   const getGroupCategories = (group: ExerciseGroup): string[] => {
     const categories: string[] = []
@@ -232,27 +227,12 @@ export default function CreateYourOwnWorkoutPage() {
       <section>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Filter by Category</h2>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleLayout}
-              className="flex items-center gap-1"
-            >
-              {isSingleColumn ? (
-                <LayoutGrid className="h-4 w-4" />
-              ) : (
-                <LayoutList className="h-4 w-4" />
-              )}
-              {isSingleColumn ? 'Grid' : 'List'}
-            </Button>
-          </div>
         </div>
 
         <ExerciseFilters categories={allCategories} onFilterChange={handleFilterChange} />
 
         {loading ? (
-          <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+          <div className="grid grid-cols-1 gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
                 <div className="aspect-video"></div>
@@ -264,7 +244,7 @@ export default function CreateYourOwnWorkoutPage() {
             ))}
           </div>
         ) : filteredGroups.length > 0 ? (
-          <div className={`grid ${isSingleColumn ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+          <div className="grid grid-cols-1 gap-4">
             {filteredGroups.map(group => (
               <ExerciseCard
                 key={group.id}

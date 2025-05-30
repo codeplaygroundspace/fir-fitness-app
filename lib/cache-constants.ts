@@ -5,4 +5,5 @@ export const CACHE_KEYS = {
   MOBILISE_EXERCISES: 'mobilise-exercises',
   USER_LIMITATIONS: 'user-limitations',
   STRETCH_EXERCISES: 'stretch-exercises',
+  BODY_MUSCLES: 'body-muscles',
 } as const

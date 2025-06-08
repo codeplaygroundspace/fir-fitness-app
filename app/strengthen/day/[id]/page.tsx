@@ -13,7 +13,8 @@ import { ImageError, ImageLoading, ImagePlaceholder } from '@/components/common/
 import { useDayImage } from '@/hooks/use-day-image'
 import { useState, useEffect, useMemo } from 'react'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
-import { ExerciseCard } from '@/components/exercises/exercise-card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
 
 export default function DayPage() {
@@ -142,7 +143,7 @@ export default function DayPage() {
           </div>
         </CollapsibleBox>
 
-        {/* Single row layout for exercises and groups */}
+        {/* Single column layout for exercises */}
         <div className="mt-6">
           {exercisesError && (
             <Alert variant="destructive" className="mb-4">
@@ -152,34 +153,19 @@ export default function DayPage() {
           )}
 
           {exercisesLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
-              {/* Loading state for groups */}
-              <div className="space-y-4">
-                {[1, 2].map(i => (
-                  <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
-                    <div className="aspect-video"></div>
-                    <div className="p-3">
-                      <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-muted-foreground/20 rounded w-1/4"></div>
-                    </div>
+            <div className="grid grid-cols-1 gap-4">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
+                  <div className="aspect-video bg-muted-foreground/20"></div>
+                  <div className="p-3">
+                    <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-muted-foreground/20 rounded w-1/4"></div>
                   </div>
-                ))}
-              </div>
-              {/* Loading state for exercises */}
-              <div className="space-y-4">
-                {[1, 2].map(i => (
-                  <div key={i} className="rounded-lg overflow-hidden h-full bg-muted animate-pulse">
-                    <div className="aspect-video"></div>
-                    <div className="p-3">
-                      <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-muted-foreground/20 rounded w-1/4"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           ) : exercises.length > 0 ? (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-6">
               {exercises.map((userExercise, index) => {
                 if (!userExercise.exercise) return null
 
@@ -188,37 +174,89 @@ export default function DayPage() {
                   group => group.id === userExercise.exercise?.group?.id
                 )
 
-                return (
-                  <div key={userExercise.id} className="grid grid-cols-2 gap-4">
-                    {/* Left column: Exercise Group */}
-                    <div>
-                      {exerciseGroup && (
-                        <ExerciseCard
-                          id={exerciseGroup.id}
-                          name={exerciseGroup.name}
-                          image={exerciseGroup.image_url || '/placeholder.svg?height=200&width=300'}
-                          linkPrefix="/strengthen/group"
-                          categories={getGroupCategories(exerciseGroup)}
-                          showCategories={true}
-                          showLabels={false}
-                        />
-                      )}
-                    </div>
+                const exerciseCategories = exerciseGroup ? getGroupCategories(exerciseGroup) : []
+                const formattedName = capitalizeFirstLetter(userExercise.exercise.name)
 
-                    {/* Right column: Exercise */}
-                    <div>
-                      <ExerciseCard
-                        id={userExercise.exercise.id}
-                        name={userExercise.exercise.name}
-                        image={
-                          userExercise.exercise.image_url || '/placeholder.svg?height=200&width=300'
-                        }
-                        linkPrefix="/strengthen"
-                        reps={userExercise.exercise.reps?.toString()}
-                        showLabels={true}
-                        showCategories={false}
-                      />
-                    </div>
+                return (
+                  <div key={userExercise.id}>
+                    {/* Exercise card with thumbnail overlay */}
+                    <Card className="h-full">
+                      <div className="aspect-video relative">
+                        {/* Main exercise image - clickable area */}
+                        <Link
+                          href={`/strengthen/${userExercise.exercise.id}`}
+                          className="block w-full h-full relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
+                          aria-labelledby={`exercise-title-${userExercise.exercise.id}`}
+                        >
+                          <Image
+                            src={
+                              userExercise.exercise.image_url ||
+                              '/placeholder.svg?height=400&width=600'
+                            }
+                            alt={`Image showing ${formattedName} exercise`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            unoptimized={
+                              userExercise.exercise.image_url
+                                ? !userExercise.exercise.image_url.startsWith('/')
+                                : false
+                            }
+                          />
+                        </Link>
+
+                        {/* Muscle group thumbnail in top-left corner - separate clickable area */}
+                        {exerciseGroup && exerciseGroup.image_url && (
+                          <div className="absolute top-2 left-2 w-40 h-40 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white z-10">
+                            <Link
+                              href={`/strengthen/group/${exerciseGroup.id}`}
+                              className="block w-full h-full relative hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            >
+                              <Image
+                                src={exerciseGroup.image_url}
+                                alt={exerciseGroup.name}
+                                fill
+                                className="object-cover"
+                                sizes="160px"
+                                unoptimized={!exerciseGroup.image_url.startsWith('/')}
+                              />
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+
+                      <CardContent className="p-3">
+                        <Link
+                          href={`/strengthen/${userExercise.exercise.id}`}
+                          className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
+                        >
+                          <h2
+                            id={`exercise-title-${userExercise.exercise.id}`}
+                            className="font-heading font-medium text-xl mb-2 text-card-foreground hover:text-primary transition-colors"
+                          >
+                            {formattedName}
+                          </h2>
+                        </Link>
+
+                        {/* Categories/badges below the title */}
+                        {exerciseCategories.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            {exerciseCategories.map((category, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs px-2 py-1">
+                                {category}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Exercise details */}
+                        {userExercise.exercise.reps && (
+                          <div className="text-sm text-muted-foreground">
+                            Reps: {userExercise.exercise.reps}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
                   </div>
                 )
               })}

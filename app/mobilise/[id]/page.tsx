@@ -66,11 +66,8 @@ export default async function StretchDetailPage({ params }: { params: { id: stri
           />
         </div>
 
-        {/* Title and metadata below the image */}
         <div className="px-4 py-4">
           <h1>{capitalizeFirstLetter(exercise?.name || 'Stretch Exercise')}</h1>
-
-          {/* Remove the timer component */}
 
           {/* Instructions box at the bottom */}
           <CollapsibleBox title="Instructions">

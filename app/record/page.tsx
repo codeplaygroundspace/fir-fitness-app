@@ -1,23 +1,52 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { MonthlyCalendar } from '@/components/record/monthly-calendar'
 import { UserAvatar } from '@/components/record/user-avatar'
 import { WeeklyProgress } from '@/components/record/weekly-progress'
+import { GoalNotesForm } from '@/components/record/goal-notes-form'
 import { RecordProvider } from '@/contexts/record-context'
 import { LogOut } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { ImageError, ImageLoading, ImagePlaceholder } from '@/components/common/image-states'
 import { useImbalanceImage } from '@/hooks/use-imbalance-image'
+import { getUserGoalNotes, type GoalNotes } from '@/app/record/actions'
 
 export default function RecordPage() {
   const { user, signOut } = useAuth()
   const [error, setError] = useState<string | null>(null)
+  const [goalNotes, setGoalNotes] = useState<GoalNotes>({
+    pain: '',
+    posture: '',
+    performance: '',
+    physique: '',
+  })
+  const [goalNotesLoading, setGoalNotesLoading] = useState(true)
   const { imageUrl, loading: imageLoading, error: imageError } = useImbalanceImage()
+
+  // Load user's goal notes
+  useEffect(() => {
+    if (!user?.id) {
+      setGoalNotesLoading(false)
+      return
+    }
+
+    async function loadGoalNotes() {
+      try {
+        const notes = await getUserGoalNotes(user.id)
+        setGoalNotes(notes)
+      } catch (error) {
+        console.error('Error loading goal notes:', error)
+      } finally {
+        setGoalNotesLoading(false)
+      }
+    }
+
+    loadGoalNotes()
+  }, [user?.id])
 
   // Use user data from Supabase auth
   const userData = {
@@ -61,39 +90,11 @@ export default function RecordPage() {
             Write your goals that are important to you under the following headings
           </p>
 
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium mb-2">Pain</h3>
-              <Input
-                placeholder="Write your pain-related goals here..."
-                className="w-full bg-background"
-              />
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium mb-2">Posture</h3>
-              <Input
-                placeholder="Write your posture-related goals here..."
-                className="w-full bg-background"
-              />
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium mb-2">Performance</h3>
-              <Input
-                placeholder="Write your performance-related goals here..."
-                className="w-full bg-background"
-              />
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium mb-2">Physique</h3>
-              <Input
-                placeholder="Write your physique-related goals here..."
-                className="w-full bg-background"
-              />
-            </div>
-          </div>
+          <GoalNotesForm
+            userId={user?.id}
+            initialGoalNotes={goalNotes}
+            isLoading={goalNotesLoading}
+          />
         </div>
 
         {error ? (

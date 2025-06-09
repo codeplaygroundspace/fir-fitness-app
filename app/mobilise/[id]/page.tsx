@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-// Update imports for moved components
 import { BackButton } from '@/components/layout/back-button'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import type { ExerciseWithLabels } from '@/lib/types'

@@ -143,7 +143,6 @@ export default function DayPage() {
           </div>
         </CollapsibleBox>
 
-        {/* Single column layout for exercises */}
         <div className="mt-6">
           {exercisesError && (
             <Alert variant="destructive" className="mb-4">
@@ -207,7 +206,7 @@ export default function DayPage() {
 
                         {/* Muscle group thumbnail in top-left corner - separate clickable area */}
                         {exerciseGroup && exerciseGroup.image_url && (
-                          <div className="absolute top-2 left-2 w-40 h-40 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white z-10">
+                          <div className="absolute top-2 left-2 size-24 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white z-10">
                             <Link
                               href={`/strengthen/group/${exerciseGroup.id}`}
                               className="block w-full h-full relative hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"

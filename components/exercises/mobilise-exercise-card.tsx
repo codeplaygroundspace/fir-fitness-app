@@ -61,7 +61,7 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
 
           {/* Muscle image thumbnail in top-left corner */}
           {bodyMuscle && !isLoadingMuscle && (
-            <div className="absolute top-2 left-2 w-40 h-40 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white">
+            <div className="absolute top-2 left-2 size-32 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white">
               <Image
                 src={bodyMuscle.image_url}
                 alt={bodyMuscle.name}
@@ -74,7 +74,7 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
 
           {/* Loading state for muscle image */}
           {isLoadingMuscle && bodyMuscleId && (
-            <div className="absolute top-2 left-2 w-40 h-40 rounded-md border-2 border-white shadow-lg bg-white flex items-center justify-center">
+            <div className="absolute top-2 left-2 size-32 rounded-md border-2 border-white shadow-lg bg-white flex items-center justify-center">
               <div className="w-4 h-4 border-2 border-muted-foreground/30 border-t-primary rounded-full animate-spin" />
             </div>
           )}

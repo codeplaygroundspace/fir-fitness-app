@@ -28,12 +28,6 @@ export interface GoalNotes {
   physique: string
 }
 
-export interface WorkoutDay {
-  user_id: string
-  date: string
-  completed: boolean
-}
-
 // Get user's goal notes for all categories
 export async function getUserGoalNotes(userId: string): Promise<GoalNotes> {
   try {
@@ -110,62 +104,6 @@ export async function saveGoalNote(
     return { success: true }
   } catch (error) {
     console.error('Error in saveGoalNote:', error)
-    return { success: false }
-  }
-}
-
-// Get user's workout days
-export async function getUserWorkouts(userId: string): Promise<WorkoutDay[]> {
-  try {
-    const supabase = createServerClient()
-
-    const { data, error } = await supabase
-      .from('workout_days')
-      .select('user_id, date, completed')
-      .eq('user_id', userId)
-      .order('date', { ascending: false })
-
-    if (error) {
-      console.error('Error fetching user workouts:', error)
-      return []
-    }
-
-    return data || []
-  } catch (error) {
-    console.error('Error in getUserWorkouts:', error)
-    return []
-  }
-}
-
-// Toggle workout day completion
-export async function toggleWorkoutDay(
-  userId: string,
-  date: string,
-  completed: boolean
-): Promise<{ success: boolean }> {
-  try {
-    const supabase = createServerClient()
-
-    // Use upsert to insert or update
-    const { error } = await supabase.from('workout_days').upsert(
-      {
-        user_id: userId,
-        date,
-        completed,
-      },
-      {
-        onConflict: 'user_id,date',
-      }
-    )
-
-    if (error) {
-      console.error('Error toggling workout day:', error)
-      return { success: false }
-    }
-
-    return { success: true }
-  } catch (error) {
-    console.error('Error in toggleWorkoutDay:', error)
     return { success: false }
   }
 }

@@ -180,7 +180,7 @@ export default function DayPage() {
                   <div key={userExercise.id}>
                     {/* Exercise card with thumbnail overlay */}
                     <Card className="h-full">
-                      <div className="aspect-video relative">
+                      <div className="aspect-video relative overflow-hidden rounded-t-lg">
                         {/* Main exercise image - clickable area */}
                         <Link
                           href={`/strengthen/${userExercise.exercise.id}`}

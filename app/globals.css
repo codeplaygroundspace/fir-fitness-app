@@ -74,7 +74,7 @@
     --success: 142 76% 42%;
     --success-foreground: 0 0% 100%;
 
-    --border: 0 0% 25%; /* Slightly lighter border for better visibility */
+    --border: 210 3% 20%; /* Subtle dark border that's still visible */
     --input: 0 0% 25%;
     --ring: 25 100% 60%; /* Match primary */
   }

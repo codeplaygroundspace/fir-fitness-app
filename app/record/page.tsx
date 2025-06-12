@@ -3,11 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useAuth } from '@/components/auth/auth-provider'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
-import { MonthlyCalendar } from '@/components/record/monthly-calendar'
 import { UserAvatar } from '@/components/record/user-avatar'
-import { WeeklyProgress } from '@/components/record/weekly-progress'
 import { GoalNotesForm } from '@/components/record/goal-notes-form'
-import { RecordProvider } from '@/contexts/record-context'
 import { LogOut } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -17,7 +14,6 @@ import { getUserGoalNotes, type GoalNotes } from '@/app/record/actions'
 
 export default function RecordPage() {
   const { user, signOut } = useAuth()
-  const [error, setError] = useState<string | null>(null)
   const [goalNotes, setGoalNotes] = useState<GoalNotes>({
     pain: '',
     posture: '',
@@ -96,37 +92,6 @@ export default function RecordPage() {
             isLoading={goalNotesLoading}
           />
         </div>
-
-        {error ? (
-          <Card className="mb-6 border-0 shadow-sm">
-            <CardContent className="p-6">
-              <div className="bg-destructive/10 text-destructive p-4 rounded-lg">
-                <h3 className="font-semibold mb-2">Error Loading Workout Data</h3>
-                <p>{error}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <RecordProvider>
-            {/* Weekly Progress */}
-            <section className="mb-6">
-              <Card className="border-0 shadow-sm">
-                <CardContent className="p-6">
-                  <WeeklyProgress />
-                </CardContent>
-              </Card>
-            </section>
-
-            {/* Monthly Calendar */}
-            <section className="mb-6">
-              <Card className="border-0 shadow-sm">
-                <CardContent className="p-6">
-                  <MonthlyCalendar />
-                </CardContent>
-              </Card>
-            </section>
-          </RecordProvider>
-        )}
 
         <section aria-labelledby="account-heading">
           <h2 id="account-heading" className="text-xl font-semibold mb-4">

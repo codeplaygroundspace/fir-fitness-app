@@ -1,6 +1,8 @@
 import type React from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
 // Database types
 export type Database = {
   public: {
@@ -129,26 +131,6 @@ export type Database = {
           completed_at?: string
         }
       }
-      workout_days: {
-        Row: {
-          id: number
-          user_id: string
-          date: string
-          completed: boolean
-        }
-        Insert: {
-          id?: number
-          user_id: string
-          date: string
-          completed: boolean
-        }
-        Update: {
-          id?: number
-          user_id?: string
-          date?: string
-          completed?: boolean
-        }
-      }
     }
   }
 }
@@ -190,38 +172,12 @@ export type ExerciseFormData = {
   labels: string[]
 }
 
-// Workout tracking
-export type WorkoutDay = {
-  id?: number
-  user_id: string
-  date: string
-  completed: boolean
-}
-
-// Offline workout log
-export type OfflineWorkoutLog = {
-  exercise_id: number
-  exercise_name: string
-  exercise_type: string
-  completed_at: string
-  synced: boolean
-}
-
 // Auth context type
 export type AuthContextType = {
   session: Session | null
   user: User | null
   isLoading: boolean
   signOut: () => Promise<void>
-  error: string | null
-}
-
-// Workout context type
-export type WorkoutContextType = {
-  workoutDays: WorkoutDay[]
-  toggleWorkoutDay: (date: string) => void
-  isWorkoutCompleted: (date: string) => boolean
-  isLoading: boolean
   error: string | null
 }
 

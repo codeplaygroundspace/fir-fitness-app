@@ -49,7 +49,7 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
         className="block h-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
         aria-labelledby={`exercise-title-${id}`}
       >
-        <div className="aspect-video relative">
+        <div className="aspect-video relative overflow-hidden rounded-t-lg">
           {/* Main exercise image */}
           <Image
             src={image}

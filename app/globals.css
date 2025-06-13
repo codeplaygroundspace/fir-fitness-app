@@ -35,7 +35,7 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    --border: 0 0% 85%; /* Slightly darker border for better visibility */
+    --border: 0 100% 50%; /* Red border for light mode */
     --input: 0 0% 85%;
     --ring: 25 100% 50%; /* Match primary */
 
@@ -74,7 +74,7 @@
     --success: 142 76% 42%;
     --success-foreground: 0 0% 100%;
 
-    --border: 210 3% 20%; /* Subtle dark border that's still visible */
+    --border: 0 3% 20%; /* Top border and pills for dark mode */
     --input: 0 0% 25%;
     --ring: 25 100% 60%; /* Match primary */
   }

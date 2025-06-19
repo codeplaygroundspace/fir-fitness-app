@@ -35,7 +35,7 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    --border: 0 100% 50%; /* Red border for light mode */
+    --border: 0 0% 85%; /* Light grey border for light mode */
     --input: 0 0% 85%;
     --ring: 25 100% 50%; /* Match primary */
 

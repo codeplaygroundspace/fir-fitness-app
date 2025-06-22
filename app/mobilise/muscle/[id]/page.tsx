@@ -145,7 +145,7 @@ export default function MuscleGroupPage() {
       <div className="px-4">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">
-            {capitalizeFirstLetter(muscleData?.name || `Muscle Group ${muscleId}`)} Exercises
+            {capitalizeFirstLetter(muscleData?.name || `Muscle Group ${muscleId}`)}
           </h1>
         </div>
 

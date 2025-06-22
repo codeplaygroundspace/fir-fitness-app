@@ -44,13 +44,13 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
 
   return (
     <Card className="h-full">
-      <Link
-        href={`${linkPrefix}/${id}`}
-        className="block h-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
-        aria-labelledby={`exercise-title-${id}`}
-      >
-        <div className="aspect-video relative overflow-hidden rounded-t-lg">
-          {/* Main exercise image */}
+      <div className="aspect-video relative overflow-hidden rounded-t-lg">
+        {/* Main exercise image - clickable area */}
+        <Link
+          href={`${linkPrefix}/${id}`}
+          className="block w-full h-full relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
+          aria-labelledby={`exercise-title-${id}`}
+        >
           <Image
             src={image}
             alt={`Image showing ${formattedName} exercise`}
@@ -58,55 +58,73 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+        </Link>
 
-          {/* Muscle image thumbnail in top-left corner */}
-          {bodyMuscle && !isLoadingMuscle && (
-            <div className="absolute top-2 left-2 size-32 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white">
+        {/* Muscle image thumbnail in top-left corner - CLICKABLE WITHOUT HOVER EFFECTS */}
+        {bodyMuscle && !isLoadingMuscle && (
+          <div className="absolute top-2 left-2 size-32 rounded-md overflow-hidden border-2 border-white shadow-lg bg-white z-10">
+            <Link
+              href={`/mobilise/muscle/${bodyMuscleId}`}
+              className="block w-full h-full relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              onClick={e => e.stopPropagation()} // Prevent parent link from triggering
+              aria-label={`View all exercises for ${bodyMuscle.name}`}
+            >
               <Image
                 src={bodyMuscle.image_url}
-                alt={bodyMuscle.name}
+                alt={`View all exercises for ${bodyMuscle.name}`}
                 fill
                 className="object-cover"
                 sizes="160px"
               />
-            </div>
-          )}
+            </Link>
+          </div>
+        )}
 
-          {/* Loading state for muscle image */}
-          {isLoadingMuscle && bodyMuscleId && (
-            <div className="absolute top-2 left-2 size-32 rounded-md border-2 border-white shadow-lg bg-white flex items-center justify-center">
-              <div className="w-4 h-4 border-2 border-muted-foreground/30 border-t-primary rounded-full animate-spin" />
-            </div>
-          )}
-        </div>
+        {/* Loading state for muscle image */}
+        {isLoadingMuscle && bodyMuscleId && (
+          <div className="absolute top-2 left-2 size-32 rounded-md border-2 border-white shadow-lg bg-white flex items-center justify-center">
+            <div className="w-4 h-4 border-2 border-muted-foreground/30 border-t-primary rounded-full animate-spin" />
+          </div>
+        )}
+      </div>
 
-        <CardContent className="p-3">
+      <CardContent className="p-3">
+        <Link
+          href={`${linkPrefix}/${id}`}
+          className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow"
+        >
           <h2
             id={`exercise-title-${id}`}
-            className="font-heading font-medium text-xl mb-2 text-card-foreground"
+            className="font-heading font-medium text-xl mb-2 text-card-foreground hover:text-primary transition-colors"
           >
             {formattedName}
           </h2>
+        </Link>
 
-          {/* Categories */}
-          {showCategories && categories && categories.length > 0 && (
-            <div className="flex flex-wrap mt-2" aria-label="Exercise categories">
-              {categories.map((category, index) => (
-                <Badge key={index} variant="secondary" className="text-xs px-2 py-1 mr-1 mb-1">
-                  {category}
-                </Badge>
-              ))}
-            </div>
-          )}
+        {/* Categories */}
+        {showCategories && categories && categories.length > 0 && (
+          <div className="flex flex-wrap mt-2" aria-label="Exercise categories">
+            {categories.map((category, index) => (
+              <Badge key={index} variant="secondary" className="text-xs px-2 py-1 mr-1 mb-1">
+                {category}
+              </Badge>
+            ))}
+          </div>
+        )}
 
-          {/* Muscle name */}
-          {bodyMuscle && (
-            <div className="text-sm text-muted-foreground mt-2">
-              Target muscles: {bodyMuscle.id} {bodyMuscle.name}
-            </div>
-          )}
-        </CardContent>
-      </Link>
+        {/* Muscle name */}
+        {bodyMuscle && (
+          <div className="text-sm text-muted-foreground mt-2">
+            <Link
+              href={`/mobilise/muscle/${bodyMuscleId}`}
+              className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+              aria-label={`View all exercises for ${bodyMuscle.name}`}
+            >
+              Target muscles: {bodyMuscle.name}
+            </Link>
+          </div>
+        )}
+      </CardContent>
     </Card>
   )
 }

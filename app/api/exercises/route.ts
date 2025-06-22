@@ -66,7 +66,6 @@ export async function GET(request: Request) {
         .single()
 
       if (error || !exercise) {
-        console.error('Error fetching exercise by ID:', error)
         return NextResponse.json({ error: 'Exercise not found' }, { status: 404 })
       }
 
@@ -128,13 +127,11 @@ export async function GET(request: Request) {
             }
           }
 
-          console.log(`Exercise ${exercise.name} has categories:`, exercise.categories)
           return exercise
         })
 
         return NextResponse.json(exercisesWithCategories)
       } catch (error) {
-        console.error('Error fetching exercises by group:', error)
         return NextResponse.json(
           { error: 'Failed to fetch exercises for this group' },
           { status: 500 }
@@ -168,7 +165,6 @@ export async function GET(request: Request) {
       { status: 400 }
     )
   } catch (error) {
-    console.error('Exercise API error:', error)
     return NextResponse.json({ error: 'Failed to fetch exercises' }, { status: 500 })
   }
 }
@@ -190,6 +186,5 @@ function getDefaultCategories(exerciseName: string): string[] {
   // Assign FIR level (just a default)
   categories.push('FIR: Low')
 
-  console.log(`Default categories for exercise "${exerciseName}":`, categories)
   return categories
 }

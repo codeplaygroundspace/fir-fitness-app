@@ -1,11 +1,23 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import ExerciseImage from '@/components/exercises/exercise-image'
-import { DurationLabel } from '@/components/exercises/duration-label'
-import { RepsLabel } from '@/components/exercises/reps-label'
-import { CategoryLabel } from '@/components/exercises/category-label'
 import { Card, CardContent } from '@/components/ui/card'
-import type { ExerciseCardProps } from '@/lib/types'
+import { CategoryLabel } from './category-label'
+import { DurationLabel } from './duration-label'
+import { RepsLabel } from './reps-label'
+import ExerciseImage from './exercise-image'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
+
+interface ExerciseCardProps {
+  id: number
+  name: string
+  image: string
+  linkPrefix: string
+  duration?: string | null
+  reps?: string | null
+  categories?: string[]
+  showLabels?: boolean
+  showCategories?: boolean
+}
 
 export function ExerciseCard({
   id,
@@ -20,19 +32,8 @@ export function ExerciseCard({
 }: ExerciseCardProps) {
   const formattedName = capitalizeFirstLetter(name)
 
-  // Debug categories
-  console.log(
-    `Exercise card ${id} (${name}) categories:`,
-    categories,
-    'showCategories:',
-    showCategories
-  )
-
-  // Log any FIR categories
-  const firCategories = categories?.filter(c => c.startsWith('FIR:')) || []
-  if (firCategories.length > 0) {
-    console.log(`Exercise ${name} has FIR categories:`, firCategories)
-  }
+  // Filter FIR categories for debugging
+  const firCategories = categories?.filter(cat => cat.startsWith('FIR:')) || []
 
   return (
     <Card className="h-full">

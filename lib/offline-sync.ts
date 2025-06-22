@@ -1,12 +1,12 @@
-import { getSupabaseBrowser } from "@/lib/supabase"
-import { getLocalStorage, setLocalStorage } from "@/lib/storage-utils"
-import type { OfflineWorkoutLog } from "@/lib/types"
+import { getSupabaseBrowser } from '@/lib/supabase'
+import { getLocalStorage, setLocalStorage } from '@/lib/storage-utils'
+import type { OfflineWorkoutLog } from '@/lib/types'
 
 // Constants
-const OFFLINE_LOGS_KEY = "offline-workout-logs"
+const OFFLINE_LOGS_KEY = 'offline-workout-logs'
 
 // Save workout log (works online or offline)
-export async function saveWorkoutLog(log: Omit<OfflineWorkoutLog, "synced">) {
+export async function saveWorkoutLog(log: Omit<OfflineWorkoutLog, 'synced'>) {
   try {
     // Check if online
     if (navigator.onLine) {
@@ -15,7 +15,7 @@ export async function saveWorkoutLog(log: Omit<OfflineWorkoutLog, "synced">) {
 
       if (session.session) {
         // We're online and authenticated, save directly to Supabase
-        const { error } = await supabase.from("workout_logs").insert({
+        const { error } = await supabase.from('workout_logs').insert({
           user_id: session.session.user.id,
           ...log,
         })
@@ -32,8 +32,6 @@ export async function saveWorkoutLog(log: Omit<OfflineWorkoutLog, "synced">) {
 
     return { success: true, offline: true }
   } catch (error) {
-    console.error("Error saving workout log:", error)
-
     // Save locally as fallback
     const offlineLogs = getLocalStorage<OfflineWorkoutLog[]>(OFFLINE_LOGS_KEY, [])
     offlineLogs.push({ ...log, synced: false })
@@ -54,7 +52,7 @@ export async function syncOfflineLogs() {
     if (!session.session) return { synced: 0 }
 
     const offlineLogs = getLocalStorage<OfflineWorkoutLog[]>(OFFLINE_LOGS_KEY, [])
-    const unsynced = offlineLogs.filter((log) => !log.synced)
+    const unsynced = offlineLogs.filter(log => !log.synced)
 
     if (unsynced.length === 0) return { synced: 0 }
 
@@ -62,7 +60,7 @@ export async function syncOfflineLogs() {
 
     // Process each unsynced log
     for (const log of unsynced) {
-      const { error } = await supabase.from("workout_logs").insert({
+      const { error } = await supabase.from('workout_logs').insert({
         user_id: session.session.user.id,
         exercise_id: log.exercise_id,
         exercise_name: log.exercise_name,
@@ -81,20 +79,19 @@ export async function syncOfflineLogs() {
     setLocalStorage(OFFLINE_LOGS_KEY, offlineLogs)
 
     // Remove fully synced logs
-    const remainingLogs = offlineLogs.filter((log) => !log.synced)
+    const remainingLogs = offlineLogs.filter(log => !log.synced)
     setLocalStorage(OFFLINE_LOGS_KEY, remainingLogs)
 
     return { synced: syncedCount }
   } catch (error) {
-    console.error("Error syncing offline logs:", error)
     return { synced: 0, error }
   }
 }
 
 // Listen for online status changes to trigger sync
 export function setupOfflineSync() {
-  if (typeof window !== "undefined") {
-    window.addEventListener("online", () => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => {
       syncOfflineLogs()
     })
   }

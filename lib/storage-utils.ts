@@ -6,7 +6,7 @@ export function setLocalStorage<T>(key: string, data: T): boolean {
     localStorage.setItem(key, JSON.stringify(data))
     return true
   } catch (error) {
-    console.error(`Error storing ${key} in localStorage:`, error)
+    // Silently handle localStorage errors
     return false
   }
 }
@@ -19,7 +19,7 @@ export function getLocalStorage<T>(key: string, defaultValue: T): T {
     const item = localStorage.getItem(key)
     return item ? (JSON.parse(item) as T) : defaultValue
   } catch (error) {
-    console.error(`Error retrieving ${key} from localStorage:`, error)
+    // Silently handle localStorage errors
     return defaultValue
   }
 }
@@ -27,7 +27,10 @@ export function getLocalStorage<T>(key: string, defaultValue: T): T {
 /**
  * Check if cached data is still valid based on timestamp
  */
-export function isCacheValid(timestampKey: string, expirationMs: number = 24 * 60 * 60 * 1000): boolean {
+export function isCacheValid(
+  timestampKey: string,
+  expirationMs: number = 24 * 60 * 60 * 1000
+): boolean {
   try {
     const timestamp = localStorage.getItem(timestampKey)
     if (!timestamp) return false
@@ -37,7 +40,7 @@ export function isCacheValid(timestampKey: string, expirationMs: number = 24 * 6
 
     return now - cachedTime < expirationMs
   } catch (error) {
-    console.error(`Error checking cache validity for ${timestampKey}:`, error)
+    // Silently handle cache validation errors
     return false
   }
 }
@@ -53,7 +56,10 @@ export function setCachedData<T>(key: string, data: T): void {
 /**
  * Get cached data if valid, otherwise return null
  */
-export function getCachedData<T>(key: string, expirationMs: number = 24 * 60 * 60 * 1000): T | null {
+export function getCachedData<T>(
+  key: string,
+  expirationMs: number = 24 * 60 * 60 * 1000
+): T | null {
   if (isCacheValid(`${key}-timestamp`, expirationMs)) {
     return getLocalStorage<T | null>(key, null)
   }

@@ -253,7 +253,7 @@ export default function CreateYourOwnWorkoutPage() {
                 image={group.image_url || '/placeholder.svg?height=200&width=300'}
                 linkPrefix="/strengthen/group"
                 categories={getGroupCategories(group)}
-                showCategories={true}
+                showCategories={false}
               />
             ))}
           </div>

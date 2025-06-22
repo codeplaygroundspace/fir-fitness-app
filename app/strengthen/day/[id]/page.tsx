@@ -237,18 +237,6 @@ export default function DayPage() {
                           </h2>
                         </Link>
 
-                        {/* Categories/badges below the title */}
-                        {exerciseCategories.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-2">
-                            {exerciseCategories.map((category, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs px-2 py-1">
-                                {category}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Exercise details */}
                         {userExercise.exercise.reps && (
                           <div className="text-sm text-muted-foreground">
                             Reps: {userExercise.exercise.reps}

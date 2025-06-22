@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm instead of npm')\"",
+    "predev": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm run dev instead of npm run dev')\"",
+    "prebuild": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm run build instead of npm run build')\"",
+    "prestart": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm run start instead of npm run start')\"",
+    "prelint": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm run lint instead of npm run lint')\"",
+    "preformat": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm run format instead of npm run format')\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

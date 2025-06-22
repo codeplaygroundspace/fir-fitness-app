@@ -17,7 +17,7 @@ export async function fetchExercisesByCategory(
     const { data: exercises, error } = await supabaseServer
       .from('exercises')
       .select('*')
-      .eq('exercise_category', categoryId)
+      .eq('category_id', categoryId)
 
     if (error) {
       throw error
@@ -46,6 +46,7 @@ export async function fetchExercisesByCategory(
       description: exercise.ex_description || null,
       video_url: exercise.video_url || null,
       body_muscle: exercise.body_muscle || null,
+      labels: [],
       categories: [],
     }))
   } catch (error) {

@@ -73,6 +73,7 @@ export default function MuscleGroupPage() {
           // Check body_muscle property first
           const exerciseMuscleId =
             exercise.body_muscle !== null ? Number(exercise.body_muscle) : null
+
           if (exerciseMuscleId === muscleId) {
             return true
           }
@@ -145,7 +146,7 @@ export default function MuscleGroupPage() {
       <div className="px-4">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">
-            {capitalizeFirstLetter(muscleData?.name || `Muscle Group ${muscleId}`)} Exercises
+            {capitalizeFirstLetter(muscleData?.name || `Muscle Group ${muscleId}`)}
           </h1>
         </div>
 

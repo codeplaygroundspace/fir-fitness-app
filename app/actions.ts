@@ -1,7 +1,7 @@
 'use server'
 
 import { supabaseServer } from '@/lib/supabase'
-import type { ExerciseWithLabels, ExerciseGroup } from '@/lib/types'
+import type { ExerciseWithLabels } from '@/lib/types'
 
 // Category IDs for different exercise types
 const CATEGORY_IDS = {

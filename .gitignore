@@ -36,3 +36,6 @@ next-env.d.ts
 
 # macOS
 .DS_Store
+
+# Prevent npm artifacts
+package-lock.json

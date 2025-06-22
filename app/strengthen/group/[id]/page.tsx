@@ -153,7 +153,7 @@ export default function ExerciseGroupPage() {
                 reps={exercise.reps}
                 categories={exercise.categories}
                 showLabels={true}
-                showCategories={true}
+                showCategories={false}
               />
             ))}
           </div>

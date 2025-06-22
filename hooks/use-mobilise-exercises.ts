@@ -63,7 +63,6 @@ export const useMobiliseExercises = () => {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
-          console.error('API error:', errorData)
           throw new Error(
             errorData.error || `Failed to fetch mobilise exercises: ${response.status}`
           )
@@ -73,7 +72,6 @@ export const useMobiliseExercises = () => {
 
         // Validate the data
         if (!Array.isArray(exercises)) {
-          console.error('Invalid API response format:', exercises)
           throw new Error('Invalid response format from API')
         }
 
@@ -87,7 +85,6 @@ export const useMobiliseExercises = () => {
         calculateMaxMuscleGroup(validatedExercises)
         setCachedData(validatedExercises)
       } catch (error) {
-        console.error('Error loading exercises:', error)
         setError(error instanceof Error ? error.message : 'Failed to load exercises')
 
         // If API fails, try to use cached data even if expired

@@ -1,53 +1,57 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
-import { Clock, CheckCircle } from "lucide-react"
-import { useAuth } from "@/components/auth/auth-provider"
-import { getSupabaseBrowser } from "@/lib/supabase"
-import type { WorkoutLoggerProps } from "@/lib/types"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useToast } from '@/components/ui/use-toast'
+import { Clock, CheckCircle, Circle } from 'lucide-react'
+import { useAuth } from '@/components/auth/auth-provider'
+import { getSupabaseBrowser } from '@/lib/supabase'
+import type { WorkoutLoggerProps } from '@/lib/types'
+import { saveWorkoutLog } from '@/lib/offline-sync'
 
 export function WorkoutLogger({ exerciseId, exerciseName, exerciseType }: WorkoutLoggerProps) {
-  const [isLogging, setIsLogging] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const { user } = useAuth()
   const supabase = getSupabaseBrowser()
 
-  const logWorkout = async () => {
+  const handleToggleComplete = async () => {
     if (!user) return
 
-    setIsLogging(true)
-
+    setIsLoading(true)
     try {
-      const { error } = await supabase.from("workout_logs").insert({
-        user_id: user.id,
-        exercise_id: exerciseId,
-        exercise_name: exerciseName,
-        exercise_type: exerciseType,
-        completed_at: new Date().toISOString(),
-      })
+      if (!isCompleted) {
+        // Log the workout
+        await saveWorkoutLog({
+          exercise_id: exerciseId,
+          exercise_name: exerciseName,
+          exercise_type: exerciseType,
+          completed_at: new Date().toISOString(),
+        })
+      }
 
-      if (error) throw error
-
-      setIsCompleted(true)
+      setIsCompleted(!isCompleted)
       toast({
-        title: "Workout logged!",
-        description: "Great job completing this exercise.",
-        variant: "default",
+        title: 'Workout logged!',
+        description: 'Great job completing this exercise.',
+        variant: 'default',
       })
     } catch (error) {
-      console.error("Error logging workout:", error)
+      // Silently handle logging errors
       toast({
-        title: "Failed to log workout",
-        description: "Please try again later.",
-        variant: "destructive",
+        title: 'Failed to log workout',
+        description: 'Please try again later.',
+        variant: 'destructive',
       })
     } finally {
-      setIsLogging(false)
+      setIsLoading(false)
     }
+  }
+
+  if (!user) {
+    return null
   }
 
   return (
@@ -56,17 +60,16 @@ export function WorkoutLogger({ exerciseId, exerciseName, exerciseType }: Workou
         <CardTitle className="text-lg">Track Your Progress</CardTitle>
       </CardHeader>
       <CardContent>
-        {isCompleted ? (
-          <div className="flex items-center justify-center p-4 bg-green-50 dark:bg-green-900/20 rounded-md">
-            <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-            <span>Exercise completed! Great job!</span>
-          </div>
-        ) : (
-          <Button onClick={logWorkout} disabled={isLogging} className="w-full" size="lg">
-            <Clock className="h-4 w-4 mr-2" />
-            {isLogging ? "Logging..." : "Complete Exercise"}
-          </Button>
-        )}
+        <Button
+          onClick={handleToggleComplete}
+          disabled={isLoading}
+          variant={isCompleted ? 'default' : 'outline'}
+          className="flex items-center gap-2 w-full"
+          size="lg"
+        >
+          {isCompleted ? <CheckCircle className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+          {isCompleted ? 'Completed' : 'Mark Complete'}
+        </Button>
       </CardContent>
     </Card>
   )

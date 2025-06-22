@@ -48,28 +48,20 @@ const setCachedDayImage = (userId: string, dayId: number, url: string | null) =>
   }
 }
 
-export const useDayImage = (userId: string | undefined, dayId: number | undefined) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(() =>
-    userId && dayId ? getCachedDayImage(userId, dayId) : null
-  )
-  const [loading, setLoading] = useState(!imageUrl)
+interface UseDayImageReturn {
+  imageUrl: string | null
+  loading: boolean
+  error: string | null
+}
+
+export const useDayImage = (userId: string | undefined, dayId: number): UseDayImageReturn => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let retryCount = 0
-    let mounted = true
-
     const fetchDayImage = async () => {
       if (!userId || !dayId) {
-        setError('Invalid user or day')
-        setLoading(false)
-        return
-      }
-
-      // Check cache first
-      const cached = getCachedDayImage(userId, dayId)
-      if (cached) {
-        setImageUrl(cached)
         setLoading(false)
         return
       }
@@ -78,35 +70,16 @@ export const useDayImage = (userId: string | undefined, dayId: number | undefine
         setLoading(true)
         setError(null)
 
-        const dayImageUrl = await getDayImage(dayId, userId)
-
-        if (!mounted) return
-
-        setCachedDayImage(userId, dayId, dayImageUrl)
-        setImageUrl(dayImageUrl)
+        const url = await getDayImage(dayId, userId)
+        setImageUrl(url)
       } catch (err) {
-        console.error('Error fetching day image:', err)
-
-        if (!mounted) return
-
-        if (retryCount < MAX_RETRIES) {
-          retryCount++
-          setTimeout(fetchDayImage, RETRY_DELAY * retryCount)
-        } else {
-          setError('Failed to load day image')
-        }
+        setError(err instanceof Error ? err.message : 'Failed to load day image')
       } finally {
-        if (mounted) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     }
 
     fetchDayImage()
-
-    return () => {
-      mounted = false
-    }
   }, [userId, dayId])
 
   return { imageUrl, loading, error }

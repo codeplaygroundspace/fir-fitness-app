@@ -36,7 +36,7 @@ export type Database = {
           duration: string | null
           reps: string | null
           kit: string | null
-          exercise_group: string | null // Add this field
+          exercise_group: string | null
           body_muscle: number | null
         }
         Insert: {
@@ -50,7 +50,7 @@ export type Database = {
           duration?: string | null
           reps?: string | null
           kit?: string | null
-          exercise_group?: string | null // Add this field
+          exercise_group?: string | null
           body_muscle?: number | null
         }
         Update: {
@@ -64,7 +64,7 @@ export type Database = {
           duration?: string | null
           reps?: string | null
           kit?: string | null
-          exercise_group?: string | null // Add this field
+          exercise_group?: string | null
           body_muscle?: number | null
         }
       }
@@ -85,22 +85,16 @@ export type Database = {
       exercise_labels: {
         Row: {
           id: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id: number | null
           label_name: string
           label_type: string
         }
         Insert: {
           id?: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id?: number | null
           label_name: string
           label_type: string
         }
         Update: {
           id?: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id?: number | null
           label_name?: string
           label_type?: string
         }
@@ -278,5 +272,5 @@ export type ExerciseGroup = {
   description: string | null
   image_url: string | null
   body_sec: number
-  category_id?: string // Add this field as optional
+  category_id?: string
 }

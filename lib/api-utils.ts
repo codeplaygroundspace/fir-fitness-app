@@ -10,22 +10,20 @@ import type { ExerciseWithLabels } from '@/lib/types'
  */
 export async function fetchExercisesByCategory(
   categoryId: string,
-  defaultDuration: string = '30',
+  defaultDuration?: string,
   formatImageFn?: (url: string | null) => string
 ): Promise<ExerciseWithLabels[]> {
   try {
-    // Query the database
     const { data: exercises, error } = await supabaseServer
       .from('exercises')
       .select('*')
-      .eq('category_id', categoryId)
+      .eq('exercise_category', categoryId)
 
     if (error) {
-      console.error(`API error fetching exercises for category ${categoryId}:`, error)
-      return []
+      throw error
     }
 
-    if (!exercises || exercises.length === 0) {
+    if (!exercises) {
       return []
     }
 
@@ -38,20 +36,20 @@ export async function fetchExercisesByCategory(
     // Use the provided image formatter or the default one
     const imageFormatter = formatImageFn || defaultImageFormatter
 
-    // Transform to the expected format
+    // Transform the data to match our expected format
     return exercises.map(exercise => ({
       id: exercise.id,
       name: exercise.name,
       image: imageFormatter(exercise.image_url),
-      description: exercise.ex_description || 'No description available',
-      duration: exercise.duration || defaultDuration,
+      duration: exercise.duration || defaultDuration || null,
       reps: exercise.reps || null,
+      description: exercise.ex_description || null,
       video_url: exercise.video_url || null,
       body_muscle: exercise.body_muscle || null,
-      labels: [],
+      categories: [],
     }))
   } catch (error) {
-    console.error(`Unexpected error fetching exercises for category ${categoryId}:`, error)
+    // Silently handle API errors
     return []
   }
 }

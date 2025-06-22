@@ -43,29 +43,21 @@ const setCachedImage = (userId: string, url: string | null) => {
   }
 }
 
-export const useImbalanceImage = () => {
-  const { user } = useAuth()
-  const [imageUrl, setImageUrl] = useState<string | null>(() =>
-    user ? getCachedImage(user.id) : null
-  )
-  const [loading, setLoading] = useState(!imageUrl)
+interface UseImbalanceImageReturn {
+  imageUrl: string | null
+  loading: boolean
+  error: string | null
+}
+
+export const useImbalanceImage = (): UseImbalanceImageReturn => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { user } = useAuth()
 
   useEffect(() => {
-    let retryCount = 0
-    let mounted = true
-
     const fetchImbalanceImage = async () => {
-      if (!user) {
-        setError('Please sign in to view your personal imbalance image')
-        setLoading(false)
-        return
-      }
-
-      // Check cache first
-      const cached = getCachedImage(user.id)
-      if (cached) {
-        setImageUrl(cached)
+      if (!user?.id) {
         setLoading(false)
         return
       }
@@ -74,36 +66,17 @@ export const useImbalanceImage = () => {
         setLoading(true)
         setError(null)
 
-        const imageUrl = await getUserImbalanceImage(user.id)
-
-        if (!mounted) return
-
-        setCachedImage(user.id, imageUrl)
-        setImageUrl(imageUrl)
+        const url = await getUserImbalanceImage(user.id)
+        setImageUrl(url)
       } catch (err) {
-        console.error('Error fetching imbalance image:', err)
-
-        if (!mounted) return
-
-        if (retryCount < MAX_RETRIES) {
-          retryCount++
-          setTimeout(fetchImbalanceImage, RETRY_DELAY * retryCount)
-        } else {
-          setError('Failed to load imbalance image')
-        }
+        setError(err instanceof Error ? err.message : 'Failed to load imbalance image')
       } finally {
-        if (mounted) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     }
 
     fetchImbalanceImage()
-
-    return () => {
-      mounted = false
-    }
-  }, [user])
+  }, [user?.id])
 
   return { imageUrl, loading, error }
 }

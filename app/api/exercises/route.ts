@@ -32,7 +32,16 @@ const DEFAULT_DURATIONS = {
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url)
-    const type = url.searchParams.get('type') as keyof typeof CATEGORY_IDS | null
+    const type = url.searchParams.get('type') as
+      | 'warm-up'
+      | 'mobilise'
+      | 'strengthen'
+      | 'recover'
+      | 'warmup'
+      | 'stretch'
+      | 'workout'
+      | 'cooldown'
+      | null
     const group = url.searchParams.get('group')
     const id = url.searchParams.get('id')
 
@@ -48,18 +57,7 @@ export async function GET(request: Request) {
 
       const { data: exercise, error } = await supabaseServer
         .from('exercises')
-        .select(
-          `
-          *,
-          exercise_kit (id, name),
-          exercise_groups (
-            id, name, image_url, body_sec, fir_level,
-            exercise_body_section (name),
-            exercise_fir (name)
-          ),
-          body_muscles (id, name, body_section, image_url)
-        `
-        )
+        .select('*')
         .eq('id', exerciseId)
         .single()
 
@@ -68,7 +66,30 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Exercise not found' }, { status: 404 })
       }
 
-      return NextResponse.json(exercise)
+      // Format the exercise data to match ExerciseWithLabels type
+      const formattedExercise = {
+        id: exercise.id,
+        name: exercise.name,
+        image: exercise.image_url || '/placeholder.svg?height=500&width=800',
+        description: exercise.ex_description || 'No description available',
+        duration: exercise.duration || null,
+        video_url: exercise.video_url || null,
+        video_url_2: exercise.video_url_2 || null,
+        video_url_3: exercise.video_url_3 || null,
+        body_muscle: exercise.body_muscle || null,
+        labels: [],
+        categories: getDefaultCategories(exercise.name),
+      }
+
+      return NextResponse.json(formattedExercise)
+    }
+
+    // Validate exercise type if provided
+    if (type && !Object.keys(CATEGORY_IDS).includes(type)) {
+      return NextResponse.json(
+        { error: 'Invalid exercise type. Must be one of: ' + Object.keys(CATEGORY_IDS).join(', ') },
+        { status: 400 }
+      )
     }
 
     // Handle group-based query
@@ -78,35 +99,94 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Invalid group ID. Must be a number.' }, { status: 400 })
       }
 
-      const { getExercisesByGroup } = await import('@/app/actions')
-      const exercises = await getExercisesByGroup(groupId)
-      return NextResponse.json(exercises)
+      try {
+        // Import directly here to avoid circular dependencies
+        const { getExercisesByGroup } = await import('@/app/actions')
+        const exercises = await getExercisesByGroup(groupId)
+
+        // Ensure each exercise has categories, especially FIR categories
+        const exercisesWithCategories = exercises.map(exercise => {
+          if (!exercise.categories || exercise.categories.length === 0) {
+            // Add default categories
+            return {
+              ...exercise,
+              categories: getDefaultCategories(exercise.name),
+            }
+          }
+
+          // Check if there's already a FIR category
+          const hasFirCategory = exercise.categories.some(cat => cat.startsWith('FIR:'))
+
+          if (!hasFirCategory) {
+            // Add a default FIR category if none exists
+            return {
+              ...exercise,
+              categories: [...exercise.categories, 'FIR: Low'],
+            }
+          }
+
+          console.log(`Exercise ${exercise.name} has categories:`, exercise.categories)
+          return exercise
+        })
+
+        return NextResponse.json(exercisesWithCategories)
+      } catch (error) {
+        console.error('Error fetching exercises by group:', error)
+        return NextResponse.json(
+          { error: 'Failed to fetch exercises for this group' },
+          { status: 500 }
+        )
+      }
     }
 
     // Handle type-based query
     if (type) {
-      if (!CATEGORY_IDS[type]) {
-        return NextResponse.json(
-          {
-            error: 'Invalid exercise type. Must be one of: ' + Object.keys(CATEGORY_IDS).join(', '),
-          },
-          { status: 400 }
-        )
-      }
-
       const categoryId = CATEGORY_IDS[type]
       const defaultDuration = DEFAULT_DURATIONS[type]
-      const exercises = await fetchExercisesByCategory(categoryId, defaultDuration)
+
+      let exercises = await fetchExercisesByCategory(categoryId, defaultDuration)
+
+      // Add categories for Workout/Strengthen exercises
+      if (type === 'workout' || type === 'strengthen') {
+        exercises = exercises.map(exercise => ({
+          ...exercise,
+          categories: getDefaultCategories(exercise.name),
+        }))
+      }
+
       return NextResponse.json(exercises)
     }
 
-    // If no specific query, return an error
+    // If no specific query, return an error (or could return all exercises)
     return NextResponse.json(
-      { error: 'Please specify a type, group ID, or exercise ID.' },
+      {
+        error: 'Please specify a type, group ID, or exercise ID.',
+      },
       { status: 400 }
     )
   } catch (error) {
     console.error('Exercise API error:', error)
     return NextResponse.json({ error: 'Failed to fetch exercises' }, { status: 500 })
   }
+}
+
+// Helper function to assign default categories based on exercise name
+function getDefaultCategories(exerciseName: string): string[] {
+  const name = exerciseName.toLowerCase()
+  const categories: string[] = []
+
+  // Assign body region
+  if (name.includes('press') || name.includes('pull') || name.includes('overhead')) {
+    categories.push('Upper')
+  } else if (name.includes('thrust') || name.includes('brace') || name.includes('lateral')) {
+    categories.push('Middle')
+  } else if (name.includes('squat') || name.includes('deadlift') || name.includes('raise')) {
+    categories.push('Lower')
+  }
+
+  // Assign FIR level (just a default)
+  categories.push('FIR: Low')
+
+  console.log(`Default categories for exercise "${exerciseName}":`, categories)
+  return categories
 }

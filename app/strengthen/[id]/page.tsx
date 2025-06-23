@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { CategoryLabel } from '@/components/exercises/category-label'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
+import { ExerciseVideo } from '@/components/exercises/exercise-video'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { getBaseUrl } from '@/lib/utils'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
@@ -99,6 +100,14 @@ export default function WorkoutExercisePage({ params }: { params: { id: string }
               <CategoryLabel key={index} category={category} />
             ))}
         </div>
+
+        {/* Video section */}
+        <ExerciseVideo
+          exerciseName={exercise?.name || 'Workout Exercise'}
+          videoUrl={exercise?.video_url}
+          videoUrl2={exercise?.video_url_2}
+          videoUrl3={exercise?.video_url_3}
+        />
 
         {/* Instructions box at the bottom */}
         <CollapsibleBox title="Instructions">

@@ -4,13 +4,11 @@ import type { ExerciseWithLabels } from '@/lib/types'
 /**
  * Fetches exercises from Supabase by category ID and formats them consistently
  * @param categoryId UUID of the category to fetch exercises for
- * @param defaultDuration Default duration string if not specified in the exercise
  * @param formatImageFn Optional custom image URL formatter
  * @returns Formatted exercises or empty array
  */
 export async function fetchExercisesByCategory(
   categoryId: string,
-  defaultDuration: string = '30',
   formatImageFn?: (url: string | null) => string
 ): Promise<ExerciseWithLabels[]> {
   try {
@@ -44,7 +42,6 @@ export async function fetchExercisesByCategory(
       name: exercise.name,
       image: imageFormatter(exercise.image_url),
       description: exercise.ex_description || 'No description available',
-      duration: exercise.duration || defaultDuration,
       video_url: exercise.video_url || null,
       video_url_2: exercise.video_url_2 || null,
       video_url_3: exercise.video_url_3 || null,

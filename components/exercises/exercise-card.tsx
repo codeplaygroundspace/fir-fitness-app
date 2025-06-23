@@ -1,7 +1,5 @@
 import Link from 'next/link'
 import ExerciseImage from '@/components/exercises/exercise-image'
-import { DurationLabel } from '@/components/exercises/duration-label'
-
 import { CategoryLabel } from '@/components/exercises/category-label'
 import { Card, CardContent } from '@/components/ui/card'
 import type { ExerciseCardProps } from '@/lib/types'
@@ -12,7 +10,6 @@ export function ExerciseCard({
   name,
   image,
   linkPrefix,
-  duration,
   categories,
   showLabels = false,
   showCategories = false,
@@ -56,12 +53,6 @@ export function ExerciseCard({
           >
             {formattedName}
           </h2>
-
-          {showLabels && (
-            <div className="flex flex-wrap gap-4 mt-1 mb-2" aria-label="Exercise details">
-              {duration && <DurationLabel duration={duration} />}
-            </div>
-          )}
 
           {/* Only render categories section when showCategories is true */}
           {showCategories && (

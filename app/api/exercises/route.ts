@@ -17,18 +17,6 @@ const CATEGORY_IDS = {
   recover: '976adc34-76e5-44fd-b5b4-b7ff5117a27d',
 }
 
-// Default durations for different exercise types
-const DEFAULT_DURATIONS = {
-  warmup: '30',
-  stretch: '15-30',
-  workout: '60',
-  cooldown: '30',
-  'warm-up': '30',
-  mobilise: '15-30',
-  strengthen: '60',
-  recover: '30',
-}
-
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url)
@@ -72,7 +60,6 @@ export async function GET(request: Request) {
         name: exercise.name,
         image: exercise.image_url || '/placeholder.svg?height=500&width=800',
         description: exercise.ex_description || 'No description available',
-        duration: exercise.duration || null,
         video_url: exercise.video_url || null,
         video_url_2: exercise.video_url_2 || null,
         video_url_3: exercise.video_url_3 || null,
@@ -142,9 +129,8 @@ export async function GET(request: Request) {
     // Handle type-based query
     if (type) {
       const categoryId = CATEGORY_IDS[type]
-      const defaultDuration = DEFAULT_DURATIONS[type]
 
-      let exercises = await fetchExercisesByCategory(categoryId, defaultDuration)
+      let exercises = await fetchExercisesByCategory(categoryId)
 
       // Add categories for Workout/Strengthen exercises
       if (type === 'workout' || type === 'strengthen') {

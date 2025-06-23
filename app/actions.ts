@@ -58,7 +58,6 @@ export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
           name: 'Sample Warmup Exercise',
           image: '/placeholder.svg?height=200&width=300',
           description: 'This is a placeholder. No actual warmup exercises found in the database.',
-          duration: '30',
           labels: [],
         },
       ]
@@ -71,7 +70,6 @@ export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
         name: exercise.name,
         image: exercise.image_url || '/placeholder.svg?height=200&width=300',
         description: exercise.ex_description || 'No description available',
-        duration: exercise.duration || '30',
         labels: [],
       }
     })
@@ -123,7 +121,6 @@ export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
           name: 'Sample Stretch Exercise',
           image: '/placeholder.svg?height=200&width=300',
           description: 'This is a placeholder. No actual stretch exercises found in the database.',
-          duration: '15-30',
           labels: [],
         },
       ]
@@ -146,7 +143,6 @@ export async function getStretchExercises(): Promise<ExerciseWithLabels[]> {
         name: exercise.name,
         image: imageUrl,
         description: exercise.ex_description || 'No description available',
-        duration: exercise.duration || '15-30', // Default duration for stretches
         labels: [],
       }
     })
@@ -206,7 +202,6 @@ export async function getWorkoutExercises(): Promise<ExerciseWithLabels[]> {
             name: 'Sample Workout Exercise',
             image: '/placeholder.svg?height=200&width=300',
             description: 'This is a placeholder. No Workout exercises found in the database.',
-            duration: '60',
             labels: [],
             categories: ['Sample'],
           },
@@ -219,7 +214,6 @@ export async function getWorkoutExercises(): Promise<ExerciseWithLabels[]> {
         name: exercise.name,
         image: exercise.image_url || '/placeholder.svg?height=200&width=300',
         description: exercise.ex_description || 'No description available',
-        duration: exercise.duration || null,
         labels: [],
         categories: getDefaultCategories(exercise.name),
       }))
@@ -232,7 +226,6 @@ export async function getWorkoutExercises(): Promise<ExerciseWithLabels[]> {
         name: exercise.name,
         image: exercise.image_url || '/placeholder.svg?height=200&width=300',
         description: exercise.ex_description || 'No description available',
-        duration: exercise.duration || null,
         labels: [],
         categories: getDefaultCategories(exercise.name),
       }
@@ -265,7 +258,6 @@ export async function getExerciseById(id: number): Promise<ExerciseWithLabels | 
       name: exercise.name,
       image: exercise.image_url || '/placeholder.svg?height=200&width=300',
       description: exercise.ex_description,
-      duration: exercise.duration || null,
       labels: [],
       categories: getDefaultCategories(exercise.name),
     }
@@ -343,7 +335,6 @@ export async function getExercisesByType(
       name: exercise.name,
       image: exercise.image_url || '/placeholder.svg?height=200&width=300',
       description: exercise.ex_description,
-      duration: exercise.duration || null,
       labels: [],
       categories: [],
     }))
@@ -531,7 +522,6 @@ export async function getExercisesByGroup(groupId: number): Promise<ExerciseWith
         name: exercise.name,
         image: exercise.image_url || '/placeholder.svg?height=200&width=300',
         description: exercise.ex_description,
-        duration: exercise.duration || null,
         labels: [],
         categories: categories,
       }

@@ -21,9 +21,11 @@ export default function StrengthenPage() {
       <CollapsibleBox title="Objective: Strengthen functional imbalances most" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">
-            Your goal is to work all the muscles in your body, focusing most on strengthening your
-            muscles with a higher Functional Imbalances Risk (FIR). This will help you to get better
-            results from your training.
+            Only stretch the muscles that you have just worked in "Strengthen", focusing most on
+            your muscles with a higher Functional Imbalances Risk (FIR). Stretching will help these
+            muscles to recover quicker, which will help you feel fresher and move better, leading to
+            better results in your next training session. Hold each stretch for 20sec+. Breathe
+            deeply and push further into each stretch every time you breathe out.
           </p>
         </div>
       </CollapsibleBox>
@@ -50,11 +52,12 @@ export default function StrengthenPage() {
       <CollapsibleBox title="Training days" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">
-            Your Strength training program has been split into Day 1 and Day 2. Each Day will focus
-            on working a different combination of muscles groups. Please follow the training Days in
-            order(i.e. follow Day 1 training with Day 2 training, then go back to Day 1) to ensure
-            that you keep to the ideal FIR training ratios calculated for your body. If for any
-            reason you are unable to do Day 1 or 2 training, you can 'Create your own workout'.
+            Your Recovery Training Program has been split into Day 1 and Day 2. Each Day will focus
+            on stretching a different combination of muscles groups that matches the muscles you
+            have just worked in "Strengthen". Therefore please follow the same Training Day that you
+            did in "Strengthen" (i.e. follow Day 1 Strength Training with Day 1 Recovery Training).
+            If you did "Create your own workout" in "Strengthen" then please stretch the muscles
+            that you have just worked, focusing most on stretching your muscles with a higher FIR.
           </p>
         </div>
       </CollapsibleBox>

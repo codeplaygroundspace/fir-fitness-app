@@ -35,7 +35,6 @@ export type Database = {
           video_url: string | null
           video_url_2: string | null
           video_url_3: string | null
-          duration: string | null
           kit: string | null
           exercise_group: string | null
           body_muscle: number | null
@@ -50,7 +49,6 @@ export type Database = {
           video_url?: string | null
           video_url_2?: string | null
           video_url_3?: string | null
-          duration?: string | null
           kit?: string | null
           exercise_group?: string | null
           body_muscle?: number | null
@@ -65,7 +63,6 @@ export type Database = {
           video_url?: string | null
           video_url_2?: string | null
           video_url_3?: string | null
-          duration?: string | null
           kit?: string | null
           exercise_group?: string | null
           body_muscle?: number | null
@@ -137,7 +134,6 @@ export type Exercise = {
   id: number
   name: string
   image: string
-  duration?: string
   type: 'warm-up' | 'mobilise' | 'strengthen' | 'recover'
   instructions?: string
 }
@@ -148,7 +144,6 @@ export type ExerciseWithLabels = {
   name: string
   image: string
   description: string | null
-  duration: string | null
   video_url?: string | null
   video_url_2?: string | null
   video_url_3?: string | null
@@ -187,7 +182,6 @@ export interface ExerciseCardProps {
   name: string
   image: string
   linkPrefix: string
-  duration?: string | null
   categories?: string[]
   showLabels?: boolean
   showCategories?: boolean
@@ -199,12 +193,6 @@ export interface ExerciseImageProps {
   width?: number
   height?: number
   className?: string
-}
-
-export interface DurationLabelProps {
-  duration: string
-  className?: string
-  icon?: React.ReactNode
 }
 
 export interface CategoryLabelProps {

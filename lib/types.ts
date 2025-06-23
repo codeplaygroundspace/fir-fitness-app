@@ -182,9 +182,6 @@ export interface ExerciseCardProps {
   name: string
   image: string
   linkPrefix: string
-  categories?: string[]
-  showLabels?: boolean
-  showCategories?: boolean
 }
 
 export interface ExerciseImageProps {
@@ -260,4 +257,12 @@ export type ExerciseGroup = {
   image_url: string | null
   body_sec: number
   category_id?: string
+}
+
+export type OfflineWorkoutLog = {
+  exercise_id: number
+  exercise_name: string
+  exercise_type: string
+  completed_at: string
+  synced: boolean
 }

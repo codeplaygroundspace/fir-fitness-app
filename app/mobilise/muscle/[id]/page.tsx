@@ -177,9 +177,6 @@ export default function MuscleGroupPage() {
                 name={exercise.name}
                 image={exercise.image}
                 linkPrefix="/mobilise"
-                categories={exercise.categories}
-                showLabels={false}
-                showCategories={false}
               />
             ))}
           </div>

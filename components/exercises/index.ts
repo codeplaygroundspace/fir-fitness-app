@@ -1,6 +1,6 @@
 export { CategoryLabel } from './category-label'
 export { ExerciseCard } from './exercise-card'
-export { ExerciseImage } from './exercise-image'
+export { default as ExerciseImage } from './exercise-image'
 export { ExerciseVideo } from './exercise-video'
 export { ExerciseFilters } from './exercise-filters'
 export { BodySectionFilter } from './body-section-filter'

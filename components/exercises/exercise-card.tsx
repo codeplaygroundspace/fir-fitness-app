@@ -1,34 +1,11 @@
 import Link from 'next/link'
 import ExerciseImage from '@/components/exercises/exercise-image'
-import { CategoryLabel } from '@/components/exercises/category-label'
 import { Card, CardContent } from '@/components/ui/card'
 import type { ExerciseCardProps } from '@/lib/types'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
 
-export function ExerciseCard({
-  id,
-  name,
-  image,
-  linkPrefix,
-  categories,
-  showLabels = false,
-  showCategories = false,
-}: ExerciseCardProps) {
+export function ExerciseCard({ id, name, image, linkPrefix }: ExerciseCardProps) {
   const formattedName = capitalizeFirstLetter(name)
-
-  // Debug categories
-  console.log(
-    `Exercise card ${id} (${name}) categories:`,
-    categories,
-    'showCategories:',
-    showCategories
-  )
-
-  // Log any FIR categories
-  const firCategories = categories?.filter(c => c.startsWith('FIR:')) || []
-  if (firCategories.length > 0) {
-    console.log(`Exercise ${name} has FIR categories:`, firCategories)
-  }
 
   return (
     <Card className="h-full">
@@ -53,19 +30,6 @@ export function ExerciseCard({
           >
             {formattedName}
           </h2>
-
-          {/* Only render categories section when showCategories is true */}
-          {showCategories && (
-            <div className="flex flex-wrap mt-2" aria-label="Exercise categories">
-              {categories && categories.length > 0 ? (
-                categories.map((category, index) => (
-                  <CategoryLabel key={index} category={category} />
-                ))
-              ) : (
-                <span className="text-xs text-muted-foreground">No categories available</span>
-              )}
-            </div>
-          )}
         </CardContent>
       </Link>
     </Card>

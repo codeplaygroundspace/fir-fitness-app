@@ -183,7 +183,6 @@ export default function MobilisePage() {
                 image={exercise.image}
                 linkPrefix="/mobilise"
                 categories={exercise.categories}
-                showCategories={true}
                 bodyMuscleId={exercise.body_muscle}
               />
             ))}

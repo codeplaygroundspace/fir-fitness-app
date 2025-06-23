@@ -6,7 +6,7 @@ import { capitalizeFirstLetter } from '@/lib/text-utils'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
-export default async function WarmUpPage({ params }: { params: { id: string } }) {
+export default async function WarmUpPage({ params }: { params: Promise<{ id: string }> }) {
   try {
     // Get the exercise ID from the URL parameters - await params to fix the error
     const { id } = await params

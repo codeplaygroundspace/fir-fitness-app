@@ -149,9 +149,6 @@ export default function ExerciseGroupPage() {
                 name={exercise.name}
                 image={exercise.image}
                 linkPrefix="/strengthen"
-                categories={exercise.categories}
-                showLabels={true}
-                showCategories={true}
               />
             ))}
           </div>

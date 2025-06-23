@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { getBodySections } from "@/app/actions"
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { getBodySections } from '@/app/actions'
 
 export interface BodySectionFilterProps {
   categories: string[]
@@ -10,29 +10,13 @@ export interface BodySectionFilterProps {
   onFilterChange: (selected: string[]) => void
 }
 
-export function BodySectionFilter({ 
-  categories, 
-  selectedCategories, 
-  onFilterChange 
+export function BodySectionFilter({
+  categories,
+  selectedCategories,
+  onFilterChange,
 }: BodySectionFilterProps) {
-  const [bodySections, setBodySections] = useState<string[]>([])
-
-  // Fetch body sections from server action
-  useEffect(() => {
-    const fetchBodySections = async () => {
-      try {
-        const sections = await getBodySections()
-        console.log('Fetched body sections:', sections)
-        setBodySections(sections)
-      } catch (error) {
-        console.error('Error fetching body sections:', error)
-        // Fallback to some default order if fetch fails
-        setBodySections(['lower', 'middle', 'upper'])
-      }
-    }
-
-    fetchBodySections()
-  }, [])
+  // Use a predefined order for body sections (matches database order: upper=1, lower=2, middle=3)
+  const bodySectionOrder = ['Upper', 'Lower', 'Middle']
 
   const toggleCategory = (category: string) => {
     if (selectedCategories.includes(category)) {
@@ -44,52 +28,43 @@ export function BodySectionFilter({
 
   // Case-insensitive check if a category is a body section
   const isBodySection = (category: string) => {
-    return bodySections.some(section => 
-      section.toLowerCase() === category.toLowerCase()
-    )
+    return bodySectionOrder.some(section => section.toLowerCase() === category.toLowerCase())
   }
 
-  // Identify body region categories
-  const bodyCategories = categories.filter(category => 
-    isBodySection(category) || 
-    (!category.startsWith("FIR:") && category)
-  );
-  
-  // Sort body categories according to order from database
+  // Identify body region categories (only body sections, no FIR categories)
+  const bodyCategories = categories.filter(category => !category.startsWith('FIR:'))
+
+  // Sort body categories according to predefined order
   const sortedBodyCategories = [...bodyCategories].sort((a, b) => {
     // Get matching body sections (case insensitive)
-    const aIndex = bodySections.findIndex(section => 
-      section.toLowerCase() === a.toLowerCase()
-    );
-    const bIndex = bodySections.findIndex(section => 
-      section.toLowerCase() === b.toLowerCase()
-    );
-    
-    // If both are body sections, sort by database order
+    const aIndex = bodySectionOrder.findIndex(section => section.toLowerCase() === a.toLowerCase())
+    const bIndex = bodySectionOrder.findIndex(section => section.toLowerCase() === b.toLowerCase())
+
+    // If both are body sections, sort by predefined order
     if (aIndex !== -1 && bIndex !== -1) {
-      return aIndex - bIndex;
+      return aIndex - bIndex
     }
     // If only a is a body section, a comes first
-    if (aIndex !== -1) return -1;
+    if (aIndex !== -1) return -1
     // If only b is a body section, b comes first
-    if (bIndex !== -1) return 1;
+    if (bIndex !== -1) return 1
     // If neither is a body section, maintain original order
-    return 0;
-  });
-
-  console.log('Body section filter - categories:', sortedBodyCategories);
+    return 0
+  })
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
       <span className="font-medium text-sm mr-1">Body:</span>
-      {sortedBodyCategories.map((category) => (
+      {sortedBodyCategories.map(category => (
         <Button
           key={category}
           variant="outline"
           size="sm"
           onClick={() => toggleCategory(category)}
           className={`rounded-full ${
-            selectedCategories.includes(category) ? "bg-primary/10 text-primary hover:bg-primary/20" : ""
+            selectedCategories.includes(category)
+              ? 'bg-primary/10 text-primary hover:bg-primary/20'
+              : ''
           }`}
         >
           {category}
@@ -97,4 +72,4 @@ export function BodySectionFilter({
       ))}
     </div>
   )
-} 
+}

@@ -1,12 +1,12 @@
-"use client"
+'use client'
 
-import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import type { User, Session } from "@supabase/supabase-js"
-import { AuthLoading } from "./auth-loading"
-import { createAuthClient, createMockAuthClient } from "./supabase-client"
-import type { AuthContextType } from "@/lib/types"
+import type React from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import type { User, Session } from '@supabase/supabase-js'
+import { AuthLoading } from './auth-loading'
+import { createAuthClient, createMockAuthClient } from './supabase-client'
+import type { AuthContextType } from '@/lib/types'
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
@@ -29,13 +29,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     try {
       // Only initialize in the browser
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         const client = createAuthClient()
         setSupabase(client)
       }
     } catch (err) {
-      console.error("Failed to initialize Supabase client:", err)
-      setError(err instanceof Error ? err.message : "Failed to initialize Supabase client")
+      console.error('Failed to initialize Supabase client:', err)
+      setError(err instanceof Error ? err.message : 'Failed to initialize Supabase client')
       // Set a mock client so the app doesn't crash
       setSupabase(createMockAuthClient())
       setIsLoading(false)
@@ -56,8 +56,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null)
         setIsLoading(false)
       } catch (error) {
-        console.error("Error getting session:", error)
-        setError(error instanceof Error ? error.message : "Failed to get auth session")
+        console.error('Error getting session:', error)
+        setError(error instanceof Error ? error.message : 'Failed to get auth session')
         setIsLoading(false)
       }
     }
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
         setSession(session)
         setUser(session?.user ?? null)
         setIsLoading(false)
@@ -77,8 +77,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         subscription.unsubscribe()
       }
     } catch (error) {
-      console.error("Error setting up auth state change listener:", error)
-      setError(error instanceof Error ? error.message : "Failed to set up auth listener")
+      console.error('Error setting up auth state change listener:', error)
+      setError(error instanceof Error ? error.message : 'Failed to set up auth listener')
       setIsLoading(false)
       return () => {}
     }
@@ -87,12 +87,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Redirect to login if not authenticated and not on login page
   useEffect(() => {
     if (!isLoading) {
-      if (!user && pathname !== "/login" && !error) {
+      if (!user && pathname !== '/login' && !error) {
         // Redirect to login if not authenticated
-        router.push("/login")
-      } else if (user && pathname === "/login") {
+        router.push('/login')
+      } else if (user && pathname === '/login') {
         // Redirect to home if already authenticated and on login page
-        router.push("/")
+        router.push('/')
       }
     }
   }, [user, isLoading, pathname, router, error])
@@ -102,20 +102,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await supabase.auth.signOut()
-      router.push("/login")
+      router.push('/login')
     } catch (error) {
-      console.error("Error signing out:", error)
-      setError(error instanceof Error ? error.message : "Failed to sign out")
+      console.error('Error signing out:', error)
+      setError(error instanceof Error ? error.message : 'Failed to sign out')
     }
   }
 
   // Only show loading state when checking auth on non-login pages
-  if (isLoading && pathname !== "/login") {
+  if (isLoading && pathname !== '/login') {
     return <AuthLoading />
   }
 
   // Show error state if there's an initialization error
-  if (error && pathname !== "/login") {
+  if (error && pathname !== '/login') {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="p-6 max-w-md mx-auto bg-card rounded-lg shadow-lg">
@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             Please check your environment variables and make sure Supabase is properly configured.
           </p>
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => router.push('/login')}
             className="w-full bg-primary text-primary-foreground py-2 px-4 rounded hover:bg-primary/90"
           >
             Go to Login
@@ -135,7 +135,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     )
   }
 
-  return <AuthContext.Provider value={{ user, session, isLoading, signOut, error }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, session, isLoading, signOut, error }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => {

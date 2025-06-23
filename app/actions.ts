@@ -3,7 +3,7 @@
 import { supabaseServer } from '@/lib/supabase'
 import type { ExerciseWithLabels } from '@/lib/types'
 
-// Update the ExerciseGroup type to include category_id
+// Update the ExerciseGroup type to remove fir_level references
 export type ExerciseGroup = {
   id: number
   name: string
@@ -11,8 +11,6 @@ export type ExerciseGroup = {
   image_url: string | null
   body_sec: number
   body_section_name: string | null
-  fir_level: number | null
-  fir_level_name: string | null
   category_id?: string | null // Allow null value
 }
 
@@ -269,22 +267,8 @@ export async function getExerciseById(id: number): Promise<ExerciseWithLabels | 
 
 // Helper function to assign default categories based on exercise name
 function getDefaultCategories(exerciseName: string): string[] {
-  const name = exerciseName.toLowerCase()
-  const categories: string[] = []
-
-  // Assign body region
-  if (name.includes('press') || name.includes('pull') || name.includes('overhead')) {
-    categories.push('Upper')
-  } else if (name.includes('thrust') || name.includes('brace') || name.includes('lateral')) {
-    categories.push('Middle')
-  } else if (name.includes('squat') || name.includes('deadlift') || name.includes('raise')) {
-    categories.push('Lower')
-  }
-
-  // Assign FIR level (just a default)
-  categories.push('FIR: Low')
-
-  return categories
+  // Categories are no longer used - return empty array
+  return []
 }
 
 // Add a function to get exercises by type (to replace getExercisesByType)
@@ -347,88 +331,42 @@ export async function getExercisesByType(
 // Add this new function to fetch exercise groups
 export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
   try {
-    // Direct SQL approach to ensure we get the proper joins
-    const { data, error } = await supabaseServer.rpc('get_exercise_groups_with_details')
+    // Use a single query with proper join to get all data at once
+    const { data, error } = await supabaseServer
+      .from('exercise_groups')
+      .select(
+        `
+        id,
+        name,
+        image_url,
+        body_sec,
+        exercise_body_section!inner(name)
+      `
+      )
+      .order('name')
 
     if (error) {
-      console.error('Error fetching exercise groups with RPC:', error)
-
-      // Fallback to regular query with explicit joins
-      const { data: fallbackData, error: fallbackError } = await supabaseServer
-        .from('exercise_groups')
-        .select(
-          `
-          id,
-          name,
-          image_url,
-          body_sec,
-          fir_level
-        `
-        )
-        .order('name')
-
-      if (fallbackError || !fallbackData) {
-        console.error('Error in fallback query:', fallbackError)
-        return []
-      }
-
-      // Manually get the related data
-      const groupIds = fallbackData.map(g => g.id)
-
-      // Get the intensity levels
-      const { data: firData } = await supabaseServer.from('exercise_fir').select('id, name')
-
-      // Get the body sections
-      const { data: bodySectionData } = await supabaseServer
-        .from('exercise_body_section')
-        .select('id, body_section')
-
-      // Create lookups
-      const firMap = (firData || []).reduce(
-        (acc, item) => {
-          acc[item.id] = item.name
-          return acc
-        },
-        {} as Record<number, string>
-      )
-
-      const bodySectionMap = (bodySectionData || []).reduce(
-        (acc, item) => {
-          acc[item.id] = item.body_section
-          return acc
-        },
-        {} as Record<number, string>
-      )
-
-      // Map the data
-      return fallbackData.map(group => {
-        const result = {
-          id: group.id,
-          name: group.name,
-          description: null, // No description column in the database
-          image_url: group.image_url,
-          body_sec: group.body_sec,
-          body_section_name: group.body_sec ? bodySectionMap[group.body_sec] || null : null,
-          fir_level: group.fir_level,
-          fir_level_name: group.fir_level ? firMap[group.fir_level] || null : null,
-          category_id: null, // No category_id column in the database
-        }
-
-        return result
-      })
+      console.error('Error fetching exercise groups:', error)
+      return []
     }
 
-    // If RPC successful, use that data
-    return (data || []).map((group: any) => ({
+    if (!data || data.length === 0) {
+      console.log('No exercise groups found in database')
+      return []
+    }
+
+    // Map the data with proper typing
+    return data.map((group: any) => ({
       id: group.id,
       name: group.name,
-      description: null, // No description in our database
+      description: null, // No description column in the database
       image_url: group.image_url,
       body_sec: group.body_sec,
-      body_section_name: group.body_section || null,
-      fir_level: group.fir_level,
-      fir_level_name: group.fir_name || null,
-      category_id: null, // No category_id in our database
+      body_section_name: group.exercise_body_section?.name
+        ? group.exercise_body_section.name.charAt(0).toUpperCase() +
+          group.exercise_body_section.name.slice(1)
+        : null,
+      category_id: null, // No category_id column in the database
     }))
   } catch (error) {
     console.error('Error in getExerciseGroups:', error)
@@ -466,56 +404,26 @@ export async function getExercisesByGroup(groupId: number): Promise<ExerciseWith
       return []
     }
 
-    // Get body section and FIR level data separately
+    // Get body section data separately
     let bodySection = null
-    let firLevel = 'Low'
 
     // Get body section if available
     if (group.body_sec) {
       const { data: bodySectionData } = await supabaseServer
         .from('exercise_body_section')
-        .select('body_section')
+        .select('name')
         .eq('id', group.body_sec)
         .single()
 
       if (bodySectionData) {
-        bodySection = bodySectionData.body_section
-      }
-    }
-
-    // Get FIR level if available
-    if (group.fir_level) {
-      const { data: firData } = await supabaseServer
-        .from('exercise_fir')
-        .select('name')
-        .eq('id', group.fir_level)
-        .single()
-
-      if (firData) {
-        firLevel = firData.name
+        bodySection = bodySectionData.name
       }
     }
 
     // Map to the expected format
     return exercisesByGroup.map(exercise => {
-      // Build categories list
-      const categories = []
-
-      // Add body region if available
-      if (bodySection) {
-        // Capitalize first letter of body section
-        categories.push(bodySection.charAt(0).toUpperCase() + bodySection.slice(1))
-      } else {
-        // Use a default based on the exercise name
-        const defaultCategories = getDefaultCategories(exercise.name)
-        const bodyRegion = defaultCategories.find(cat => ['Upper', 'Middle', 'Lower'].includes(cat))
-        if (bodyRegion) {
-          categories.push(bodyRegion)
-        }
-      }
-
-      // Add FIR level - ensure it's in the correct format
-      categories.push(`FIR: ${firLevel}`)
+      // Build categories list - no longer used
+      const categories: string[] = []
 
       return {
         id: exercise.id,
@@ -537,22 +445,22 @@ export async function getBodySections(): Promise<string[]> {
   try {
     const { data, error } = await supabaseServer
       .from('exercise_body_section')
-      .select('body_section')
+      .select('name')
       .order('id', { ascending: true })
 
     if (error) {
       console.error('Error fetching body sections:', error)
-      return ['lower', 'middle', 'upper'] // Fallback order
+      return ['upper', 'lower', 'middle'] // Fallback order
     }
 
     if (!data || data.length === 0) {
-      return ['lower', 'middle', 'upper'] // Fallback order if no data
+      return ['upper', 'lower', 'middle'] // Fallback order if no data
     }
 
-    // Extract the body_section values
-    return data.map(item => item.body_section)
+    // Extract the name values and capitalize them
+    return data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1))
   } catch (error) {
     console.error('Error in getBodySections:', error)
-    return ['lower', 'middle', 'upper'] // Fallback order if error
+    return ['Upper', 'Lower', 'Middle'] // Fallback order if error
   }
 }

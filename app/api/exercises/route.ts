@@ -65,7 +65,7 @@ export async function GET(request: Request) {
         video_url_3: exercise.video_url_3 || null,
         body_muscle: exercise.body_muscle || null,
         labels: [],
-        categories: getDefaultCategories(exercise.name),
+        categories: [], // No longer using categories
       }
 
       return NextResponse.json(formattedExercise)
@@ -91,32 +91,8 @@ export async function GET(request: Request) {
         const { getExercisesByGroup } = await import('@/app/actions')
         const exercises = await getExercisesByGroup(groupId)
 
-        // Ensure each exercise has categories, especially FIR categories
-        const exercisesWithCategories = exercises.map(exercise => {
-          if (!exercise.categories || exercise.categories.length === 0) {
-            // Add default categories
-            return {
-              ...exercise,
-              categories: getDefaultCategories(exercise.name),
-            }
-          }
-
-          // Check if there's already a FIR category
-          const hasFirCategory = exercise.categories.some(cat => cat.startsWith('FIR:'))
-
-          if (!hasFirCategory) {
-            // Add a default FIR category if none exists
-            return {
-              ...exercise,
-              categories: [...exercise.categories, 'FIR: Low'],
-            }
-          }
-
-          console.log(`Exercise ${exercise.name} has categories:`, exercise.categories)
-          return exercise
-        })
-
-        return NextResponse.json(exercisesWithCategories)
+        // Return exercises without categories
+        return NextResponse.json(exercises)
       } catch (error) {
         console.error('Error fetching exercises by group:', error)
         return NextResponse.json(
@@ -132,13 +108,7 @@ export async function GET(request: Request) {
 
       let exercises = await fetchExercisesByCategory(categoryId)
 
-      // Add categories for Workout/Strengthen exercises
-      if (type === 'workout' || type === 'strengthen') {
-        exercises = exercises.map(exercise => ({
-          ...exercise,
-          categories: getDefaultCategories(exercise.name),
-        }))
-      }
+      // Categories are no longer used for exercises
 
       return NextResponse.json(exercises)
     }
@@ -158,21 +128,6 @@ export async function GET(request: Request) {
 
 // Helper function to assign default categories based on exercise name
 function getDefaultCategories(exerciseName: string): string[] {
-  const name = exerciseName.toLowerCase()
-  const categories: string[] = []
-
-  // Assign body region
-  if (name.includes('press') || name.includes('pull') || name.includes('overhead')) {
-    categories.push('Upper')
-  } else if (name.includes('thrust') || name.includes('brace') || name.includes('lateral')) {
-    categories.push('Middle')
-  } else if (name.includes('squat') || name.includes('deadlift') || name.includes('raise')) {
-    categories.push('Lower')
-  }
-
-  // Assign FIR level (just a default)
-  categories.push('FIR: Low')
-
-  console.log(`Default categories for exercise "${exerciseName}":`, categories)
-  return categories
+  // Categories are no longer used - return empty array
+  return []
 }

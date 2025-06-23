@@ -33,6 +33,8 @@ export type Database = {
           ex_description: string | null
           image_url: string | null
           video_url: string | null
+          video_url_2: string | null
+          video_url_3: string | null
           duration: string | null
           reps: string | null
           kit: string | null
@@ -47,6 +49,8 @@ export type Database = {
           ex_description?: string | null
           image_url?: string | null
           video_url?: string | null
+          video_url_2?: string | null
+          video_url_3?: string | null
           duration?: string | null
           reps?: string | null
           kit?: string | null
@@ -61,6 +65,8 @@ export type Database = {
           ex_description?: string | null
           image_url?: string | null
           video_url?: string | null
+          video_url_2?: string | null
+          video_url_3?: string | null
           duration?: string | null
           reps?: string | null
           kit?: string | null
@@ -154,6 +160,8 @@ export type ExerciseWithLabels = {
   duration: string | null
   reps: string | null
   video_url?: string | null
+  video_url_2?: string | null
+  video_url_3?: string | null
   body_muscle?: number | null
   labels: {
     label_name: string
@@ -168,6 +176,8 @@ export type ExerciseFormData = {
   description: string | null
   image_url: string | null
   video_url: string | null
+  video_url_2: string | null
+  video_url_3: string | null
   category_id: string
   labels: string[]
 }

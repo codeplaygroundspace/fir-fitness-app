@@ -79,6 +79,8 @@ export async function GET(request: Request) {
         duration: exercise.duration || null,
         reps: exercise.reps || null,
         video_url: exercise.video_url || null,
+        video_url_2: exercise.video_url_2 || null,
+        video_url_3: exercise.video_url_3 || null,
         body_muscle: exercise.body_muscle || null,
         labels: [],
         categories: getDefaultCategories(exercise.name),

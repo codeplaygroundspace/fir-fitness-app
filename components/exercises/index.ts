@@ -1,6 +1,7 @@
 export { CategoryLabel } from './category-label'
 export { ExerciseCard } from './exercise-card'
 export { default as ExerciseImage } from './exercise-image'
+export { ExerciseNotesForm } from './exercise-notes-form'
 export { ExerciseVideo } from './exercise-video'
 export { MobiliseExerciseCard } from './mobilise-exercise-card'
 export { RecommendedWorkouts } from './recommended-workouts'

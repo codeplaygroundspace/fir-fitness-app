@@ -86,3 +86,72 @@ export async function getUserTrainingDays(userId: string): Promise<number[]> {
     return []
   }
 }
+
+/**
+ * Fetches the user's note for a specific exercise
+ * @param userId - The ID of the user
+ * @param exerciseId - The ID of the exercise
+ * @returns The note text if found, empty string otherwise
+ */
+export async function getUserExerciseNote(userId: string, exerciseId: number): Promise<string> {
+  try {
+    const { data, error } = await supabaseServer
+      .from('user_exercise_notes')
+      .select('notes')
+      .eq('user_id', userId)
+      .eq('exercise_id', exerciseId)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // No note found for this exercise - this is an expected case
+        return ''
+      }
+      console.error('Error fetching user exercise note:', error)
+      return ''
+    }
+
+    return data?.notes || ''
+  } catch (error) {
+    console.error('Error in getUserExerciseNote:', error)
+    return ''
+  }
+}
+
+/**
+ * Saves or updates a user's note for a specific exercise
+ * @param userId - The ID of the user
+ * @param exerciseId - The ID of the exercise
+ * @param notes - The note text to save
+ * @returns Success status
+ */
+export async function saveExerciseNote(
+  userId: string,
+  exerciseId: number,
+  notes: string
+): Promise<{ success: boolean }> {
+  try {
+    // Use upsert to insert or update
+    const { error } = await supabaseServer.from('user_exercise_notes').upsert(
+      {
+        user_id: userId,
+        exercise_id: exerciseId,
+        notes,
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: 'user_id,exercise_id',
+      }
+    )
+
+    if (error) {
+      console.error('Error saving exercise note:', error)
+      return { success: false }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error in saveExerciseNote:', error)
+    return { success: false }
+  }
+}

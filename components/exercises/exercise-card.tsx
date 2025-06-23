@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import ExerciseImage from '@/components/exercises/exercise-image'
 import { DurationLabel } from '@/components/exercises/duration-label'
-import { RepsLabel } from '@/components/exercises/reps-label'
+
 import { CategoryLabel } from '@/components/exercises/category-label'
 import { Card, CardContent } from '@/components/ui/card'
 import type { ExerciseCardProps } from '@/lib/types'
@@ -13,7 +13,6 @@ export function ExerciseCard({
   image,
   linkPrefix,
   duration,
-  reps,
   categories,
   showLabels = false,
   showCategories = false,
@@ -61,7 +60,6 @@ export function ExerciseCard({
           {showLabels && (
             <div className="flex flex-wrap gap-4 mt-1 mb-2" aria-label="Exercise details">
               {duration && <DurationLabel duration={duration} />}
-              {reps && <RepsLabel reps={reps} />}
             </div>
           )}
 

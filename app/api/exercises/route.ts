@@ -77,7 +77,6 @@ export async function GET(request: Request) {
         image: exercise.image_url || '/placeholder.svg?height=200&width=300',
         description: exercise.ex_description || 'No description available',
         duration: exercise.duration || null,
-        reps: exercise.reps || null,
         video_url: exercise.video_url || null,
         video_url_2: exercise.video_url_2 || null,
         video_url_3: exercise.video_url_3 || null,

@@ -12,7 +12,6 @@ export interface UserDayExercise {
     name: string
     image_url: string | null
     description: string | null
-    reps: number | null
     exercise_group: number | null
     group: {
       id: number

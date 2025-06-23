@@ -36,9 +36,8 @@ export type Database = {
           video_url_2: string | null
           video_url_3: string | null
           duration: string | null
-          reps: string | null
           kit: string | null
-          exercise_group: string | null // Add this field
+          exercise_group: string | null
           body_muscle: number | null
         }
         Insert: {
@@ -52,9 +51,8 @@ export type Database = {
           video_url_2?: string | null
           video_url_3?: string | null
           duration?: string | null
-          reps?: string | null
           kit?: string | null
-          exercise_group?: string | null // Add this field
+          exercise_group?: string | null
           body_muscle?: number | null
         }
         Update: {
@@ -68,9 +66,8 @@ export type Database = {
           video_url_2?: string | null
           video_url_3?: string | null
           duration?: string | null
-          reps?: string | null
           kit?: string | null
-          exercise_group?: string | null // Add this field
+          exercise_group?: string | null
           body_muscle?: number | null
         }
       }
@@ -91,22 +88,16 @@ export type Database = {
       exercise_labels: {
         Row: {
           id: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id: number | null
           label_name: string
           label_type: string
         }
         Insert: {
           id?: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id?: number | null
           label_name: string
           label_type: string
         }
         Update: {
           id?: number
-          // Remove or rename exercise_id based on actual schema
-          // exercise_id?: number | null
           label_name?: string
           label_type?: string
         }
@@ -158,7 +149,6 @@ export type ExerciseWithLabels = {
   image: string
   description: string | null
   duration: string | null
-  reps: string | null
   video_url?: string | null
   video_url_2?: string | null
   video_url_3?: string | null
@@ -198,7 +188,6 @@ export interface ExerciseCardProps {
   image: string
   linkPrefix: string
   duration?: string | null
-  reps?: string | null
   categories?: string[]
   showLabels?: boolean
   showCategories?: boolean
@@ -214,12 +203,6 @@ export interface ExerciseImageProps {
 
 export interface DurationLabelProps {
   duration: string
-  className?: string
-  icon?: React.ReactNode
-}
-
-export interface RepsLabelProps {
-  reps: string | number
   className?: string
   icon?: React.ReactNode
 }
@@ -288,5 +271,5 @@ export type ExerciseGroup = {
   description: string | null
   image_url: string | null
   body_sec: number
-  category_id?: string // Add this field as optional
+  category_id?: string
 }

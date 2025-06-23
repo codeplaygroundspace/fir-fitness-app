@@ -1,7 +1,6 @@
 export { ExerciseCard } from './exercise-card'
 export { MobiliseExerciseCard } from './mobilise-exercise-card'
 export { DurationLabel } from './duration-label'
-export { RepsLabel } from './reps-label'
 export { CategoryLabel } from './category-label'
 export { ExerciseFilters } from './exercise-filters'
 export { BodySectionFilter } from './body-section-filter'

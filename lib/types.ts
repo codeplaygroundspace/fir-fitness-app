@@ -125,6 +125,32 @@ export type Database = {
           completed_at?: string
         }
       }
+      user_exercise_notes: {
+        Row: {
+          id: number
+          user_id: string
+          exercise_id: number
+          notes: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          user_id: string
+          exercise_id: number
+          notes: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          user_id?: string
+          exercise_id?: number
+          notes?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

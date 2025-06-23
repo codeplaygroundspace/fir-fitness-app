@@ -448,10 +448,10 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
 // Update the getExercisesByGroup function to use the exercise_group column
 export async function getExercisesByGroup(groupId: number): Promise<ExerciseWithLabels[]> {
   try {
-    // First, get the group details to know what we're looking for
+    // First, get the group details with a simpler query
     const { data: group, error: groupError } = await supabaseServer
       .from('exercise_groups')
-      .select('*, exercise_body_section!inner(*), exercise_fir!inner(*)')
+      .select('*')
       .eq('id', groupId)
       .single()
 
@@ -460,113 +460,82 @@ export async function getExercisesByGroup(groupId: number): Promise<ExerciseWith
       return []
     }
 
-    console.log(`Group data for ${groupId}:`, JSON.stringify(group, null, 2))
-
-    // Primary approach: Use the exercise_group column (this is the correct column name)
-    // We need to convert groupId to string since that's how it's stored in the database
+    // Query exercises with exercise_group = groupId (as number)
     const { data: exercisesByGroup, error: groupError2 } = await supabaseServer
       .from('exercises')
       .select('*')
-      .eq('exercise_group', groupId.toString())
+      .eq('exercise_group', groupId)
 
-    if (!groupError2 && exercisesByGroup && exercisesByGroup.length > 0) {
-      // Extract body section and FIR level data properly
-      let bodySection = null
-      let firLevel = 'Low'
-
-      // Handle multiple possible data structures from Supabase
-      if (group.exercise_body_section) {
-        if (typeof group.exercise_body_section === 'object') {
-          // It could be an array or a single object
-          if (Array.isArray(group.exercise_body_section)) {
-            bodySection = group.exercise_body_section[0]?.body_section || null
-          } else {
-            bodySection = group.exercise_body_section.body_section || null
-          }
-        }
-      }
-
-      // Same for FIR level
-      if (group.exercise_fir) {
-        if (typeof group.exercise_fir === 'object') {
-          if (Array.isArray(group.exercise_fir)) {
-            firLevel = group.exercise_fir[0]?.name || 'Low'
-          } else {
-            firLevel = group.exercise_fir.name || 'Low'
-          }
-        }
-      }
-
-      // Fallback for body section using direct property
-      if (!bodySection && group.body_sec) {
-        // Get body sections directly
-        const { data: bodySectionData } = await supabaseServer
-          .from('exercise_body_section')
-          .select('body_section')
-          .eq('id', group.body_sec)
-          .single()
-
-        if (bodySectionData) {
-          bodySection = bodySectionData.body_section
-        }
-      }
-
-      // Fallback for FIR level using direct property
-      if (firLevel === 'Low' && group.fir_level) {
-        // Get FIR level directly
-        const { data: firData } = await supabaseServer
-          .from('exercise_fir')
-          .select('name')
-          .eq('id', group.fir_level)
-          .single()
-
-        if (firData) {
-          firLevel = firData.name
-        }
-      }
-
-      console.log(`Group ${groupId} body section: ${bodySection}, FIR level: ${firLevel}`)
-
-      // Map to the expected format
-      return exercisesByGroup.map(exercise => {
-        // Build categories list
-        const categories = []
-
-        // Add body region if available
-        if (bodySection) {
-          // Capitalize first letter of body section
-          categories.push(bodySection.charAt(0).toUpperCase() + bodySection.slice(1))
-        } else {
-          // Use a default based on the exercise name
-          const defaultCategories = getDefaultCategories(exercise.name)
-          const bodyRegion = defaultCategories.find(cat =>
-            ['Upper', 'Middle', 'Lower'].includes(cat)
-          )
-          if (bodyRegion) {
-            categories.push(bodyRegion)
-          }
-        }
-
-        // Add FIR level - ensure it's in the correct format
-        categories.push(`FIR: ${firLevel}`)
-
-        console.log(`Exercise ${exercise.id} (${exercise.name}) categories:`, categories)
-
-        return {
-          id: exercise.id,
-          name: exercise.name,
-          image: exercise.image_url || '/placeholder.svg?height=200&width=300',
-          description: exercise.ex_description,
-          duration: exercise.duration || null,
-          labels: [],
-          categories: categories,
-        }
-      })
+    if (groupError2) {
+      console.error('Query error:', groupError2)
+      return []
     }
 
-    console.log(`No exercises found for group ${groupId}`)
-    // If no exercises found with the exact exercise_group, we'll return an empty array
-    return []
+    if (!exercisesByGroup || exercisesByGroup.length === 0) {
+      return []
+    }
+
+    // Get body section and FIR level data separately
+    let bodySection = null
+    let firLevel = 'Low'
+
+    // Get body section if available
+    if (group.body_sec) {
+      const { data: bodySectionData } = await supabaseServer
+        .from('exercise_body_section')
+        .select('body_section')
+        .eq('id', group.body_sec)
+        .single()
+
+      if (bodySectionData) {
+        bodySection = bodySectionData.body_section
+      }
+    }
+
+    // Get FIR level if available
+    if (group.fir_level) {
+      const { data: firData } = await supabaseServer
+        .from('exercise_fir')
+        .select('name')
+        .eq('id', group.fir_level)
+        .single()
+
+      if (firData) {
+        firLevel = firData.name
+      }
+    }
+
+    // Map to the expected format
+    return exercisesByGroup.map(exercise => {
+      // Build categories list
+      const categories = []
+
+      // Add body region if available
+      if (bodySection) {
+        // Capitalize first letter of body section
+        categories.push(bodySection.charAt(0).toUpperCase() + bodySection.slice(1))
+      } else {
+        // Use a default based on the exercise name
+        const defaultCategories = getDefaultCategories(exercise.name)
+        const bodyRegion = defaultCategories.find(cat => ['Upper', 'Middle', 'Lower'].includes(cat))
+        if (bodyRegion) {
+          categories.push(bodyRegion)
+        }
+      }
+
+      // Add FIR level - ensure it's in the correct format
+      categories.push(`FIR: ${firLevel}`)
+
+      return {
+        id: exercise.id,
+        name: exercise.name,
+        image: exercise.image_url || '/placeholder.svg?height=200&width=300',
+        description: exercise.ex_description,
+        duration: exercise.duration || null,
+        labels: [],
+        categories: categories,
+      }
+    })
   } catch (error) {
     console.error(`Error in getExercisesByGroup for ${groupId}:`, error)
     return []

@@ -1,5 +1,3 @@
-'use client'
-
 import { Button } from '@/components/ui/button'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import Link from 'next/link'

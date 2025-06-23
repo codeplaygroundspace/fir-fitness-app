@@ -248,12 +248,7 @@ export default function DayPage() {
                           </div>
                         )}
 
-                        {/* Exercise details */}
-                        {userExercise.exercise.reps && (
-                          <div className="text-sm text-muted-foreground">
-                            Reps: {userExercise.exercise.reps}
-                          </div>
-                        )}
+                        {/* Exercise details - reps removed */}
                       </CardContent>
                     </Card>
                   </div>

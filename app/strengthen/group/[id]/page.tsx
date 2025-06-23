@@ -150,7 +150,6 @@ export default function ExerciseGroupPage() {
                 image={exercise.image}
                 linkPrefix="/strengthen"
                 duration={exercise.duration}
-                reps={exercise.reps}
                 categories={exercise.categories}
                 showLabels={true}
                 showCategories={true}

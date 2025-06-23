@@ -28,7 +28,6 @@ export async function GET(request: NextRequest) {
           name,
           image_url,
           ex_description,
-          reps,
           exercise_group,
           exercise_groups (
             id,
@@ -71,7 +70,6 @@ export async function GET(request: NextRequest) {
                 name: exercise.name,
                 image_url: exercise.image_url,
                 description: exercise.ex_description,
-                reps: exercise.reps,
                 exercise_group: exercise.exercise_group,
                 group: exerciseGroup
                   ? {

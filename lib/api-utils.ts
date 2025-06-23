@@ -45,7 +45,6 @@ export async function fetchExercisesByCategory(
       image: imageFormatter(exercise.image_url),
       description: exercise.ex_description || 'No description available',
       duration: exercise.duration || defaultDuration,
-      reps: exercise.reps || null,
       video_url: exercise.video_url || null,
       video_url_2: exercise.video_url_2 || null,
       video_url_3: exercise.video_url_3 || null,

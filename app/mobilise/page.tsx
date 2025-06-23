@@ -16,7 +16,7 @@ export default function MobilisePage() {
   const { allExercises, loading, error, maxMuscleGroup, clearCacheAndReload } =
     useMobiliseExercises()
   const [stretchExercises, setStretchExercises] = useState<ExerciseWithLabels[]>([])
-  const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([])
   const { user } = useAuth()
   const [mobilityLimitations, setMobilityLimitations] = useState('')
   const [isLoadingLimitations, setIsLoadingLimitations] = useState(false)
@@ -41,23 +41,21 @@ export default function MobilisePage() {
   }, [user?.id])
 
   useEffect(() => {
-    if (selectedNumber === null) {
+    if (selectedNumbers.length === 0) {
       setStretchExercises([])
       return
     }
 
-    if (selectedNumber === 0) {
-      setStretchExercises(allExercises)
-    } else {
-      const filtered = allExercises.filter(exercise => {
-        // Check body_muscle property first
-        const exerciseMuscleId = exercise.body_muscle !== null ? Number(exercise.body_muscle) : null
-        if (exerciseMuscleId === selectedNumber) {
-          return true
-        }
+    const filtered = allExercises.filter(exercise => {
+      // Check body_muscle property first
+      const exerciseMuscleId = exercise.body_muscle !== null ? Number(exercise.body_muscle) : null
+      if (exerciseMuscleId !== null && selectedNumbers.includes(exerciseMuscleId)) {
+        return true
+      }
 
-        // Then check name for muscle group indicators
-        if (exercise.name) {
+      // Then check name for muscle group indicators
+      if (exercise.name) {
+        return selectedNumbers.some(selectedNumber => {
           // Look for patterns like "- 5", "(5)", " 5" at the end of the name
           const namePatterns = [
             new RegExp(`- ${selectedNumber}(\\s|$)`),
@@ -66,17 +64,23 @@ export default function MobilisePage() {
           ]
 
           return namePatterns.some(pattern => pattern.test(exercise.name))
-        }
+        })
+      }
 
-        return false
-      })
+      return false
+    })
 
-      setStretchExercises(filtered)
-    }
-  }, [allExercises, selectedNumber])
+    setStretchExercises(filtered)
+  }, [allExercises, selectedNumbers])
 
-  const handleSelectNumber = (number: number) => {
-    setSelectedNumber(number)
+  const handleToggleNumber = (number: number) => {
+    setSelectedNumbers(prev => {
+      if (prev.includes(number)) {
+        return prev.filter(n => n !== number)
+      } else {
+        return [...prev, number].sort((a, b) => a - b)
+      }
+    })
   }
 
   return (
@@ -134,8 +138,8 @@ export default function MobilisePage() {
       {/* Muscle Group Selector Component */}
       <MuscleGroupSelector
         maxMuscleGroup={maxMuscleGroup}
-        selectedNumber={selectedNumber}
-        onSelectNumber={handleSelectNumber}
+        selectedNumbers={selectedNumbers}
+        onToggleNumber={handleToggleNumber}
       />
 
       <section>
@@ -163,10 +167,10 @@ export default function MobilisePage() {
               </div>
             ))}
           </div>
-        ) : selectedNumber === null ? (
+        ) : selectedNumbers.length === 0 ? (
           <div className="text-center py-2">
             <p className="text-muted-foreground">
-              Please select a muscle group from above to view exercises
+              Please select one or more muscle groups from above to view exercises
             </p>
           </div>
         ) : stretchExercises.length > 0 ? (
@@ -188,9 +192,9 @@ export default function MobilisePage() {
           <div className="space-y-6">
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                {selectedNumber !== null && selectedNumber > 0
-                  ? `No stretch exercises found for muscle group ${selectedNumber}. Try another group or "All".`
-                  : 'No stretch exercises found. Please add some exercises or try selecting "All".'}
+                {selectedNumbers.length > 0
+                  ? `No stretch exercises found for selected muscle groups: ${selectedNumbers.join(', ')}. Try selecting different groups.`
+                  : 'No stretch exercises found. Please select muscle groups above.'}
               </p>
             </div>
 

@@ -13,6 +13,18 @@ export interface UserDayExercise {
     image_url: string | null
     description: string | null
     exercise_group: number | null
+    kit?: number | null
+    body_muscle?: number | null
+    kit_info?: {
+      id: number
+      name: string
+    } | null
+    muscle_info?: {
+      id: number
+      name: string
+      body_section: number
+      image_url: string | null
+    } | null
     group: {
       id: number
       name: string
@@ -21,6 +33,46 @@ export interface UserDayExercise {
       fir_level: number | null
       body_section_name: string | null
       fir_level_name: string | null
+    } | null
+  } | null
+}
+
+// Type for the raw API response
+interface ApiUserDayExercise {
+  id: number
+  day_id: number
+  exercise_id: number
+  user_id: string
+  exercises: {
+    id: number
+    name: string
+    image_url: string | null
+    ex_description: string | null
+    exercise_group: number | null
+    kit?: number | null
+    body_muscle?: number | null
+    exercise_kit?: {
+      id: number
+      name: string
+    } | null
+    body_muscles?: {
+      id: number
+      name: string
+      body_section: number
+      image_url: string | null
+    } | null
+    exercise_groups?: {
+      id: number
+      name: string
+      image_url: string
+      body_sec: number
+      fir_level: number | null
+      exercise_body_section?: {
+        name: string
+      } | null
+      exercise_fir?: {
+        name: string
+      } | null
     } | null
   } | null
 }
@@ -63,18 +115,51 @@ export const useUserDayExercises = (userId: string | undefined, dayId: number) =
           )
         }
 
-        const exercisesData = await response.json()
+        const apiData: ApiUserDayExercise[] = await response.json()
 
         // Validate the data
-        if (!Array.isArray(exercisesData)) {
-          console.error('Invalid API response format:', exercisesData)
+        if (!Array.isArray(apiData)) {
+          console.error('Invalid API response format:', apiData)
           throw new Error('Invalid response format from API')
         }
 
+        // Transform API response to match expected interface
+        const transformedData: UserDayExercise[] = apiData.map(item => ({
+          id: item.id,
+          day_id: item.day_id,
+          exercise_id: item.exercise_id,
+          user_id: item.user_id,
+          exercise: item.exercises
+            ? {
+                id: item.exercises.id,
+                name: item.exercises.name,
+                image_url: item.exercises.image_url,
+                description: item.exercises.ex_description,
+                exercise_group: item.exercises.exercise_group,
+                kit: item.exercises.kit,
+                body_muscle: item.exercises.body_muscle,
+                kit_info: item.exercises.exercise_kit,
+                muscle_info: item.exercises.body_muscles,
+                group: item.exercises.exercise_groups
+                  ? {
+                      id: item.exercises.exercise_groups.id,
+                      name: item.exercises.exercise_groups.name,
+                      image_url: item.exercises.exercise_groups.image_url,
+                      body_section: item.exercises.exercise_groups.body_sec,
+                      fir_level: item.exercises.exercise_groups.fir_level,
+                      body_section_name:
+                        item.exercises.exercise_groups.exercise_body_section?.name || null,
+                      fir_level_name: item.exercises.exercise_groups.exercise_fir?.name || null,
+                    }
+                  : null,
+              }
+            : null,
+        }))
+
         if (!mounted) return
 
-        setExercises(exercisesData)
-        setCachedData(exercisesData)
+        setExercises(transformedData)
+        setCachedData(transformedData)
       } catch (error) {
         console.error('Error loading user day exercises:', error)
 

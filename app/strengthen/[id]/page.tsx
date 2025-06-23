@@ -22,7 +22,7 @@ export default function WorkoutExercisePage({ params }: { params: { id: string }
     const fetchExercise = async () => {
       try {
         // Get the exercise ID from the URL parameters
-        const { id } = await params
+        const id = params.id
         const exerciseId = Number.parseInt(id)
 
         // Fetch the exercise data from the API using the new utility

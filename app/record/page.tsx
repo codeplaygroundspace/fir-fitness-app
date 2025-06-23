@@ -32,6 +32,7 @@ export default function RecordPage() {
 
     async function loadGoalNotes() {
       try {
+        if (!user?.id) return
         const notes = await getUserGoalNotes(user.id)
         setGoalNotes(notes)
       } catch (error) {

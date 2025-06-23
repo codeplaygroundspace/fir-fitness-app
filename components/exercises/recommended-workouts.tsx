@@ -43,7 +43,7 @@ export function RecommendedWorkouts() {
         // Fetch exercises based on fitness level and not recently completed
         const { data: exercises } = await supabase
           .from('exercises')
-          .select('id, name, image_url, categories(name)')
+          .select('id, name, image_url')
           .limit(3)
 
         if (exercises) {
@@ -51,7 +51,7 @@ export function RecommendedWorkouts() {
             id: exercise.id,
             name: exercise.name,
             image: exercise.image_url || '/placeholder.svg?height=200&width=300',
-            type: getExerciseType(exercise.categories?.name),
+            type: 'strengthen' as const, // Default to strengthen since categories are no longer used
           }))
 
           setWorkouts(recommendations)

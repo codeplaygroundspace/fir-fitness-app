@@ -111,31 +111,19 @@ export default function CreateYourOwnWorkoutPage() {
     return Array.from(sections)
   }, [exerciseGroups])
 
-  // Get unique FIR levels from exercise groups
+  // FIR levels are no longer used - return empty array
   const availableFirLevels = useMemo(() => {
-    const levels = new Set<string>()
+    return []
+  }, [])
 
-    exerciseGroups.forEach(group => {
-      if (group.fir_level_name) {
-        levels.add(formatFirLevel(group.fir_level_name))
-      }
-    })
-
-    return Array.from(levels)
-  }, [exerciseGroups])
-
-  // Define categories for the filter
+  // Define categories for the filter - only body sections now
   const allCategories = useMemo(() => {
     // Use body sections from the database, or fall back to static options
     const bodyCategories =
       availableBodySections.length > 0 ? availableBodySections : DEFAULT_BODY_CATEGORIES
 
-    // Use FIR levels from the database, or fall back to static options
-    const firCategories =
-      availableFirLevels.length > 0 ? availableFirLevels : Object.values(FIR_LEVELS)
-
-    return [...bodyCategories, ...firCategories]
-  }, [availableBodySections, availableFirLevels])
+    return bodyCategories
+  }, [availableBodySections])
 
   // Filter exercise groups based on selected categories
   const filteredGroups = useMemo(() => {
@@ -156,13 +144,8 @@ export default function CreateYourOwnWorkoutPage() {
         }
       }
 
-      // FIR level filtering
-      if (firFilters.length > 0) {
-        if (!group.fir_level_name) return false
-        if (!firFilters.includes(formatFirLevel(group.fir_level_name))) {
-          return false
-        }
-      }
+      // FIR filtering is no longer available since we removed FIR categories
+      // Only body section filtering remains
 
       return true
     })
@@ -172,19 +155,9 @@ export default function CreateYourOwnWorkoutPage() {
     setSelectedFilters(filters)
   }
 
-  // Create categories for each group
+  // Categories are no longer used
   const getGroupCategories = (group: ExerciseGroup): string[] => {
-    const categories: string[] = []
-
-    if (group.body_section_name) {
-      categories.push(capitalizeFirstLetter(group.body_section_name))
-    }
-
-    if (group.fir_level_name) {
-      categories.push(formatFirLevel(group.fir_level_name))
-    }
-
-    return categories
+    return []
   }
 
   return (
@@ -248,8 +221,6 @@ export default function CreateYourOwnWorkoutPage() {
                 name={group.name}
                 image={group.image_url || '/placeholder.svg?height=200&width=300'}
                 linkPrefix="/strengthen/group"
-                categories={getGroupCategories(group)}
-                showCategories={true}
               />
             ))}
           </div>

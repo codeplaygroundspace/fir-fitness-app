@@ -6,7 +6,7 @@ import { ExerciseVideo } from '@/components/exercises/exercise-video'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
 
-export default async function StretchDetailPage({ params }: { params: { id: string } }) {
+export default async function StretchDetailPage({ params }: { params: Promise<{ id: string }> }) {
   // Get the exercise ID from the URL parameters
   const { id } = await params
   const exerciseId = Number.parseInt(id)

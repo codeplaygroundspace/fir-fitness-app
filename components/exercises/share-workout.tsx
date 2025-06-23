@@ -88,7 +88,7 @@ export function ShareWorkout({ exerciseId, exerciseName, exerciseType }: ShareWo
         <DialogFooter>
           <Button onClick={handleShare} className="w-full sm:w-auto">
             <Share2 className="h-4 w-4 mr-2" />
-            {navigator.share ? 'Share' : 'Copy Link'}
+            {typeof navigator !== 'undefined' && 'share' in navigator ? 'Share' : 'Copy Link'}
           </Button>
         </DialogFooter>
       </DialogContent>

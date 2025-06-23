@@ -34,13 +34,12 @@ const { data } = await supabase.from('user_day_exercise').select(`
       id,
       name,
       image_url,
-      exercise_groups (
-        id,
-        name,
-        image_url,
-        exercise_body_section (name),
-        exercise_fir (name)
-      )
+              exercise_groups (
+          id,
+          name,
+          image_url,
+          exercise_body_section (name)
+        )
     )
   `)
 ```

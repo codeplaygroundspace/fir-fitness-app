@@ -30,9 +30,7 @@ export interface UserDayExercise {
       name: string
       image_url: string
       body_section: number
-      fir_level: number | null
       body_section_name: string | null
-      fir_level_name: string | null
     } | null
   } | null
 }
@@ -66,11 +64,7 @@ interface ApiUserDayExercise {
       name: string
       image_url: string
       body_sec: number
-      fir_level: number | null
       exercise_body_section?: {
-        name: string
-      } | null
-      exercise_fir?: {
         name: string
       } | null
     } | null
@@ -146,10 +140,8 @@ export const useUserDayExercises = (userId: string | undefined, dayId: number) =
                       name: item.exercises.exercise_groups.name,
                       image_url: item.exercises.exercise_groups.image_url,
                       body_section: item.exercises.exercise_groups.body_sec,
-                      fir_level: item.exercises.exercise_groups.fir_level,
                       body_section_name:
                         item.exercises.exercise_groups.exercise_body_section?.name || null,
-                      fir_level_name: item.exercises.exercise_groups.exercise_fir?.name || null,
                     }
                   : null,
               }

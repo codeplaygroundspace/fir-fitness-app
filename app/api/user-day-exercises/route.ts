@@ -36,9 +36,7 @@ export async function GET(request: NextRequest) {
             name,
             image_url,
             body_sec,
-            fir_level,
-            exercise_body_section (name),
-            exercise_fir (name)
+            exercise_body_section (name)
           ),
           body_muscles (id, name, body_section, image_url)
         )

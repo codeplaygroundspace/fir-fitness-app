@@ -53,9 +53,7 @@ export default function DayPage() {
             name: group.name,
             image_url: group.image_url,
             body_section: group.body_section,
-            fir_level: group.fir_level,
             body_section_name: group.body_section_name,
-            fir_level_name: group.fir_level_name,
           })
         }
       }
@@ -70,19 +68,9 @@ export default function DayPage() {
     return `FIR: ${capitalizeFirstLetter(levelName)}`
   }
 
-  // Create categories for each group
+  // Categories are no longer used
   const getGroupCategories = (group: any): string[] => {
-    const categories: string[] = []
-
-    if (group.body_section_name) {
-      categories.push(capitalizeFirstLetter(group.body_section_name))
-    }
-
-    if (group.fir_level_name) {
-      categories.push(formatFirLevel(group.fir_level_name))
-    }
-
-    return categories
+    return []
   }
 
   if (!dayId || isNaN(dayId)) {

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
-import { ExerciseFilters } from '@/components/exercises/exercise-filters'
+
 import { Button } from '@/components/ui/button'
 import { ExerciseCard } from '@/components/exercises/exercise-card'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
@@ -13,35 +13,15 @@ import Link from 'next/link'
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000
 
-// Helper function to format FIR level names
-const formatFirLevel = (levelName: string | null): string => {
-  if (!levelName) return 'Unknown'
-
-  return (
-    FIR_LEVELS[levelName as keyof typeof FIR_LEVELS] || `FIR: ${capitalizeFirstLetter(levelName)}`
-  )
-}
-
 // Constants for localStorage keys to avoid typos
 const LS_KEYS = {
   GROUPS: 'workout-groups',
   TIMESTAMP: 'workout-groups-timestamp',
 }
 
-// Default body categories if none are found in the database
-const DEFAULT_BODY_CATEGORIES = ['Upper', 'Middle', 'Lower']
-
-// Default FIR levels if none are found in the database
-const FIR_LEVELS = {
-  LOW: 'FIR: Low',
-  MODERATE: 'FIR: Moderate',
-  HIGH: 'FIR: High',
-}
-
 export default function CreateYourOwnWorkoutPage() {
   const [exerciseGroups, setExerciseGroups] = useState<ExerciseGroup[]>([])
   const [loading, setIsLoading] = useState(true)
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -98,67 +78,8 @@ export default function CreateYourOwnWorkoutPage() {
     loadExerciseGroups()
   }, [])
 
-  // Get unique body section names from exercise groups
-  const availableBodySections = useMemo(() => {
-    const sections = new Set<string>()
-
-    exerciseGroups.forEach(group => {
-      if (group.body_section_name) {
-        sections.add(capitalizeFirstLetter(group.body_section_name))
-      }
-    })
-
-    return Array.from(sections)
-  }, [exerciseGroups])
-
-  // FIR levels are no longer used - return empty array
-  const availableFirLevels = useMemo(() => {
-    return []
-  }, [])
-
-  // Define categories for the filter - only body sections now
-  const allCategories = useMemo(() => {
-    // Use body sections from the database, or fall back to static options
-    const bodyCategories =
-      availableBodySections.length > 0 ? availableBodySections : DEFAULT_BODY_CATEGORIES
-
-    return bodyCategories
-  }, [availableBodySections])
-
-  // Filter exercise groups based on selected categories
-  const filteredGroups = useMemo(() => {
-    if (selectedFilters.length === 0) {
-      return exerciseGroups
-    }
-
-    // Split filters into body filters and FIR filters
-    const bodyFilters = selectedFilters.filter(filter => !filter.startsWith('FIR:'))
-    const firFilters = selectedFilters.filter(filter => filter.startsWith('FIR:'))
-
-    return exerciseGroups.filter(group => {
-      // Body section filtering
-      if (bodyFilters.length > 0) {
-        if (!group.body_section_name) return false
-        if (!bodyFilters.includes(capitalizeFirstLetter(group.body_section_name))) {
-          return false
-        }
-      }
-
-      // FIR filtering is no longer available since we removed FIR categories
-      // Only body section filtering remains
-
-      return true
-    })
-  }, [exerciseGroups, selectedFilters])
-
-  const handleFilterChange = (filters: string[]) => {
-    setSelectedFilters(filters)
-  }
-
-  // Categories are no longer used
-  const getGroupCategories = (group: ExerciseGroup): string[] => {
-    return []
-  }
+  // No filtering needed anymore - show all exercise groups
+  const filteredGroups = exerciseGroups
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -198,8 +119,6 @@ export default function CreateYourOwnWorkoutPage() {
       </CollapsibleBox>
 
       <section>
-        <ExerciseFilters categories={allCategories} onFilterChange={handleFilterChange} />
-
         {loading ? (
           <div className="grid grid-cols-1 gap-4">
             {[1, 2, 3, 4].map(i => (

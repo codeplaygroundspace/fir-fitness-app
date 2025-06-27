@@ -42,6 +42,7 @@ export async function getWarmupExercises(): Promise<ExerciseWithLabels[]> {
       .from('exercises')
       .select('*')
       .eq('category_id', warmupCategoryId)
+      .order('sort_order')
 
     if (exercisesError) {
       console.error('Error fetching warmup exercises:', exercisesError)
@@ -351,7 +352,6 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
     }
 
     if (!data || data.length === 0) {
-      console.log('No exercise groups found in database')
       return []
     }
 
@@ -401,7 +401,7 @@ export async function getExercisesByGroup(groupId: number, categoryName?: string
     }
 
     // Query exercises with exercise_group = groupId (as number)
-    const { data: exercisesByGroup, error: groupError2 } = await query
+    const { data: exercisesByGroup, error: groupError2 } = await query.order('sort_order')
 
     if (groupError2) {
       console.error('Query error:', groupError2)

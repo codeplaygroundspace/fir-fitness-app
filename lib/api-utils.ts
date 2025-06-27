@@ -17,6 +17,7 @@ export async function fetchExercisesByCategory(
       .from('exercises')
       .select('*')
       .eq('category_id', categoryId)
+      .order('sort_order')
 
     if (error) {
       console.error(`API error fetching exercises for category ${categoryId}:`, error)

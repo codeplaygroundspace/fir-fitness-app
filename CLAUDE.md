@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Do not change the database wihout my approval
 - After testing remove console.log since this code is deploy in Production
+- After testing remove unnecessary files and folders since this will be deploy in production.
 
 ### Core Commands
 

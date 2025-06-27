@@ -38,6 +38,7 @@ export type Database = {
           kit: string | null
           exercise_group: string | null
           body_muscle: number | null
+          sort_order: number
         }
         Insert: {
           id?: number
@@ -52,6 +53,7 @@ export type Database = {
           kit?: string | null
           exercise_group?: string | null
           body_muscle?: number | null
+          sort_order?: number
         }
         Update: {
           id?: number
@@ -66,6 +68,7 @@ export type Database = {
           kit?: string | null
           exercise_group?: string | null
           body_muscle?: number | null
+          sort_order?: number
         }
       }
       categories: {

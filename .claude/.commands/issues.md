@@ -40,6 +40,8 @@ Follow these steps to complete the task, make a todo list and think hard:
      --add-assignee @me
      --label "enhancement"
 
+IMPORTANT: After creating the issue, you MUST also run `gh issue edit <issue-number> --add-project "Fitness App"` to add it to the project board. The --add-project flag in the initial create command is shown above but must be executed as a separate edit command.
+
 Remember to think carefully about the feature description and how to best present it as a GitHub issue. Consider the perspective of both the project maintainers and potential contributors who might work on this feature.
 
 Your final output should consist of only the content within the <github_issue> tags, ready to be copied and pasted directly into GitHub. Make sure to use the GitHub CLI `gh issue create` to create the actual issue after you generate. Assign either the label `bug` or `enhancement` based on the nature of the issue.

@@ -30,7 +30,7 @@ export function ExerciseCard({ id, name, image, linkPrefix, description }: Exerc
           >
             {formattedName}
           </h2>
-          {description && (
+          {description && description.trim() !== '' && description !== 'No description available' && (
             <p className="text-sm text-muted-foreground overflow-hidden text-ellipsis">
               {description.charAt(0).toUpperCase() + description.slice(1)}
             </p>

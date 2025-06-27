@@ -1,7 +1,7 @@
 'use client'
 
 import { CollapsibleBox } from '@/components/common/collapsible-box'
-import { MobiliseExerciseCard } from '@/components/exercises/mobilise-exercise-card'
+import { ExerciseCard } from '@/components/exercises/exercise-card'
 import { MuscleGroupSelector, MobilityLimitationsForm } from '@/components/mobilise'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMobiliseExercises } from '@/hooks'
@@ -176,14 +176,12 @@ export default function MobilisePage() {
         ) : stretchExercises.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {stretchExercises.map(exercise => (
-              <MobiliseExerciseCard
+              <ExerciseCard
                 key={exercise.id}
                 id={exercise.id}
                 name={exercise.name}
                 image={exercise.image}
                 linkPrefix="/mobilise"
-                categories={exercise.categories}
-                bodyMuscleId={exercise.body_muscle}
                 description={exercise.description}
               />
             ))}

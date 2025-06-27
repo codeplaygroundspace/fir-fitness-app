@@ -104,7 +104,7 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
         </Link>
 
         {/* Description */}
-        {description && (
+        {description && description.trim() !== '' && description !== 'No description available' && (
           <p className="text-sm text-muted-foreground overflow-hidden text-ellipsis mb-2">
             {description.charAt(0).toUpperCase() + description.slice(1)}
           </p>
@@ -121,18 +121,6 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
           </div>
         )}
 
-        {/* Muscle name */}
-        {bodyMuscle && (
-          <div className="text-sm text-muted-foreground mt-2">
-            <Link
-              href={`/mobilise/muscle/${bodyMuscleId}`}
-              className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-              aria-label={`View all exercises for ${bodyMuscle.name}`}
-            >
-              Target muscles: {bodyMuscle.name}
-            </Link>
-          </div>
-        )}
       </CardContent>
     </Card>
   )

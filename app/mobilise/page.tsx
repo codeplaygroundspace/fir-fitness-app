@@ -184,6 +184,7 @@ export default function MobilisePage() {
                 linkPrefix="/mobilise"
                 categories={exercise.categories}
                 bodyMuscleId={exercise.body_muscle}
+                description={exercise.description}
               />
             ))}
           </div>

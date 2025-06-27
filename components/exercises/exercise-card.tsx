@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { ExerciseCardProps } from '@/lib/types'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
 
-export function ExerciseCard({ id, name, image, linkPrefix }: ExerciseCardProps) {
+export function ExerciseCard({ id, name, image, linkPrefix, description }: ExerciseCardProps) {
   const formattedName = capitalizeFirstLetter(name)
 
   return (
@@ -30,6 +30,11 @@ export function ExerciseCard({ id, name, image, linkPrefix }: ExerciseCardProps)
           >
             {formattedName}
           </h2>
+          {description && (
+            <p className="text-sm text-muted-foreground overflow-hidden text-ellipsis">
+              {description.charAt(0).toUpperCase() + description.slice(1)}
+            </p>
+          )}
         </CardContent>
       </Link>
     </Card>

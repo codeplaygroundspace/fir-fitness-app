@@ -114,6 +114,7 @@ export default async function ExerciseGroupPage({ params }: { params: Promise<{ 
                   name={exercise.name}
                   image={exercise.image}
                   linkPrefix="/strengthen"
+                  description={exercise.description}
                 />
               ))}
             </div>

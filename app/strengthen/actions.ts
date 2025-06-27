@@ -46,13 +46,26 @@ export async function getUserImbalanceImage(userId: string): Promise<string | nu
  * @param dayId - The day number (1-7)
  * @returns The image URL if found, null otherwise
  */
-export async function getDayImage(dayId: number, userId: string): Promise<string | null> {
+export async function getDayImage(dayId: number, userId: string, category: 'strengthen' | 'recover' = 'strengthen'): Promise<string | null> {
   try {
+    // First get the category ID
+    const { data: categoryData } = await supabaseServer
+      .from('categories')
+      .select('id')
+      .eq('name', category)
+      .single()
+
+    if (!categoryData) {
+      console.error('Category not found:', category)
+      return null
+    }
+
     const { data, error } = await supabaseServer
       .from('user_day_assignments')
       .select('image_url')
       .eq('day_id', dayId)
       .eq('user_id', userId)
+      .eq('category_id', categoryData.id)
       .single()
 
     if (error) {
@@ -67,12 +80,25 @@ export async function getDayImage(dayId: number, userId: string): Promise<string
   }
 }
 
-export async function getUserTrainingDays(userId: string): Promise<number[]> {
+export async function getUserTrainingDays(userId: string, category: 'strengthen' | 'recover' = 'strengthen'): Promise<number[]> {
   try {
+    // First get the category ID
+    const { data: categoryData } = await supabaseServer
+      .from('categories')
+      .select('id')
+      .eq('name', category)
+      .single()
+
+    if (!categoryData) {
+      console.error('Category not found:', category)
+      return []
+    }
+
     const { data, error } = await supabaseServer
       .from('user_day_assignments')
       .select('day_id')
       .eq('user_id', userId)
+      .eq('category_id', categoryData.id)
       .order('day_id')
 
     if (error) {

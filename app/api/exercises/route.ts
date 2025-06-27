@@ -89,7 +89,11 @@ export async function GET(request: Request) {
       try {
         // Import directly here to avoid circular dependencies
         const { getExercisesByGroup } = await import('@/app/actions')
-        const exercises = await getExercisesByGroup(groupId)
+        
+        // Get category parameter if provided
+        const category = url.searchParams.get('category')
+        
+        const exercises = await getExercisesByGroup(groupId, category || undefined)
 
         // Return exercises without categories
         return NextResponse.json(exercises)

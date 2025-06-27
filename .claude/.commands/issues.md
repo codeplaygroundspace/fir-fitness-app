@@ -36,8 +36,9 @@ Follow these steps to complete the task, make a todo list and think hard:
 
    - Present the complete GitHub issue content in <github_issue> tags.
    - Do not include any explanations or notes outside of these tags in your final output.
-   - Include the issue in Fitness App project.
-   - Assign the issue to myself.
+     --add-project "Fitness App"
+     --add-assignee @me
+     --label "enhancement"
 
 Remember to think carefully about the feature description and how to best present it as a GitHub issue. Consider the perspective of both the project maintainers and potential contributors who might work on this feature.
 

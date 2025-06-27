@@ -11,9 +11,10 @@ interface CacheEntry {
   timestamp: number
   userId: string
   dayId: number
+  category?: 'strengthen' | 'recover'
 }
 
-const getCachedDayImage = (userId: string, dayId: number): string | null => {
+const getCachedDayImage = (userId: string, dayId: number, category: 'strengthen' | 'recover' = 'strengthen'): string | null => {
   try {
     const cached = localStorage.getItem(CACHE_KEY)
     if (!cached) return null
@@ -24,6 +25,7 @@ const getCachedDayImage = (userId: string, dayId: number): string | null => {
     if (
       entry.userId === userId &&
       entry.dayId === dayId &&
+      (entry.category || 'strengthen') === category &&
       now - entry.timestamp < CACHE_DURATION
     ) {
       return entry.url
@@ -34,13 +36,14 @@ const getCachedDayImage = (userId: string, dayId: number): string | null => {
   }
 }
 
-const setCachedDayImage = (userId: string, dayId: number, url: string | null) => {
+const setCachedDayImage = (userId: string, dayId: number, url: string | null, category: 'strengthen' | 'recover' = 'strengthen') => {
   try {
     const entry: CacheEntry = {
       url,
       timestamp: Date.now(),
       userId,
       dayId,
+      category,
     }
     localStorage.setItem(CACHE_KEY, JSON.stringify(entry))
   } catch {
@@ -48,9 +51,9 @@ const setCachedDayImage = (userId: string, dayId: number, url: string | null) =>
   }
 }
 
-export const useDayImage = (userId: string | undefined, dayId: number | undefined) => {
+export const useDayImage = (userId: string | undefined, dayId: number | undefined, category: 'strengthen' | 'recover' = 'strengthen') => {
   const [imageUrl, setImageUrl] = useState<string | null>(() =>
-    userId && dayId ? getCachedDayImage(userId, dayId) : null
+    userId && dayId ? getCachedDayImage(userId, dayId, category) : null
   )
   const [loading, setLoading] = useState(!imageUrl)
   const [error, setError] = useState<string | null>(null)
@@ -67,7 +70,7 @@ export const useDayImage = (userId: string | undefined, dayId: number | undefine
       }
 
       // Check cache first
-      const cached = getCachedDayImage(userId, dayId)
+      const cached = getCachedDayImage(userId, dayId, category)
       if (cached) {
         setImageUrl(cached)
         setLoading(false)
@@ -78,11 +81,11 @@ export const useDayImage = (userId: string | undefined, dayId: number | undefine
         setLoading(true)
         setError(null)
 
-        const dayImageUrl = await getDayImage(dayId, userId)
+        const dayImageUrl = await getDayImage(dayId, userId, category)
 
         if (!mounted) return
 
-        setCachedDayImage(userId, dayId, dayImageUrl)
+        setCachedDayImage(userId, dayId, dayImageUrl, category)
         setImageUrl(dayImageUrl)
       } catch (err) {
         console.error('Error fetching day image:', err)
@@ -107,7 +110,7 @@ export const useDayImage = (userId: string | undefined, dayId: number | undefine
     return () => {
       mounted = false
     }
-  }, [userId, dayId])
+  }, [userId, dayId, category])
 
   return { imageUrl, loading, error }
 }

@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button'
 import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { useImbalanceImage } from '@/hooks/use-imbalance-image'
 import { ImageError, ImageLoading, ImagePlaceholder } from '@/components/common/image-states'
+import { useTrainingDays } from '@/hooks/use-training-days'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export default function RecoverPage() {
   const { imageUrl, loading: imageLoading, error: imageError } = useImbalanceImage()
+  const { days, loading: daysLoading, error: daysError } = useTrainingDays('recover')
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -59,24 +61,37 @@ export default function RecoverPage() {
         </div>
       </CollapsibleBox>
 
-      <div className="space-y-4 mt-6">
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/recover/day/1">
-            <p className="text-lg">Day 1</p>
-          </Link>
-        </Button>
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/recover/day/2">
-            <p className="text-lg">Day 2</p>
-          </Link>
-        </Button>
-      </div>
-
-      <div className="mt-4">
-        <Button asChild className="w-full">
-          <Link href="/recover/create-your-own">Create your own workout</Link>
-        </Button>
-      </div>
+      {daysLoading ? (
+        <div className="space-y-4 mt-6">
+          <div className="h-12 bg-muted animate-pulse rounded" />
+          <div className="h-12 bg-muted animate-pulse rounded" />
+        </div>
+      ) : daysError ? (
+        <div className="mt-6 text-center text-red-500">
+          <p>Error loading training days</p>
+        </div>
+      ) : days.length > 0 ? (
+        <div className="space-y-4 mt-6">
+          {days.includes(1) && (
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/recover/day/1">
+                <p className="text-lg">Day 1</p>
+              </Link>
+            </Button>
+          )}
+          {days.includes(2) && (
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/recover/day/2">
+                <p className="text-lg">Day 2</p>
+              </Link>
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="mt-6 text-center text-muted-foreground">
+          <p>No recovery days assigned yet. Please contact your trainer to set up your recovery program.</p>
+        </div>
+      )}
     </div>
   )
 }

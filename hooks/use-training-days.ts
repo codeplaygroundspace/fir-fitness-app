@@ -4,9 +4,10 @@ import { getUserTrainingDays } from '@/app/strengthen/actions'
 import { useCache } from './use-cache'
 import { CACHE_KEYS } from '@/lib/cache-constants'
 
-export const useTrainingDays = () => {
+export const useTrainingDays = (category: 'strengthen' | 'recover' = 'strengthen') => {
   const { user } = useAuth()
-  const { getCachedData, setCachedData } = useCache<number[]>(CACHE_KEYS.TRAINING_DAYS)
+  const cacheKey = category === 'recover' ? CACHE_KEYS.RECOVER_DAYS : CACHE_KEYS.TRAINING_DAYS
+  const { getCachedData, setCachedData } = useCache<number[]>(cacheKey)
   const [days, setDays] = useState<number[]>(() => (user ? getCachedData(user.id) || [] : []))
   const [loading, setLoading] = useState(!days.length)
   const [error, setError] = useState<string | null>(null)
@@ -34,7 +35,7 @@ export const useTrainingDays = () => {
         setLoading(true)
         setError(null)
 
-        const trainingDays = await getUserTrainingDays(user.id)
+        const trainingDays = await getUserTrainingDays(user.id, category)
 
         if (!mounted) return
 
@@ -63,7 +64,7 @@ export const useTrainingDays = () => {
     return () => {
       mounted = false
     }
-  }, [user])
+  }, [user, category])
 
   return { days, loading, error }
 }

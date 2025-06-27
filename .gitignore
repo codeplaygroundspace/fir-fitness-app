@@ -36,3 +36,55 @@ next-env.d.ts
 
 # macOS
 .DS_Store
+
+# Claude AI
+.claude/
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+
+# Test coverage
+/coverage
+.nyc_output
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Build directories
+dist/
+
+# Package manager lock files (if you want to exclude them)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Local development
+*.local
+
+# Supabase
+.supabase/
+
+# Scripts and documentation that might contain sensitive info
+/scripts/seed-*.sql
+/scripts/check-*.sql
+RECOVER_DAY_IMPLEMENTATION.md

@@ -375,7 +375,7 @@ export async function getExerciseGroups(): Promise<ExerciseGroup[]> {
 }
 
 // Update the getExercisesByGroup function to use the exercise_group column
-export async function getExercisesByGroup(groupId: number): Promise<ExerciseWithLabels[]> {
+export async function getExercisesByGroup(groupId: number, categoryName?: string): Promise<ExerciseWithLabels[]> {
   try {
     // First, get the group details with a simpler query
     const { data: group, error: groupError } = await supabaseServer
@@ -389,11 +389,19 @@ export async function getExercisesByGroup(groupId: number): Promise<ExerciseWith
       return []
     }
 
-    // Query exercises with exercise_group = groupId (as number)
-    const { data: exercisesByGroup, error: groupError2 } = await supabaseServer
+    // Build the query
+    let query = supabaseServer
       .from('exercises')
-      .select('*')
+      .select('*, categories!inner(id, name)')
       .eq('exercise_group', groupId)
+    
+    // If category is specified, filter by it
+    if (categoryName) {
+      query = query.eq('categories.name', categoryName)
+    }
+
+    // Query exercises with exercise_group = groupId (as number)
+    const { data: exercisesByGroup, error: groupError2 } = await query
 
     if (groupError2) {
       console.error('Query error:', groupError2)

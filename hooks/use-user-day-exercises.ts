@@ -71,13 +71,13 @@ interface ApiUserDayExercise {
   } | null
 }
 
-export const useUserDayExercises = (userId: string | undefined, dayId: number) => {
+export const useUserDayExercises = (userId: string | undefined, dayId: number, category: 'strengthen' | 'recover' = 'strengthen') => {
   const [exercises, setExercises] = useState<UserDayExercise[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Create a unique cache key for this user and day combination
-  const cacheKey = `${CACHE_KEYS.USER_DAY_EXERCISES}-${userId}-${dayId}`
+  // Create a unique cache key for this user, day, and category combination
+  const cacheKey = `${CACHE_KEYS.USER_DAY_EXERCISES}-${userId}-${dayId}-${category}`
   const { getCachedData, setCachedData, clearCache } = useCache<UserDayExercise[]>(cacheKey)
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export const useUserDayExercises = (userId: string | undefined, dayId: number) =
         }
 
         // If no cache or expired, fetch from API
-        const response = await fetch(`/api/user-day-exercises?userId=${userId}&dayId=${dayId}`)
+        const response = await fetch(`/api/user-day-exercises?userId=${userId}&dayId=${dayId}&category=${category}`)
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
@@ -176,7 +176,7 @@ export const useUserDayExercises = (userId: string | undefined, dayId: number) =
     return () => {
       mounted = false
     }
-  }, [userId, dayId]) // Only depend on userId and dayId
+  }, [userId, dayId, category]) // Only depend on userId, dayId, and category
 
   const clearCacheAndReload = () => {
     clearCache()

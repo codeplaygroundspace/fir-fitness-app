@@ -6,12 +6,25 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
     const dayId = searchParams.get('dayId')
+    const category = searchParams.get('category') || 'strengthen'
 
     if (!userId || !dayId) {
       return NextResponse.json(
         { error: 'Missing required parameters: userId and dayId' },
         { status: 400 }
       )
+    }
+
+    // First get the category ID
+    const { data: categoryData, error: categoryError } = await supabaseServer
+      .from('categories')
+      .select('id')
+      .eq('name', category)
+      .single()
+
+    if (categoryError || !categoryData) {
+      console.error('Error fetching category:', categoryError)
+      return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
     }
 
     const { data, error } = await supabaseServer
@@ -22,7 +35,7 @@ export async function GET(request: NextRequest) {
         day_id,
         exercise_id,
         user_id,
-        exercises (
+        exercises!inner (
           id,
           name,
           image_url,
@@ -30,6 +43,7 @@ export async function GET(request: NextRequest) {
           exercise_group,
           kit,
           body_muscle,
+          category_id,
           exercise_kit (id, name),
           exercise_groups (
             id,
@@ -44,6 +58,7 @@ export async function GET(request: NextRequest) {
       )
       .eq('user_id', userId)
       .eq('day_id', parseInt(dayId, 10))
+      .eq('exercises.category_id', categoryData.id)
 
     if (error) {
       console.error('Error fetching user day exercises:', error)

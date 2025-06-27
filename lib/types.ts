@@ -208,6 +208,7 @@ export interface ExerciseCardProps {
   name: string
   image: string
   linkPrefix: string
+  description?: string | null
 }
 
 export interface ExerciseImageProps {

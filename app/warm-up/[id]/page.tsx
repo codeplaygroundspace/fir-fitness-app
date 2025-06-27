@@ -1,4 +1,3 @@
-import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { BackButton } from '@/components/layout/back-button'
 import { ExerciseVideo } from '@/components/exercises/exercise-video'
 import type { ExerciseWithLabels } from '@/lib/types'
@@ -66,14 +65,6 @@ export default async function WarmUpPage({ params }: { params: Promise<{ id: str
             videoUrl3={exercise?.video_url_3}
           />
 
-          {/* Instructions box at the bottom */}
-          <CollapsibleBox title="Instructions">
-            <p className="text-muted-foreground">
-              {exercise?.description
-                ? exercise.description.charAt(0).toUpperCase() + exercise.description.slice(1)
-                : 'Perform this exercise with proper form and controlled movements.'}
-            </p>
-          </CollapsibleBox>
         </div>
       </div>
     )

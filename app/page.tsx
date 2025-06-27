@@ -136,6 +136,7 @@ export default function HomePage() {
                 name={exercise.name}
                 image={exercise.image}
                 linkPrefix="/warm-up"
+                description={exercise.description}
               />
             ))}
           </div>

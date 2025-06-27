@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { notFound, useParams } from 'next/navigation'
 import Image from 'next/image'
 import { CategoryLabel } from '@/components/exercises/category-label'
-import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { ExerciseVideo } from '@/components/exercises/exercise-video'
 import { ExerciseNotesForm } from '@/components/exercises/exercise-notes-form'
 import { useAuth } from '@/components/auth/auth-provider'
@@ -160,14 +159,6 @@ export default function WorkoutExercisePage() {
           videoUrl3={exercise?.video_url_3}
         />
 
-        {/* Instructions box */}
-        <CollapsibleBox title="Instructions">
-          <p className="text-muted-foreground">
-            {exercise?.description
-              ? exercise.description.charAt(0).toUpperCase() + exercise.description.slice(1)
-              : 'Focus on proper form and controlled movements. Adjust your effort level based on your Functional Imbalance Risk (FIR) indicators.'}
-          </p>
-        </CollapsibleBox>
       </div>
     </div>
   )

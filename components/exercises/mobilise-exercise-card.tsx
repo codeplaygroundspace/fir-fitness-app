@@ -16,6 +16,7 @@ interface MobiliseExerciseCardProps {
   categories?: string[]
   showCategories?: boolean
   bodyMuscleId?: number | null
+  description?: string | null
 }
 
 export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
@@ -26,6 +27,7 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
   categories = [],
   showCategories = true,
   bodyMuscleId,
+  description,
 }) => {
   const { getBodyMuscle, triggerFetch, isLoading } = useBodyMuscle()
 
@@ -100,6 +102,13 @@ export const MobiliseExerciseCard: React.FC<MobiliseExerciseCardProps> = ({
             {formattedName}
           </h2>
         </Link>
+
+        {/* Description */}
+        {description && (
+          <p className="text-sm text-muted-foreground overflow-hidden text-ellipsis mb-2">
+            {description.charAt(0).toUpperCase() + description.slice(1)}
+          </p>
+        )}
 
         {/* Categories */}
         {showCategories && categories && categories.length > 0 && (

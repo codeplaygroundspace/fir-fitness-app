@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { BackButton } from '@/components/layout/back-button'
-import { CollapsibleBox } from '@/components/common/collapsible-box'
 import { ExerciseVideo } from '@/components/exercises/exercise-video'
 import type { ExerciseWithLabels } from '@/lib/types'
 import { capitalizeFirstLetter } from '@/lib/text-utils'
@@ -77,14 +76,6 @@ export default async function StretchDetailPage({ params }: { params: Promise<{ 
             videoUrl3={exercise?.video_url_3}
           />
 
-          {/* Instructions box at the bottom */}
-          <CollapsibleBox title="Instructions">
-            <p className="text-muted-foreground">
-              {exercise?.description
-                ? exercise.description.charAt(0).toUpperCase() + exercise.description.slice(1)
-                : 'Perform this stretch slowly and hold for 15-30 seconds. Focus on breathing deeply and relaxing into the stretch. Do not bounce or push to the point of pain.'}
-            </p>
-          </CollapsibleBox>
         </div>
       </div>
     )

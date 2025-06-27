@@ -141,6 +141,7 @@ export default async function MuscleGroupPage({ params }: { params: Promise<{ id
                   name={exercise.name}
                   image={exercise.image}
                   linkPrefix="/mobilise"
+                  description={exercise.description}
                 />
               ))}
             </div>

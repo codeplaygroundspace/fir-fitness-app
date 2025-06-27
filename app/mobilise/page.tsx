@@ -96,7 +96,7 @@ export default function MobilisePage() {
           </p>
         </div>
       </CollapsibleBox>
-      <CollapsibleBox title="Recent tight" defaultOpen={false}>
+      <CollapsibleBox title="Recently tight" defaultOpen={false}>
         <div className="space-y-2">
           <p className="text-muted-foreground">
             This is a list of muscles recently found to be tight in your body during training.

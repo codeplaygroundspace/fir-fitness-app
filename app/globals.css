@@ -7,10 +7,10 @@
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;
 
-    --card: 0 0% 96%; /* Light grey for cards in light mode */
+    --card: 0 0% 94%; /* Light grey for cards in light mode */
     --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 96%; /* Match card background */
+    --popover: 0 0% 94%; /* Match card background */
     --popover-foreground: 0 0% 10%;
 
     /* More vibrant primary color */
@@ -18,11 +18,11 @@
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 92%; /* Slightly darker than card */
-    --secondary-foreground: 0 0% 20%;
+    --secondary-foreground: 0 0% 15%;
 
     --muted: 0 0% 92%;
     /* Darkened muted text for better contrast */
-    --muted-foreground: 0 0% 40%;
+    --muted-foreground: 0 0% 35%;
 
     /* Adjusted accent colors for better contrast */
     --accent: 25 95% 94%;
@@ -36,10 +36,20 @@
     --success-foreground: 0 0% 100%;
 
     --border: 0 0% 85%; /* Light grey border for light mode */
-    --input: 0 0% 85%;
+    --input: 0 0% 90%;
     --ring: 25 100% 50%; /* Match primary */
 
     --radius: 0.5rem;
+    --radius-sm: 0.25rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Chart colors */
+    --chart-1: 25 100% 50%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 210 100% 50%;
+    --chart-4: 280 100% 50%;
+    --chart-5: 350 100% 50%;
   }
 
   .dark {
@@ -75,8 +85,21 @@
     --success-foreground: 0 0% 100%;
 
     --border: 0 3% 20%; /* Top border and pills for dark mode */
-    --input: 0 0% 25%;
+    --input: 0 0% 20%;
     --ring: 25 100% 60%; /* Match primary */
+    
+    /* Radius variants - same as light mode */
+    --radius: 0.5rem;
+    --radius-sm: 0.25rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Chart colors - adjusted for dark mode */
+    --chart-1: 25 100% 60%;
+    --chart-2: 142 76% 42%;
+    --chart-3: 210 100% 60%;
+    --chart-4: 280 100% 60%;
+    --chart-5: 350 100% 60%;
   }
 
   /* Typography styles */
@@ -93,37 +116,45 @@
 
   h1 {
     font-size: 2.4rem; /* text-4xl */
+    line-height: 2.8rem;
     margin-bottom: 1.1rem; /* mb-6 */
     letter-spacing: -0.05em;
   }
 
   h2 {
     font-size: 2rem; /* Larger than default */
+    line-height: 2.4rem;
     margin-bottom: 1rem;
   }
 
   h3 {
     font-size: 1.75rem; /* Larger than default */
+    line-height: 2.1rem;
     margin-bottom: 0.75rem;
   }
 
   h4 {
     font-size: 1.5rem; /* Larger than default */
+    line-height: 1.8rem;
     margin-bottom: 0.5rem;
   }
 
   h5 {
     font-size: 1.25rem; /* Larger than default */
+    line-height: 1.5rem;
     margin-bottom: 0.5rem;
   }
 
   h6 {
     font-size: 1.1rem; /* Larger than default */
+    line-height: 1.3rem;
     margin-bottom: 0.5rem;
   }
 
   body {
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Improved focus styles for better accessibility */
